@@ -38,7 +38,8 @@ quizfrågor eller pedagogiska övningar om Johannes inte ber om det.
 - **Fas 3** – första modellen: el och drivmedel ✅ (el bara från 2021-11; ENTSO-E-nyckel saknas)
   (`python -m kpif_nowcast.sources.elpris`, `python -m kpif_nowcast.features`, `python -m kpif_nowcast.backtest_phase3`)
 - **Fas 4** – prognos per komponent (bidrag till m/m från TAB6628) ✅ (`python -m kpif_nowcast.backtest_phase4`)
-- **Fas 4b** – förbättringar: kalender för skatte-/avgiftsändringar, KI-prisplaner, ENTSO-E, rörliga elavtal
+- **Fas 4b** – förbättringar: KI-prisplaner ✅ (ingen effekt), kalender för skatte-/avgiftsändringar,
+  ENTSO-E, rörliga elavtal
 - **Fas 5** – längre horisont (3–12 mån): arbetslöshet, löner, BNP, krona
 
 Uppdatera listan när en fas är klar.

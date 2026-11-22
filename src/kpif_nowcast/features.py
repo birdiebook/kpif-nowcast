@@ -12,7 +12,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from kpif_nowcast.sources import elpris, fred, riksbank
+from kpif_nowcast.sources import elpris, fred, konj, riksbank
 
 PROCESSED_DIR = Path(__file__).resolve().parents[2] / "data" / "processed"
 
@@ -43,6 +43,27 @@ def fuel_proxy_monthly() -> pd.Series:
     return sek.groupby(sek.index.to_period("M")).mean().rename("brent_sek")
 
 
+# NIER firms' expected selling prices, next 3 months (net balance, not seasonally adjusted).
+# Survey for month m is published at the end of m. To be safe about publication dates we
+# only use the survey from t-1 when forecasting t (it is then ~5 weeks old at the deadline).
+KI_SERIES = {
+    "ki_services": ("Bartjam.px", "BTJA"),  # service sector
+    "ki_grocery": ("Barhanm.px", "B4711X"),  # grocery retail
+    "ki_durables": ("Barhanm.px", "B47XXX"),  # durable/specialty retail
+}
+
+
+def ki_price_plans() -> pd.DataFrame:
+    raw = pd.DataFrame({name: konj.fetch_balance(t, b, "202") for name, (t, b) in KI_SERIES.items()})
+    out = pd.DataFrame(index=raw.index)
+    for name in raw:
+        lagged = raw[name].shift(1)  # survey t-1 for target t
+        out[f"{name}_l1"] = lagged
+        # deviation from its own 12-month average: "are price plans rising right now?"
+        out[f"{name}_dev"] = lagged - lagged.rolling(12).mean()
+    return out
+
+
 def build_features() -> pd.DataFrame:
     el = electricity_monthly()
     fuel = fuel_proxy_monthly()
@@ -51,6 +72,7 @@ def build_features() -> pd.DataFrame:
     feats["fuel_chg"] = np.log(fuel).diff()  # log change vs previous month
     feats = feats.join(el[["el_spot"]])
     feats["el_chg"] = feats["el_spot"].diff()  # SEK/kWh change (spot can be near zero, so no log)
+    feats = feats.join(ki_price_plans())
     feats.index.name = "month"
     return feats
 

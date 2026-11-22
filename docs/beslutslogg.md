@@ -80,3 +80,17 @@ tjänster 0,19, varor 0,10, livsmedel 0,09, kapitalstock 0,01.
 - Tjänster är nu näst största felkällan, och där har vi ingen förklarande variabel än.
 **Nästa kandidater:** (1) kalender över kända skatte-/avgiftsändringar, (2) Konjunkturinstitutets
 prisplaner för tjänster och livsmedel, (3) längre elhistorik via ENTSO-E, (4) andel rörliga elavtal.
+
+## 2026-11-22 – Fas 4b: Konjunkturinstitutets prisplaner – ingen effekt
+**Vad:** Företagens förväntade försäljningspriser kommande 3 månader (nettotal, ej
+säsongsrensat) för tjänstesektorn, dagligvaruhandeln och sällanköpshandeln, som
+korrigering för tjänster, livsmedel respektive varor. Två varianter: nivå och avvikelse
+från eget 12-månaderssnitt. Enkätmånad t-1 används för prognos av t.
+**Varför ej säsongsrensat:** säsongsrensningen skattas om på hela serien, så gamla värden
+ändras i efterhand. Det vore läckage.
+**Resultat, MAE:** 2024–2026: 0,375 → 0,369 (avvikelse) / 0,375 (nivå).
+2015–2026: 0,316 → 0,311 / 0,319. På komponentnivå är förbättringen ≤ 0,002 pe.
+**Slutsats:** Prisplanerna tillför i praktiken inget en månad framåt. Trenden fångar redan
+samma information. Skillnaden mellan varianterna är brus, och att välja den som råkade vinna
+på testperioden vore överanpassning. Huvudmodellen förblir komponentmodell med drivmedel + el.
+Prisplanerna kan vara mer värda för längre horisonter (fas 5).

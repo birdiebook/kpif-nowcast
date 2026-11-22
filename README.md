@@ -78,6 +78,10 @@ capital stock) is forecast separately and summed. Energy gets the price correcti
 
 Remaining error is mostly energy (January fee and tax changes) and services.
 
+Adding NIER business survey price plans (services, grocery and specialty retail) made no
+meaningful difference one month ahead (0.375 → 0.369, within noise), so they're left out of
+the main model for now.
+
 Electricity prices: [Elpriset just nu.se](https://www.elprisetjustnu.se) (ENTSO-E data).
 Oil: FRED. Exchange rates and forecasts: Sveriges Riksbank. CPI: Statistics Sweden (CC0).
 
