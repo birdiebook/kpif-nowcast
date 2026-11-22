@@ -1,8 +1,8 @@
 # Förbättringsplan: autonoma jobb
 
 Skriven 2026-11-22. Planen gäller nästa steg innan drift (fas 6). Varje jobb är tillräckligt
-avgränsat för att köras av en agent utan sällskap under en arbetsdag, och tillräckligt
-viktigt för att vara värt det.
+avgränsat för att köras av en agent utan sällskap, och tillräckligt viktigt för att vara
+värt det. Inga tidsramar: jobben körs så snabbt det går, parallellt där inget beroende hindrar.
 
 ## Utgångsläge
 
@@ -57,7 +57,7 @@ energiprisrörelser, euroområdets snabbestimat och komponenternas senaste missa
 - Testa också en enkel kombination: ett viktat snitt av `rb_updated` och komponentmodellen, med
   vikter från tidigare fel.
 **Godkänt:** slår `rb_updated` enligt regel 5. Rapportera MAE efter prognosomgångens ålder (1/2/3 mån).
-**Beroende:** inget. **Storlek:** 1 dag.
+**Beroende:** inget.
 
 ### J2. Elmodellen på lång historik
 **Hypotes:** med elpriser från 2011 kan elkorrigeringen skattas och utvärderas på 2015–26. Den
@@ -71,7 +71,7 @@ förbättrar komponentmodellen (drivmedel) även där, inte bara 2024–26.
 - Januari: elnätsavgifter (TAB3950) publiceras först i maj och kan därför bara användas för
   *nästa* januari via en enkel regel. Dokumentera det.
 **Godkänt:** `comp_fuel_el` slår `comp_fuel` på 2015–26 enligt regel 5. Rapportera också mot `rb_updated`.
-**Beroende:** inget, men resultatet matar J1. **Storlek:** 1 dag.
+**Beroende:** inget, men resultatet matar J1.
 
 ### J3. Systematiskt prognostest av datakatalogen
 **Hypotes:** några av de 64 serierna tillför information utöver den bästa basmodellen. De flesta gör det inte.
@@ -84,7 +84,7 @@ förbättrar komponentmodellen (drivmedel) även där, inte bara 2024–26.
 - Gör samma screening för horisonterna 3 och 12 månader (`horizon.py`).
 **Godkänt:** tabellen finns och rekommendationen är förankrad i resultat efter kontrollen för
 multipla test. Ett "inget håller" är ett giltigt utfall.
-**Beroende:** helst efter J1. **Storlek:** 1 dag.
+**Beroende:** helst efter J1.
 
 ### J4. KPIF underifrån på detaljnivå
 **Hypotes:** de stora överraskningarna sitter i några få delindex: el, drivmedel, utrikes resor
@@ -95,7 +95,7 @@ och paketresor, hyror och livsmedel. De går att förutse bättre var för sig �
 - Bygg egna enkla modeller för dem. Hyror är kända i förväg via årliga förhandlingar. Resor har
   stark säsong och påverkas av påskens placering. El och drivmedel finns redan.
 - Väg ihop med SCB:s vikter och jämför med femgruppsmodellen.
-**Godkänt:** bättre än komponentmodellen på 2015–26 enligt regel 5. **Beroende:** inget. **Storlek:** 1–2 dagar.
+**Godkänt:** bättre än komponentmodellen på 2015–26 enligt regel 5. **Beroende:** inget.
 
 ### J5. Osäkerhet som går att lita på
 **Hypotes:** dagens felband (empiriska kvantiler på 34 månader) är för smala i oroliga perioder.
@@ -105,7 +105,7 @@ och paketresor, hyror och livsmedel. De går att förutse bättre var för sig �
 - Gör intervallet beroende av läget, till exempel bredare när elpriset svänger mycket.
 - Föreslå ändring i `forecast.py` som PR, men aktivera den inte.
 
-**Godkänt:** träffgraden ligger inom ±5 procentenheter från nominell nivå. **Storlek:** ½–1 dag.
+**Godkänt:** träffgraden ligger inom ±5 procentenheter från nominell nivå.
 
 ### J6. Arbetsförmedlingens data
 **Uppgift:**
@@ -114,7 +114,7 @@ och paketresor, hyror och livsmedel. De går att förutse bättre var för sig �
 - Lägg till serierna i `catalog.py` med rätt fördröjning (cirka 12 dagar).
 - Kör `observations` och `sverige_dashboard`.
 
-**Godkänt:** serierna finns i katalogen med historik från 1992/1996 och klarar kvalitetskontrollen. **Storlek:** ½ dag.
+**Godkänt:** serierna finns i katalogen med historik från 1992/1996 och klarar kvalitetskontrollen.
 
 ### J7. Svensk AI-indikator
 **Hypotes:** AI-spridningen syns tidigast i kompetensefterfrågan och investeringar, senare i produktivitet per bransch.
@@ -125,7 +125,7 @@ och paketresor, hyror och livsmedel. De går att förutse bättre var för sig �
 - Sätt ihop en indikator med tydlig metod och jämför Sverige med EU.
 - Skriv en kort analys i `docs/ai-indikator.md` och lägg till en sektion i dashboarden.
 
-**Godkänt:** en reproducerbar indikator med dokumenterad metod. Inga orsaksslutsatser utan stöd. **Storlek:** 1–2 dagar.
+**Godkänt:** en reproducerbar indikator med dokumenterad metod. Inga orsaksslutsatser utan stöd.
 
 ### Återkommande jobb (billiga, schemalagda)
 | Jobb | När | Vad |
@@ -137,22 +137,21 @@ och paketresor, hyror och livsmedel. De går att förutse bättre var för sig �
 
 Veckohämtningen är den viktigaste: varje vecka den körs blir datan mer ärlig, eftersom riktiga vintages sparas.
 
-## Föreslagen vecka
+## Körordning
 
-| Dag | Jobb | Varför i den ordningen |
-|---|---|---|
-| Mån | **J2** Elmodellen | Grund för J1, egen gren |
-| Mån (parallellt) | **J6** Arbetsförmedlingen | Oberoende datajobb |
-| Tis | **J1** Hybridmodell | Störst förväntad vinst, använder J2 |
-| Ons | **J3** Prognostest av katalogen | Behöver bästa basmodell från J1 |
-| Tors | **J4** Detaljnivå | Oberoende, stort |
-| Fre | **J5** Osäkerhet, **J7** AI-indikator | Mindre beroende av resten |
-| Sön | Veckohämtning (återkommande) | |
+Styrs bara av beroenden. Allt som kan köras parallellt startas samtidigt, och nästa våg
+startar så fort det den behöver är mergat.
 
-Johannes roll under veckan: läsa varje PR:s slutrapport, besluta om merge och om huvudmodellen
-ska bytas. Det tar ungefär 15 minuter per jobb.
+```
+Våg 1 (oberoende, parallellt):  J2 Elmodellen · J4 Detaljnivå · J5 Osäkerhet · J6 Arbetsförmedlingen · J7 AI-indikator
+Våg 2 (efter J2):               J1 Hybridmodell
+Våg 3 (efter J1):               J3 Prognostest av katalogen
+Löpande:                        veckohämtning, månadsrutin
+```
 
-## Vad som avgör om veckan lyckats
+Johannes roll: läsa varje PR:s slutrapport och besluta om merge och om huvudmodellen ska bytas.
+
+## Vad som avgör om planen lyckats
 
 - Minst en modell slår `rb_updated` på 2015–26 med p < 0,10, **eller** vi vet med god grund
   varför det inte går och vilken information som saknas.
