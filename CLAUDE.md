@@ -45,7 +45,9 @@ quizfrågor eller pedagogiska övningar om Johannes inte ber om det.
   Riksbanken vinner tydligt; 12 mån ≈ "det blir 2 %".
 - **Fas 5b** – datakatalog ✅: 64 serier i åtta områden i `catalog.py` (en `Spec` per serie),
   hämtas med `python -m kpif_nowcast.observations [nycklar]`, dokumenteras i `docs/datakatalog.md`
-  (`python -m kpif_nowcast.catalog`). Kvar: dashboard över läget i Sverige, test av prognosvärde,
+  (`python -m kpif_nowcast.catalog`). Dashboard "Sverigeläget" i Claude Data (länk i `CLAUDE.local.md`):
+  `python -m kpif_nowcast.sverige_dashboard` skriver `outputs/sverige/*.json` + `index.html`, laddas upp
+  som assets och datasets. Kvar: test av prognosvärde,
   Arbetsförmedlingen (varsel, inskrivna, kräver skrapning av xlsx). Vision: `docs/vision.md`.
 - Redigera filer med svenska tecken via Edit/Python, **aldrig PowerShell Get/Set-Content**
   (PS 5.1 läser som ANSI och förstör å/ä/ö).
