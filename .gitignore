@@ -27,3 +27,6 @@ outputs/
 Thumbs.db
 .vscode/
 .idea/
+
+# Lokala Claude-anteckningar (privata länkar m.m.)
+CLAUDE.local.md

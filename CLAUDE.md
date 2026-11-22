@@ -40,7 +40,11 @@ quizfrågor eller pedagogiska övningar om Johannes inte ber om det.
 - **Fas 4** – prognos per komponent (bidrag till m/m från TAB6628) ✅ (`python -m kpif_nowcast.backtest_phase4`)
 - **Fas 4b** – förbättringar: KI-prisplaner ✅ (ingen effekt), skattekalender ✅ (bara vid stora
   händelser → manuell justering), kvar: ENTSO-E, rörliga elavtal, januari-energi
-- **Fas 5** – längre horisont (3–12 mån): arbetslöshet, löner, BNP, krona
+- **Fas 5** – längre horisont (3–12 mån): arbetslöshet, löner, BNP, krona.
+  Start: versionerad observationstabell (period + known_from) innan första reviderade serie.
+- **Fas 6** – drift oberoende av egen dator (upplägg A, se beslutsloggen 2026-11-22):
+  GitHub Actions + Parquet i objektlagring + DuckDB, dbt för transformationer/tester,
+  MLflow, champion/challenger, Pages-dashboard
 
 Uppdatera listan när en fas är klar.
 
@@ -54,6 +58,9 @@ Uppdatera listan när en fas är klar.
 3. Committa och pusha `forecasts/<månad>.json` direkt – tidsstämpeln är beviset.
 4. Efter SCB:s slutliga siffra (~12–15:e): `python -m kpif_nowcast.data` och
    `python -m kpif_nowcast.scorecard`, committa `forecasts/SCORECARD.md`.
+5. Efter steg 3 och 4: `python -m kpif_nowcast.export_dashboard` och ladda upp filerna i
+   `outputs/dashboard/` till dashboarden i Claude Data (länk i `CLAUDE.local.md`, committas inte):
+   ny asset per fil, uppdatera sedan `datasets/<id>` (`source.url` och `updated`).
 
 ## Tekniska konventioner
 

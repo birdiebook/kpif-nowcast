@@ -128,3 +128,34 @@ och drar ner. Övriga komponenter är svagt negativa (säsong).
 **Risker:** elpriset kan falla resten av månaden (21 av 30 dagar kända). Elbidraget är en
 extrapolation nära kanten av vad modellen sett sedan 2021. Kontrollera före slutlig prognos
 om några skatter eller avgifter ändras i november.
+
+## 2026-11-22 – Visualisering i Claude Data
+**Vad:** en dashboard i Claude Data (privat artefakt på claude.ai) med aktuell prognos,
+KPIF-historik med Riksbankens bana, bidrag per komponent, el- och drivmedelsdata,
+backtestens träffsäkerhet och logg över skarpa prognoser.
+**Hur:** `python -m kpif_nowcast.export_dashboard` skriver sex JSON-filer till
+`outputs/dashboard/` (gitignorerat). Agenten laddar upp dem efter varje körning. Varje fil
+bär exportskriptets egen kod, så att varje siffra kan spåras till koden som räknade fram den.
+**Varför filer och inte live-frågor:** det finns ingen koppling (connector) till SCB eller
+Riksbanken, och modellen körs ändå lokalt i Python.
+**Backtesten per månad** räknas om i exporten med samma funktioner som `forecast.py`
+(MAE 0,375 på 34 månader, samma som felbanden). Riksbanken ligger något lägre (0,33) på
+samma månader. Skillnaden är liten och kan vara slump.
+
+## 2026-11-22 – Datalager och drift (plan, inte byggt)
+**Vad:** ingen databas eller backend nu. Två steg längre fram:
+1. **Fas 5:** en tabell med versionerade observationer `(serie, period, värde, known_from)`
+   och `as_of(serie, datum)`, plus en tabell med modellens prognoser
+   `(modell, version, målmånad, prognosdatum, prognos)`.
+2. **Fas 6 (upplägg A):** GitHub Actions för schemalagd hämtning och prognos, Parquet i
+   objektlagring (R2/B2), DuckDB, dbt för transformationer och datatester, MLflow,
+   champion/challenger och dashboard på GitHub Pages. Manuell justering via `workflow_dispatch`.
+**Varför:** volymen (~30 MB) motiverar ingen server. Det verkliga problemet är läckage från
+reviderade siffror och från publiceringsfördröjningar (ragged edge) när BNP/löner/AKU kommer
+in, och det löses med `known_from`, inte med en databas.
+**Alternativ jag valde bort:** Supabase gratis (pausas vid inaktivitet), Databricks Free Edition
+(låsning, oklara begränsningar), Airflow/Dagster (överdimensionerat), data i git.
+**Öppna frågor:** dbt v2 (sept 2026) har inbyggd DuckDB-adapter men kan enligt uppgift inte
+ladda tillägg som httpfs, alltså inte läsa Parquet direkt från S3. Testa, eller använd
+Python-adaptern dbt-duckdb. Kolla om dlt passar för hämtningen. Kolla villkoren i
+gratisnivåerna (R2 kräver ev. kort).
