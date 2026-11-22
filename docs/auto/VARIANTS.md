@@ -12,5 +12,6 @@ J3:s screening räknas inte.
 | 14 | J3 | kombination ea_flash_goods+ea_flash_food+ki_services (ingen överlevde BH) | 32694a6 | 0,279 (vs 0,281, 2017–26) | 117 | ensidigt 0,43 | 0,43 (en test) | 20261122T221405Z_j3_screen |
 | 15–17 | J4 | D1 detail_base, D2 detail_energy, D3 detail_energy_easter (TAB6613 revised) | 6ecd5cf | | | | | |
 | (resultat 15–17) | J4 | D1 0,335 · D2 0,243 · D3 0,243 vs comp_fuel 0,316 | 6ecd5cf | se rad | 141 | 0,078 · 0,003 · 0,003 | 0,078 · 0,010 · 0,010 | 20261122T222015Z_j4_detail |
+| 18–23 | J5 | U1 abs_all, U2 abs_36, U3 signed_all, U4 ewma, U5 scaled_energy, U6 qreg_energy | 767f2e4 | | | | | |
 
-**Löpande total: 17/50**
+**Löpande total: 23/50**

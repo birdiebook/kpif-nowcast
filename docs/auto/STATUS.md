@@ -1,9 +1,9 @@
 # Status: autonom körning
 
-**Lås:** orkestrerare 2026-11-22T22:20Z (lokal 2026-11-22 23:20)
+**Lås:** orkestrerare 2026-11-22T22:21Z (lokal 2026-11-22 23:21)
 **Start:** 2026-11-22 22:55
-**Senaste heartbeat:** 2026-11-22 23:20
-**Global varianttotal:** 17/50 (J3:s screening oräknad)
+**Senaste heartbeat:** 2026-11-22 23:21
+**Global varianttotal:** 23/50 (J3:s screening oräknad)
 **Deadline:** måndag 2026-11-23 22:00
 **Läge:** KÖR. J2 och J6 startar.
 
@@ -18,7 +18,7 @@
 | J1 Hybrid | auto/j1-hybrid | C:\dev\kpif-auto\j1 | KLAR (pushad) | 8/10 | 327c91e | Klarade INTE skärmen. Bäst C1 50/50 rb_updated+j2: MAE 0,217 vs 0,256, p1 0,015, Holm 0,117 (13/50) | – |
 | J3 Katalogtest | auto/j3-katalog | C:\dev\kpif-auto\j3 | KLAR (pushad) | 1/10 (+screening) | 1372e0e | Inget håller: 0/45 serier överlever BH på h=1/3/12; kombination p 0,43 (14/50) | – |
 | J4 Detaljnivå | auto/j4-detalj | C:\dev\kpif-auto\j4 | KLAR (pushad) | 3/10 | 8eb63d3 | D2 0,243 vs comp_fuel 0,316, Holm 0,010 (17/50): klarade skärmen, OBEKRÄFTAD (revisionsläckage möjligt); = J2 V2 | – |
-| J5 Osäkerhet | auto/j5-osakerhet | – | ledig plats | 0/10 | – | – | – |
+| J5 Osäkerhet | auto/j5-osakerhet | C:\dev\kpif-auto\j5 | förregistrerad, bygger | 6/10 | 767f2e4 | – | – |
 | J7 AI-indikator | auto/j7-ai | – | ledig plats | – | – | – | – |
 
 ## Logg
@@ -35,3 +35,4 @@
 - 11-22 23:18 J6 KLAR. Källås släppt. Nästa: J4 (detaljnivå).
 - 11-22 23:19 J4 förregistrerad (D1–D3).
 - 11-22 23:20 J4 KLAR: D2 klarade skärmen men obekräftad; fryst enligt regel, rekommendation J2 V2. Nästa: J5.
+- 11-22 23:21 J5 förregistrerad (U1–U6).
