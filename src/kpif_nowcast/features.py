@@ -24,22 +24,32 @@ ZONE_WEIGHTS = {"SE3": 0.7, "SE4": 0.3}
 FUEL_WINDOW_LAST_DAY = 25
 
 
-def electricity_monthly() -> pd.DataFrame:
-    """Monthly mean spot price per zone and a weighted average (SEK/kWh)."""
+def electricity_monthly(min_days: int = 28) -> pd.DataFrame:
+    """Monthly mean spot price per zone and a weighted average (SEK/kWh).
+
+    By default only complete months; a live forecast may pass min_days=1 to use a partial month.
+    """
     daily = pd.concat([elpris.daily_prices(z) for z in ZONE_WEIGHTS], axis=1)
-    monthly = daily.groupby(daily.index.to_period("M")).mean()
-    monthly = monthly[daily.groupby(daily.index.to_period("M")).size() >= 28]  # complete months only
+    groups = daily.groupby(daily.index.to_period("M"))
+    monthly = groups.mean()
+    monthly["el_days"] = groups.size()
+    monthly = monthly[monthly["el_days"] >= min_days]
     monthly["el_spot"] = sum(monthly[z] * w for z, w in ZONE_WEIGHTS.items())
     return monthly
 
 
-def fuel_proxy_monthly() -> pd.Series:
-    """Brent crude in SEK per barrel, mean over days 1-25 of each month."""
+def fuel_proxy_daily() -> pd.Series:
+    """Brent crude in SEK per barrel, trading days within days 1-25 of each month."""
     brent = fred.fetch_series("DCOILBRENTEU")
     usdsek = riksbank.fetch_swea("SEKUSDPMI")
-    df = pd.concat([brent, usdsek], axis=1).dropna()
+    df = pd.concat([brent, usdsek], axis=1, sort=True).dropna()
     df = df[df.index.day <= FUEL_WINDOW_LAST_DAY]
-    sek = df["DCOILBRENTEU"] * df["SEKUSDPMI"]
+    return (df["DCOILBRENTEU"] * df["SEKUSDPMI"]).rename("brent_sek")
+
+
+def fuel_proxy_monthly(daily: pd.Series | None = None) -> pd.Series:
+    """Brent crude in SEK per barrel, mean over days 1-25 of each month."""
+    sek = fuel_proxy_daily() if daily is None else daily
     return sek.groupby(sek.index.to_period("M")).mean().rename("brent_sek")
 
 
@@ -64,9 +74,9 @@ def ki_price_plans() -> pd.DataFrame:
     return out
 
 
-def build_features() -> pd.DataFrame:
-    el = electricity_monthly()
-    fuel = fuel_proxy_monthly()
+def build_features(el: pd.DataFrame | None = None, fuel_daily: pd.Series | None = None) -> pd.DataFrame:
+    el = electricity_monthly() if el is None else el
+    fuel = fuel_proxy_monthly(fuel_daily)
     feats = pd.DataFrame(index=fuel.index)
     feats["brent_sek"] = fuel
     feats["fuel_chg"] = np.log(fuel).diff()  # log change vs previous month

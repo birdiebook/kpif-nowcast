@@ -44,6 +44,17 @@ quizfrågor eller pedagogiska övningar om Johannes inte ber om det.
 
 Uppdatera listan när en fas är klar.
 
+## Månadsrutin (skarp prognos)
+
+1. **Dag 1–4 i månaden efter prognosmånaden** (före snabb-KPI): `python -m kpif_nowcast.forecast`.
+   Status ska bli FINAL (hel månad el, drivmedel till minst den 20:e).
+2. Kolla om stora beslutade engångshändelser träffar månaden (moms, skatter, avgifter,
+   t.ex. om tillfälligt sänkt drivmedelsskatt löper ut). Justera i så fall med
+   `--adjust <pe> --note "<varför>"` och ange källa i noten.
+3. Committa och pusha `forecasts/<månad>.json` direkt – tidsstämpeln är beviset.
+4. Efter SCB:s slutliga siffra (~12–15:e): `python -m kpif_nowcast.data` och
+   `python -m kpif_nowcast.scorecard`, committa `forecasts/SCORECARD.md`.
+
 ## Tekniska konventioner
 
 - Python. Kod i `src/kpif_nowcast/`, utforskning i `notebooks/`.

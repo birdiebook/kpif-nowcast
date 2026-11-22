@@ -1,0 +1,56 @@
+{
+  "target_month": "2026-11",
+  "status": "PRELIMINARY",
+  "made_at": "2026-11-22T21:02:38",
+  "deadline": "2026-12-04",
+  "model": "component_fuel_el_v1",
+  "code_commit": "2487538",
+  "forecast_yy": 2.09,
+  "forecast_yy_rounded": 2.1,
+  "model_yy": 2.09,
+  "manual_adjustment_pp": 0.0,
+  "manual_note": "",
+  "forecast_mm_pp": 0.7,
+  "components_pp": {
+    "capital_stock": 0.024,
+    "energy": 1.211,
+    "food": -0.136,
+    "goods": -0.143,
+    "services": -0.255
+  },
+  "range_50": [
+    1.7,
+    2.4
+  ],
+  "range_80": [
+    1.5,
+    2.6
+  ],
+  "error_bands": {
+    "backtest_from": "2024-01",
+    "backtest_n": 34,
+    "backtest_mae": 0.375,
+    "abs_err_p50": 0.34,
+    "abs_err_p80": 0.54
+  },
+  "riksbank": {
+    "forecast_yy": 1.73,
+    "policy_round": "2026:3"
+  },
+  "last_known": {
+    "month": "2026-10",
+    "yy": 1.1
+  },
+  "inputs": {
+    "el_spot_sek_kwh": 2.0363,
+    "el_chg": 0.9905,
+    "el_days": 21,
+    "el_zone_weights": {
+      "SE3": 0.7,
+      "SE4": 0.3
+    },
+    "brent_sek": 949.5,
+    "fuel_chg": -0.2702,
+    "fuel_last_day": "2026-11-17"
+  }
+}

@@ -113,3 +113,18 @@ har ingen skatteeffekt alls. De är el, nätavgifter och annat.
 **Beslut:** Skattekalendern ingår inte i huvudmodellen. Vid skarpa prognoser görs en
 **manuell justering för stora, beslutade engångshändelser** (t.ex. momsändringar), vilket
 också är så professionella prognosmakare arbetar.
+
+## 2026-11-22 – Skarpa prognoser och första preliminära prognos (november 2026)
+**Vad:** `forecast.py` gör prognos för månaden efter senast publicerade KPIF med
+huvudmodellen (komponentmodell, drivmedel + el), sparar den som JSON i `forecasts/` och
+committas före snabb-KPI. Status FINAL bara om data för hela månaden finns och körningen
+sker senast den 4:e. Osäkerhetsintervall = empiriska felkvantiler från backtesten 2024–2026
+(50 %: ±0,34, 80 %: ±0,54). Manuell justering möjlig med motivering.
+**Preliminär prognos 2026-11 (gjord 22 nov):** 2,1 % (80 %: 1,5–2,6). Riksbanken (sept): 1,73.
+Senaste utfall (okt): 1,1.
+**Varför så högt:** elpriset i november är extremt hittills (SE3 ~1,8 kr/kWh mot 0,8 i okt,
+SE4 ~2,7 mot 1,6), vilket ger energi ett bidrag på +1,2 pe. Oljepriset i kronor föll ~25 %
+och drar ner. Övriga komponenter är svagt negativa (säsong).
+**Risker:** elpriset kan falla resten av månaden (21 av 30 dagar kända). Elbidraget är en
+extrapolation nära kanten av vad modellen sett sedan 2021. Kontrollera före slutlig prognos
+om några skatter eller avgifter ändras i november.

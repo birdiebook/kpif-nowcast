@@ -102,7 +102,9 @@ def component_forecast(
     if tax is not None:
         out["tax_effect"] = tax["tax_total"].reindex(out.index).fillna(0)
         out["mm_hat_pp"] += out["tax_effect"]
-    out["yy_hat"] = yy_from_mm(index, (out["mm_hat_pp"] / 100).reindex(index.index)).reindex(out.index)
+    # extend the index by one month so the unpublished target month gets a y/y forecast
+    idx = index.reindex(pd.period_range(index.index.min(), index.index.max() + 1, freq="M"))
+    out["yy_hat"] = yy_from_mm(idx, (out["mm_hat_pp"] / 100).reindex(idx.index)).reindex(out.index)
     return out.join(pd.concat(coefs, axis=1)) if coefs else out
 
 

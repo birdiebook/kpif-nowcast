@@ -38,6 +38,18 @@ docs/               decision log, data sources (Swedish)
 data/               not committed – fetched by scripts
 ```
 
+## Live forecasts
+
+Every month a forecast is made and committed **before** SCB's flash estimate (~day 4–8
+of the following month). The git commit timestamp is the proof. See
+[`forecasts/SCORECARD.md`](forecasts/SCORECARD.md) for forecasts vs outcomes.
+
+```
+python -m kpif_nowcast.forecast                         # forecast next month
+python -m kpif_nowcast.forecast --adjust -0.3 --note "VAT cut"   # with manual judgement
+python -m kpif_nowcast.scorecard                        # after SCB's release
+```
+
 ## Results
 
 **Phase 2: baselines (2015–2026, 141 months, KPIF y/y one month ahead)**
