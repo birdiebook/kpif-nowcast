@@ -1,6 +1,6 @@
 # Datakatalog
 
-64 serier. Genererad av `python -m kpif_nowcast.catalog`.
+67 serier. Genererad av `python -m kpif_nowcast.catalog`.
 
 ## Inflation
 
@@ -30,6 +30,9 @@
 | `vacancies` | Lediga jobb, hela ekonomin (ej säsongsrensat) | Q | 2009-03–2026-06 | 60 d | nej | SCB TAB6406 | Stramhet på arbetsmarknaden → lönetryck. |
 | `aku_employed` | Sysselsatta 15–74 år (AKU, ej säsongsrensat) | M | 2001-01–2026-10 | 25 d | nej | SCB TAB6389 | Sysselsättning och efterfrågan. |
 | `nier_labour_shortage` | Brist på arbetskraft, näringslivet | Q | 1996-06–2026-12 | 3 d | nej | KI | Lönetryck. |
+| `af_varsel` | Varsel om uppsägning (personer) | M | 1992-01–2026-10 | 15 d | ja | Arbetsförmedlingen, tidigare statistik (web-varsel-bransch) | Ledande indikator för arbetslöshet: varsel föregår uppsägningar med 2–6 månader. |
+| `af_inskrivna_arbetslosa` | Inskrivna arbetslösa, Arbetsförmedlingen | M | 1996-01–2026-10 | 15 d | nej | Arbetsförmedlingen, tidigare statistik (web-sok-riket) | Registerbaserad arbetslöshet, mindre brus än AKU. Svagare arbetsmarknad → lägre löne- och tjänsteinflation. |
+| `af_oppet_arbetslosa` | Öppet arbetslösa, Arbetsförmedlingen | M | 1996-01–2026-10 | 15 d | nej | Arbetsförmedlingen, tidigare statistik (web-sok-riket) | Arbetslösa utanför program; påverkas mindre av politiska programvolymer. |
 
 ## Hushållen
 

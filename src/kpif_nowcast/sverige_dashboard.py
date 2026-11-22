@@ -42,7 +42,7 @@ YOY = {
     "brent_sek", "kix", "wage_private_nonmanual", "wage_private_manual_hourly", "vacancies", "aku_employed",
     "house_price_idx", "housing_starts", "bankruptcies", "service_prod_idx", "fao_food_idx", "fao_cereals",
     "fao_dairy", "gas_eu_usd", "wheat_usd", "freight_ppi_deepsea", "gdp_real_q", "hours_worked_q",
-    "software_investment_q", "jobads_total",
+    "software_investment_q", "jobads_total", "af_varsel", "af_inskrivna_arbetslosa", "af_oppet_arbetslosa",
 }
 PER_10K_ADS = {"jobads_ml", "jobads_ai"}
 SKIP = {"kpif_index", "kpif_yy", "aku_unemp_sa", "nier_firm_infl_exp_new"}  # target / duplicates / 1 obs
@@ -51,6 +51,7 @@ SIGN = {
     "aku_unemp_nsa": -1, "bankruptcies": -1, "hh_saving_rate": -1, "mortgage_rate_new": -1, "policy_rate": -1,
     "lp_hour_yy_se": -1, "lp_hour_yy_ea": 0, "ai_use_firms_se": 0, "ai_use_firms_eu": 0, "jobads_ml": 0,
     "jobads_ai": 0, "software_investment_q": 0, "gdp_real_q": 0, "hours_worked_q": 0,
+    "af_varsel": -1, "af_inskrivna_arbetslosa": -1, "af_oppet_arbetslosa": -1,
 }  # every other series: +1
 
 
