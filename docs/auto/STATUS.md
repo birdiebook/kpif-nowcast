@@ -1,11 +1,11 @@
 # Status: autonom körning
 
-**Lås:** orkestrerare 2026-11-22T21:55Z (lokal 2026-11-22 22:55)
+**Lås:** orkestrerare 2026-11-22T22:03Z (lokal 2026-11-22 23:03)
 **Start:** 2026-11-22 22:55
-**Senaste heartbeat:** 2026-11-22 22:55
+**Senaste heartbeat:** 2026-11-22 23:03
 **Global varianttotal:** 0/50 (J3:s screening oräknad)
 **Deadline:** måndag 2026-11-23 22:00
-**Läge:** FÖRBEREDELSER (Johannes vaken). Inga jobb startade.
+**Läge:** KÖR. J2 och J6 startar.
 
 **Källås (hämtning):** inga
 
@@ -23,3 +23,6 @@
 
 ## Logg
 - 2026-11-22 22:55 Statusgren och worktree skapade från origin/main @ a8cd686. BRIEF.md sparad.
+- 23:03 Ministeg OK: PYTHONPATH pekar på worktree, pytest 11 gröna, push till auto/status utan fråga. Backup data/observations.20261122.bak.parquet skapad.
+- 23:03 kpif-auto-restart skapad (varje timme 00:30–21:30 måndag). **Varning:** appen sparade inte auto-läge på uppgiften; testväckningen fastnade på en behörighetsfråga och stoppades. Omstarter kan därför fastna. Huvudsessionen fortsätter så länge den kan.
+- 23:03 Worktrees C:\dev\kpif-auto\j2 (auto/j2-el) och j6 (auto/j6-af) skapade från origin/main @ a8cd686, data kopierad.
