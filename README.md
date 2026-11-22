@@ -99,6 +99,21 @@ A tax-change calendar (from SCB's CPIF at constant taxes) nails the April 2026 f
 changes are already in the seasonal pattern. Large one-off policy changes will instead be
 handled as a manual adjustment in live forecasts.
 
+**Phase 5: longer horizons (MAE 2015–2026, pp y/y)**
+
+| Forecast | 3 months | 6 months | 12 months |
+|---|---|---|---|
+| Riksbank | **0.49** | **0.81** | **1.39** |
+| Gradient boosting (macro features) | 0.63 | 1.04 | 1.82 |
+| Reversion to target | 0.68 | 1.15 | 1.60 |
+| Naive | 0.67 | 1.10 | 1.89 |
+| "Inflation will be 2 %" | 1.37 | 1.37 | **1.39** |
+
+Beyond the nowcast the Riksbank wins clearly, and at 12 months simply assuming the 2 % target
+is as good as the Riksbank. Macro data has too few independent observations for ML to shine.
+Features are built point-in-time from a versioned observation table (`known_from`), so
+publication lags are respected (revisions before today's vintage are not).
+
 Electricity prices: [Elpriset just nu.se](https://www.elprisetjustnu.se) (ENTSO-E data).
 Oil: FRED. Exchange rates and forecasts: Sveriges Riksbank. CPI: Statistics Sweden (CC0).
 

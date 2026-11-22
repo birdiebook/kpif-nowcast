@@ -40,8 +40,9 @@ quizfrågor eller pedagogiska övningar om Johannes inte ber om det.
 - **Fas 4** – prognos per komponent (bidrag till m/m från TAB6628) ✅ (`python -m kpif_nowcast.backtest_phase4`)
 - **Fas 4b** – förbättringar: KI-prisplaner ✅ (ingen effekt), skattekalender ✅ (bara vid stora
   händelser → manuell justering), kvar: ENTSO-E, rörliga elavtal, januari-energi
-- **Fas 5** – längre horisont (3–12 mån): arbetslöshet, löner, BNP, krona.
-  Start: versionerad observationstabell (period + known_from) innan första reviderade serie.
+- **Fas 5** – längre horisont (3–12 mån) ✅: versionerad observationstabell
+  (`python -m kpif_nowcast.observations`, `as_of()`), backtest `python -m kpif_nowcast.horizon`.
+  Riksbanken vinner tydligt; 12 mån ≈ "det blir 2 %". Löner ej med än (tabell-ID saknas).
 - **Fas 6** – drift oberoende av egen dator (upplägg A, se beslutsloggen 2026-11-22):
   GitHub Actions + Parquet i objektlagring + DuckDB, dbt för transformationer/tester,
   MLflow, champion/challenger, Pages-dashboard

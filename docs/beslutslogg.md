@@ -159,3 +159,45 @@ in, och det löses med `known_from`, inte med en databas.
 ladda tillägg som httpfs, alltså inte läsa Parquet direkt från S3. Testa, eller använd
 Python-adaptern dbt-duckdb. Kolla om dlt passar för hämtningen. Kolla villkoren i
 gratisnivåerna (R2 kräver ev. kort).
+
+## 2026-11-22 – Fas 5: versionerade observationer
+**Vad:** `observations.py` med tabellen `(series, period, value, known_from, source, fetched_at)`
+i `data/observations.parquet` och `as_of(serie, datum)`. Nio serier: KPIF, AKU-arbetslöshet
+(ej säsongsrensad + säsongsrensad), BNP-indikatorn (årstakt, kalenderjusterad), KIX, styrränta,
+Brent i SEK, KI-prisplaner tjänster.
+**known_from:** periodens slut + typisk publiceringsfördröjning (KPIF 15 d, AKU 25 d,
+BNP-indikator 35 d, dagliga serier 1 d, KI 3 d), valt i överkant. Nya perioder vid senare
+hämtningar får min(standard, hämtdatum). Ändrade värden (revideringar) får hämtdatum.
+**Begränsning:** SCB:s API saknar historiska vintages, så återfyllnaden använder dagens värden.
+Revideringar av BNP-indikatorn läcker alltså in i backtesten. Från och med nu sparas riktiga
+vintages vid varje hämtning. Ofullständig innevarande månad för dagliga serier tas inte med.
+
+## 2026-11-22 – Fas 5: prognoser 3, 6 och 12 månader framåt
+**Vad:** direkta prognoser av KPIF-årstakten h månader efter senast publicerade månad, gjorda
+samma dag som nowcasten. Variabler vid prognosdagen (via `as_of`): avstånd till 2 %, momentum
+(3 mån), arbetslöshet (nivå och förändring), BNP-indikator, KIX-förändring, styrränta, Brent i SEK,
+KI-prisplaner. Modeller: naiv, "2 % målet", återgång mot målet, ridge-regression,
+gradient boosting (grunda träd). Expanderande fönster, minst 60 träningsmånader.
+**Resultat, MAE 2015–2026 (pe årstakt):**
+
+| | 3 mån | 6 mån | 12 mån |
+|---|---|---|---|
+| Riksbanken | **0,49** | **0,81** | **1,39** |
+| Gradient boosting | 0,63 | 1,04 | 1,82 |
+| Återgång mot målet | 0,68 | 1,15 | 1,60 |
+| Naiv | 0,67 | 1,10 | 1,89 |
+| Ridge | 0,69 | 1,23 | 2,19 |
+| "Det blir 2 %" | 1,37 | 1,37 | **1,39** |
+
+**Lärdomar:**
+- Riksbanken vinner tydligt på alla längre horisonter, till skillnad från nowcasten där vi var i nivå.
+  De vet sin egen räntebana och har mycket mer information och bedömning.
+- På 12 månader är "det blir 2 %" lika bra som Riksbanken över hela perioden och bäst av
+  alla 2024–2026. Lång sikt handlar om att inflationen är förankrad vid målet.
+- Gradient boosting är bäst av våra modeller men slår inte enkla baslinjer med mycket.
+  Ridge blir sämst på 12 månader: med ~150 effektivt oberoende observationer och en stor chock
+  (2022) lär den sig samband som inte håller (t.ex. att stigande arbetslöshet ger *högre* inflation).
+- Makro har för få oberoende observationer för avancerad ML. Precis den begränsning vi
+  diskuterade i början, nu bekräftad med siffror.
+**Beslut:** projektets styrka är nowcasten. Längre horisonter behålls som jämförelse, och den
+bästa enkla regeln för 12 månader är målet. Ingen skarp publicering av långa prognoser än.
