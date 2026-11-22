@@ -201,3 +201,23 @@ gradient boosting (grunda träd). Expanderande fönster, minst 60 träningsmåna
   diskuterade i början, nu bekräftad med siffror.
 **Beslut:** projektets styrka är nowcasten. Längre horisonter behålls som jämförelse, och den
 bästa enkla regeln för 12 månader är målet. Ingen skarp publicering av långa prognoser än.
+
+## 2026-11-22 – Vision och datakatalog
+**Vision:** se [`vision.md`](vision.md). Förstå svensk ekonomi genom inflationen. Tre delar:
+en ärlig månadsprognos, en bred bild av läget i Sverige och en AI-lins (AI → produktivitet → inflation).
+**Vad:** `catalog.py` med en `Spec` per serie (område, etikett, enhet, frekvens, källa, hämtning,
+publiceringsfördröjning, revideras ja/nej, koppling till inflationen). 64 serier i åtta områden från
+SCB, Riksbanken, Konjunkturinstitutet, Tillväxtanalys, Eurostat, FAO, FRED, NY Fed och JobTech.
+Kvartal lagras på kvartalets sista månad och år på december, så att `known_from` fungerar lika för alla.
+**Val:**
+- Ej säsongsrensade serier där säsongsrensning revideras. Undantag (sparkvot, KI-indikatorer)
+  är markerade som reviderade.
+- Euroområdets inflation lagras som *första publicering* (snabbestimat, fryst), eftersom det är
+  den som fanns före vår deadline.
+- KI:s nya mätmetod för företagens inflationsförväntningar (2026K4) skarvas inte ihop med den gamla.
+- AI-annonser: fritextsökning i JobTech, alltså brusig. Ska normeras med totalt antal annonser.
+**Kvalitetskontroll:** inga luckor utom AI-användning (undersökningen görs inte varje år) och hyror.
+Inga orimliga värden. KI:s kvartalsenkäter får `known_from` vid kvartalets slut, trots att de
+publiceras tidigare, vilket är försiktigt men inte fel.
+**Ej med än:** Arbetsförmedlingens varsel och inskrivna arbetslösa (Excel-filer med ändrade URL:er,
+kräver skrapning), bostadsrättspriser per månad (ingen öppen källa), ENTSO-E.

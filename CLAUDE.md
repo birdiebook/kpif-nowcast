@@ -42,7 +42,13 @@ quizfrågor eller pedagogiska övningar om Johannes inte ber om det.
   händelser → manuell justering), kvar: ENTSO-E, rörliga elavtal, januari-energi
 - **Fas 5** – längre horisont (3–12 mån) ✅: versionerad observationstabell
   (`python -m kpif_nowcast.observations`, `as_of()`), backtest `python -m kpif_nowcast.horizon`.
-  Riksbanken vinner tydligt; 12 mån ≈ "det blir 2 %". Löner ej med än (tabell-ID saknas).
+  Riksbanken vinner tydligt; 12 mån ≈ "det blir 2 %".
+- **Fas 5b** – datakatalog ✅: 64 serier i åtta områden i `catalog.py` (en `Spec` per serie),
+  hämtas med `python -m kpif_nowcast.observations [nycklar]`, dokumenteras i `docs/datakatalog.md`
+  (`python -m kpif_nowcast.catalog`). Kvar: dashboard över läget i Sverige, test av prognosvärde,
+  Arbetsförmedlingen (varsel, inskrivna, kräver skrapning av xlsx). Vision: `docs/vision.md`.
+- Redigera filer med svenska tecken via Edit/Python, **aldrig PowerShell Get/Set-Content**
+  (PS 5.1 läser som ANSI och förstör å/ä/ö).
 - **Fas 6** – drift oberoende av egen dator (upplägg A, se beslutsloggen 2026-11-22):
   GitHub Actions + Parquet i objektlagring + DuckDB, dbt för transformationer/tester,
   MLflow, champion/challenger, Pages-dashboard

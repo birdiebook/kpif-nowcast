@@ -4,7 +4,7 @@ Nowcasting Swedish inflation (KPIF): predicting next month's figure before
 Statistics Sweden (SCB) publishes it, and benchmarking it against naive baselines
 and the Riksbank's own forecasts.
 
-> **Status: learning project, work in progress.**
+> **Status: learning project, work in progress.** Vision (Swedish): [`docs/vision.md`](docs/vision.md).
 
 ## Why
 

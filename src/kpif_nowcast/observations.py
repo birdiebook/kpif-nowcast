@@ -27,20 +27,11 @@ import pandas as pd
 PATH = Path(__file__).resolve().parents[2] / "data" / "observations.parquet"
 COLUMNS = ["series", "period", "value", "known_from", "source", "fetched_at"]
 
-# Days after the end of the period until the figure is typically published.
-# Chosen on the late side (conservative); see docs/datakallor.md.
-PUBLICATION_LAG_DAYS = {
-    "kpif_index": 15,  # ~12-15th of next month
-    "kpif_yy": 15,
-    "aku_unemp_nsa": 25,  # LFS ~20 days
-    "aku_unemp_sa": 25,
-    "gdp_ind_yy": 35,  # GDP indicator ~29 days
-    "kix": 1,  # daily series, monthly mean
-    "policy_rate": 1,
-    "brent_sek": 1,
-    "ki_services": 3,  # NIER survey, end of the survey month
-    "ki_households_infl": 3,
-}
+def lag_days(series: str) -> int:
+    """Publication lag (days after period end) from the data catalog."""
+    from kpif_nowcast.catalog import by_key
+
+    return by_key()[series].lag_days
 
 
 def _empty() -> pd.DataFrame:
@@ -61,7 +52,7 @@ def save(df: pd.DataFrame) -> None:
 
 
 def default_known_from(series: str, periods: pd.PeriodIndex) -> pd.DatetimeIndex:
-    lag = pd.Timedelta(days=PUBLICATION_LAG_DAYS[series])
+    lag = pd.Timedelta(days=lag_days(series))
     return (periods + 1).to_timestamp() - pd.Timedelta(days=1) + lag
 
 
@@ -111,50 +102,28 @@ def as_of(series: str, when: pd.Timestamp | str, table: pd.DataFrame | None = No
 # ---------------------------------------------------------------- fetching
 
 
-def fetch_all() -> pd.DataFrame:
-    """Fetch every monthly series used by the longer-horizon models (one call per source)."""
-    from kpif_nowcast.data import load_kpif
-    from kpif_nowcast.features import fuel_proxy_monthly
-    from kpif_nowcast.sources import konj, riksbank, scb
+def refresh(keys: list[str] | None = None) -> dict[str, str]:
+    """Fetch every catalog series (or `keys`) into the table. One failing source doesn't stop the rest."""
+    from kpif_nowcast.catalog import CATALOG
 
-    out = {}
-    kpif = load_kpif()
-    out["kpif_index"] = kpif["index"]
-    out["kpif_yy"] = kpif["yy_official"]
-
-    aku = scb.fetch_table(
-        "TAB6387",
-        {"Arbetskraftstillh": "ALÖSP", "TypData": "O_DATA,SR_DATA", "Kon": "1+2", "Alder": "tot15-74",
-         "ContentsCode": "*", "Tid": "*"},
-    )
-    for code, name in [("O_DATA", "aku_unemp_nsa"), ("SR_DATA", "aku_unemp_sa")]:
-        a = aku[aku["TypData"] == code]
-        out[name] = pd.Series(a["value"].to_numpy(dtype=float), index=scb.month_to_period(a["Tid"]))
-
-    gdp = scb.fetch_table("TAB443", {"BNPMarknadspris": "BNPM", "ContentsCode": "0000027O", "Tid": "*"})
-    out["gdp_ind_yy"] = pd.Series(gdp["value"].to_numpy(dtype=float), index=scb.month_to_period(gdp["Tid"]))
-
-    for code, name in [("SEKKIX92", "kix"), ("SECBREPOEFF", "policy_rate")]:
-        d = riksbank.fetch_swea(code, "2000-01-01")
-        out[name] = d.groupby(d.index.to_period("M")).mean()
-
-    out["brent_sek"] = fuel_proxy_monthly()
-    # monthly means of daily series: drop the current, incomplete month
-    current = pd.Period(date.today(), "M")
-    for name in ["kix", "policy_rate", "brent_sek"]:
-        out[name] = out[name][out[name].index < current]
-    out["ki_services"] = konj.fetch_balance("Bartjam.px", "BTJA", "202")
-    return pd.DataFrame(out)
-
-
-def refresh() -> None:
-    frame = fetch_all()
-    for name in frame:
-        n = upsert(name, frame[name])
-        print(f"{name:20s} +{n} rows")
+    status = {}
+    for spec in CATALOG:
+        if keys and spec.key not in keys:
+            continue
+        try:
+            values = spec.fetch()
+            values.index = pd.PeriodIndex(values.index, freq="M")
+            n = upsert(spec.key, values)
+            status[spec.key] = f"ok +{n} ({values.index.min()}..{values.index.max()})"
+        except Exception as exc:  # noqa: BLE001 - report and continue
+            status[spec.key] = f"FAILED: {type(exc).__name__}: {str(exc)[:120]}"
+        print(f"{spec.key:24s} {status[spec.key]}")
     t = load()
     print(f"\n{len(t)} rows, {t['series'].nunique()} series; sources: {t['source'].value_counts().to_dict()}")
+    return status
 
 
 if __name__ == "__main__":
-    refresh()
+    import sys
+
+    refresh(sys.argv[1:] or None)
