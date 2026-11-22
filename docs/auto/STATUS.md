@@ -1,20 +1,20 @@
 # Status: autonom körning
 
-**Lås:** orkestrerare 2026-11-22T22:17Z (lokal 2026-11-22 23:17)
+**Lås:** orkestrerare 2026-11-22T22:18Z (lokal 2026-11-22 23:18)
 **Start:** 2026-11-22 22:55
-**Senaste heartbeat:** 2026-11-22 23:17
+**Senaste heartbeat:** 2026-11-22 23:18
 **Global varianttotal:** 14/50 (J3:s screening oräknad)
 **Deadline:** måndag 2026-11-23 22:00
 **Läge:** KÖR. J2 och J6 startar.
 
-**Källås (hämtning):** Arbetsförmedlingen: J6
+**Källås (hämtning):** inga
 
 ## Jobb
 
 | Jobb | Gren | Worktree | Steg | Varianter | Senaste SHA | Resultat | BLOCKED |
 |---|---|---|---|---|---|---|---|
 | J2 Elmodellen | auto/j2-el | C:\dev\kpif-auto\j2 | KLAR (pushad, tag auto/j2-done) | 5/10 | 438480b | V2 j2_el_dev MAE 0,243 vs comp_fuel 0,316, Holm p 0,014 (5/50): klarade urvalsskärmen; vs rb_updated p 0,57 | – |
-| J6 Arbetsförmedlingen | auto/j6-af | C:\dev\kpif-auto\j6 | hämtare klar, laddar observations | – | – | – | – |
+| J6 Arbetsförmedlingen | auto/j6-af | C:\dev\kpif-auto\j6 | KLAR (pushad) | – | 4eb95fe | 3 serier (varsel 1992–, inskrivna/öppet 1996–), kvalitetskontroll OK, ej uppladdat till Claude Data | – |
 | J1 Hybrid | auto/j1-hybrid | C:\dev\kpif-auto\j1 | KLAR (pushad) | 8/10 | 327c91e | Klarade INTE skärmen. Bäst C1 50/50 rb_updated+j2: MAE 0,217 vs 0,256, p1 0,015, Holm 0,117 (13/50) | – |
 | J3 Katalogtest | auto/j3-katalog | C:\dev\kpif-auto\j3 | KLAR (pushad) | 1/10 (+screening) | 1372e0e | Inget håller: 0/45 serier överlever BH på h=1/3/12; kombination p 0,43 (14/50) | – |
 | J4 Detaljnivå | auto/j4-detalj | – | ledig plats | 0/10 | – | – | – |
@@ -32,3 +32,4 @@
 - 11-22 23:11 J1 KLAR: negativt (Holm 0,117). Ingen frysning. J3 startar med bas rb_updated från origin/main.
 - 11-22 23:14 J3 KLAR: negativt, ingen serie behålls. Nästa: J6 (Arbetsförmedlingen).
 - 11-22 23:17 J6: AF-hämtare (egen xlsx-läsare, ingen ny dependency). Källås AF.
+- 11-22 23:18 J6 KLAR. Källås släppt. Nästa: J4 (detaljnivå).
