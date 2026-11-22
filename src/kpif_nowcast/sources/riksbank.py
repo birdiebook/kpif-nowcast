@@ -1,0 +1,45 @@
+"""Sveriges Riksbank APIs (no key needed; free re-use).
+
+Without a key: 5 calls/min, 1000/day.
+"""
+
+from __future__ import annotations
+
+import json
+from datetime import date
+from pathlib import Path
+
+import pandas as pd
+import requests
+
+FORECAST_URL = "https://api.riksbank.se/monetary_policy_data/v1/forecasts"
+RAW_DIR = Path(__file__).resolve().parents[3] / "data" / "raw"
+
+
+def fetch_forecasts(series: str = "SEMCPIFNAYNA") -> pd.DataFrame:
+    """All forecast vintages for one series, long format.
+
+    Columns: policy_round, cutoff (last outcome month), published (date), month, value.
+    Each vintage contains outcomes up to `cutoff` followed by the forecast path.
+    """
+    resp = requests.get(FORECAST_URL, params={"series": series}, timeout=60)
+    resp.raise_for_status()
+    payload = resp.json()
+
+    RAW_DIR.mkdir(parents=True, exist_ok=True)
+    (RAW_DIR / f"riksbank_{series}_{date.today():%Y%m%d}.json").write_text(json.dumps(payload), encoding="utf-8")
+
+    rows = []
+    for vintage in payload["data"][0]["vintages"]:
+        meta = vintage["metadata"]
+        for obs in vintage["observations"]:
+            rows.append(
+                {
+                    "policy_round": meta["policy_round"],
+                    "cutoff": pd.Period(meta["forecast_cutoff_date"][:7], freq="M"),
+                    "published": pd.Timestamp(meta["policy_round_end_dtm"][:10]),
+                    "month": pd.Period(obs["dt"][:7], freq="M"),
+                    "value": obs["value"],
+                }
+            )
+    return pd.DataFrame(rows)

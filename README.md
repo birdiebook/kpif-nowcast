@@ -40,4 +40,21 @@ data/               not committed – fetched by scripts
 
 ## Results
 
-Coming. Every forecast will be logged *before* the official release.
+**Phase 2: baselines (2015–2026, 141 months, KPIF y/y one month ahead)**
+
+| Forecast | MAE (pp) |
+|---|---|
+| Riksbank (latest forecast available at our deadline) | 0.32 |
+| Seasonal pattern + 12-month trend | 0.34 |
+| Naive (same y/y as last month) | 0.38 |
+
+A simple seasonal baseline is already close to the Riksbank over the full period,
+but clearly worse in 2024–2026. Next: electricity and fuel prices.
+
+Run it yourself:
+
+```
+python -m venv .venv && .venv/Scripts/pip install -e .
+python -m kpif_nowcast.data       # fetch data
+python -m kpif_nowcast.backtest   # scores + chart in outputs/
+```

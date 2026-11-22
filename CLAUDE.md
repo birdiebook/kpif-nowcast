@@ -33,7 +33,8 @@ quizfrågor eller pedagogiska övningar om Johannes inte ber om det.
 
 - **Fas 0** – grundupplägg ✅
 - **Fas 1** – kartlägg datakällor → `docs/datakallor.md` ✅
-- **Fas 2** – KPIF-historik, naiva baslinjer, tidsbaserad backtest
+- **Fas 2** – KPIF-historik, naiva baslinjer, tidsbaserad backtest ✅
+  (`python -m kpif_nowcast.data` hämtar, `python -m kpif_nowcast.backtest` utvärderar)
 - **Fas 3** – första modellen: el och drivmedel
 - **Fas 4** – prognos per komponent (energi, livsmedel, varor, tjänster) viktad med SCB:s vikter
 - **Fas 5** – längre horisont (3–12 mån): arbetslöshet, löner, BNP, krona
