@@ -237,3 +237,38 @@ ger samma siffror (comp_fuel_el MAE 0,375).
 (andel elavtal) och TAB3950 (elnätspriser). Publiceringsfördröjning och revideringar står i
 `docs/datakallor.md`. Två fällor: TAB3571 har reviderats i efterhand (2022, 2023–24) och
 TAB3950 publiceras först i maj, alltså efter januari-KPI.
+
+## 2026-11-22 – Ny ribba: "Riksbanken + senaste miss" (rb_updated), och regler för utvärdering
+**Vad:** Ny huvudjämförelse `rb_updated` = Riksbankens prognos för t + dess kända miss för t-1
+(KPIF utfall t-1 − Riksbankens prognos för t-1, samma prognosomgång). Gäller när prognosomgångens
+cutoff ligger före t-1. Annars är den lika med Riksbankens prognos. Ingen parameter skattas.
+Alla modeller jämförs mot den med ett enda Diebold-Mariano-test (absolutfel, Newey-West med
+lag = ⌊4·(n/100)^(2/9)⌋, HLN-korrigering, t-fördelning). Varje körning loggas i
+`experiments/runs/`.
+**Varför:** Riksbankens prognos är oftast 2–3 månader gammal vid vår deadline. Inflationen är
+trög, så förra månadens miss säger mycket om denna månads. Det är en ärligare ribba än den rena
+prognosen. Felet växer med prognosens ålder: MAE 0,19 vid 1 månad, 0,30 vid 2 och 0,46 vid 3.
+Med rb_updated blir det 0,19, 0,25 respektive 0,33.
+**Resultat (körning `rb_updated_baseline`):**
+
+| Modell | MAE 2015–26 (n=141) | DM p | MAE 2024–26 (n=34) | DM p |
+|---|---|---|---|---|
+| rb_updated | 0,256 | – | 0,267 | – |
+| Riksbanken | 0,320 | 0,005 | 0,326 | 0,06 |
+| Komponentmodell (drivmedel / drivmedel+el) | 0,316 | 0,03 | 0,375 | 0,008 |
+| Naiv (samma årstakt) | 0,376 | <0,001 | 0,400 | 0,02 |
+
+Minsta skillnad som går att upptäcka (5 %, 80 % styrka): ca 0,06–0,08 pe på 2015–26 och
+0,08–0,15 pe på 2024–26.
+**Regler från och med nu:**
+- Modellval görs på **längsta möjliga sample** (i dag 2015–2026).
+- 2024–2026 är **använd**. Där har ~50 varianter redan testats, så perioden rapporteras men får
+  inte avgöra modellval.
+- Hypotes och förväntat tecken skrivs här, i fältet "Min gissning innan", **före** varje körning.
+- `tests/test_information_set.py` är ett *indexeringstest*: det klipper data vid deadline och kräver
+  samma prognos som backtesten. Det är inget läckagetest. Reviderade siffror (vintage-läckage)
+  fångas inte.
+**Min gissning innan / vad som faktiskt hände:** Gissning: rb_updated slår Riksbanken med ~0,06 pe.
+Utfall: 0,064 (2015–26) och 0,059 (2024–26). Ingen egen modell är i närheten av rb_updated.
+**Öppna frågor:** Komponentmodellen med el kan bara utvärderas från 2024. Längre elhistorik behövs
+för att modellvalet ska kunna göras på 2015–2026.
