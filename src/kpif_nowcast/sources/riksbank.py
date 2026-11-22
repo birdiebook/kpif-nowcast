@@ -6,6 +6,7 @@ Without a key: 5 calls/min, 1000/day.
 from __future__ import annotations
 
 import json
+import time
 from datetime import date
 from pathlib import Path
 
@@ -18,7 +19,11 @@ SWEA_URL = "https://api.riksbank.se/swea/v1/Observations/{series}/{start}"
 
 def fetch_swea(series: str = "SEKUSDPMI", start: str = "2000-01-01") -> pd.Series:
     """Daily SWEA series, e.g. SEKUSDPMI (SEK per USD), SEKEURPMI, SEKKIX92."""
-    resp = requests.get(SWEA_URL.format(series=series, start=start), timeout=60)
+    for attempt in range(6):  # without a key: 5 calls/min -> back off on 429
+        resp = requests.get(SWEA_URL.format(series=series, start=start), timeout=60)
+        if resp.status_code != 429:
+            break
+        time.sleep(15 * (attempt + 1))
     resp.raise_for_status()
     payload = resp.json()
     RAW_DIR.mkdir(parents=True, exist_ok=True)
