@@ -1,11 +1,37 @@
+# STOP
+
+**Körningen är klar (2026-11-22 23:31).** Omstartsuppgiften avslutar direkt när den ser STOP.
+Ingenting är mergat; main är orörd (a8cd686). Globalt varianttotal: **23/50**. Alla p-värden är
+urvalsevidens från samma urval 2015–2026; inget här betyder att en modell slår rb_updated.
+
+## Slutrapport
+| Jobb | Resultat (urvalsevidens) | p (global total 23/50) | Gren |
+|---|---|---|---|
+| J2 Elmodellen | **V2 j2_el_dev klarade urvalsskärmen** mot comp_fuel: MAE 0,243 mot 0,316. Mot rb_updated 0,256: ingen skillnad. Fryst som skuggprognos från 2026-12 (tag auto/j2-done). | Holm 0,014 (5 var.); mot rb_updated p 0,57 | [https://github.com/birdiebook/kpif-nowcast/compare/main...auto/j2-el?expand=1](https://github.com/birdiebook/kpif-nowcast/compare/main...auto/j2-el?expand=1) |
+| J1 Hybrid | Klarade **inte** skärmen. Bäst 50/50 rb_updated + J2: MAE 0,217 mot 0,256. Förslag: följ live. | ensidigt 0,015, Holm 0,117 (8 var.) | [https://github.com/birdiebook/kpif-nowcast/compare/main...auto/j1-hybrid?expand=1](https://github.com/birdiebook/kpif-nowcast/compare/main...auto/j1-hybrid?expand=1) (beror på j2) |
+| J3 Katalogtest | Inget håller: 0 av 45 serier överlever BH på h=1/3/12. | bästa q 0,98–1,00; kombination p 0,43 | [https://github.com/birdiebook/kpif-nowcast/compare/main...auto/j3-katalog?expand=1](https://github.com/birdiebook/kpif-nowcast/compare/main...auto/j3-katalog?expand=1) |
+| J4 Detaljnivå | D2 klarade skärmen mot comp_fuel (0,243) men **obekräftad (revisionsläckage möjligt)**, och den är lika med J2 V2. Bara detaljnivå ger sämre (0,335). | Holm 0,010 (3 var.) | [https://github.com/birdiebook/kpif-nowcast/compare/main...auto/j4-detalj?expand=1](https://github.com/birdiebook/kpif-nowcast/compare/main...auto/j4-detalj?expand=1) |
+| J5 Osäkerhet | EWMA-band (U4) träff 52/80/89 %, klarade ±5 pe; dagens metod 40/62/77 %. Förslag till forecast.py, inte aktiverat. | – (6 var.) | [https://github.com/birdiebook/kpif-nowcast/compare/main...auto/j5-osakerhet?expand=1](https://github.com/birdiebook/kpif-nowcast/compare/main...auto/j5-osakerhet?expand=1) |
+| J6 Arbetsförmedlingen | Varsel 1992–, inskrivna/öppet arbetslösa 1996–, kvalitetskontroll OK. Inte uppladdat till Claude Data. | – | [https://github.com/birdiebook/kpif-nowcast/compare/main...auto/j6-af?expand=1](https://github.com/birdiebook/kpif-nowcast/compare/main...auto/j6-af?expand=1) |
+| J7 AI-indikator | Indikator och analys (docs/ai-indikator.md). "AI"-söktermen har mätbrott 2025 → maskininlärning som huvudserie. | – | [https://github.com/birdiebook/kpif-nowcast/compare/main...auto/j7-ai?expand=1](https://github.com/birdiebook/kpif-nowcast/compare/main...auto/j7-ai?expand=1) |
+
+**Oberoende läckagegranskning (J2/J1):** inget läckage hittat. Robusthet utan 2022–23 (n = 117): J2 0,209 mot
+comp_fuel 0,274 (p 0,006); 50/50 0,197 mot rb_updated 0,218 (ensidigt p 0,043). Vinsten är alltså inte bara energikrisen.
+Förbehåll: J2 V2 var bäst av 5 varianter (lätt smickrad), och komponentgrupperna i TAB6628 är bakåträknade.
+
+**Rekommenderad mergeordning:** J2 → J1 → övriga (J3–J7 är oberoende av varandra). Byte av huvudmodell beslutar Johannes.
+**Att göra själv:** ta bort/stäng av kpif-auto-restart (sparades utan auto-läge), ladda upp J6/J7 till dashboarden efter merge.
+
+---
+
 # Status: autonom körning
 
-**Lås:** orkestrerare 2026-11-22T22:28Z (lokal 2026-11-22 23:28)
+**Lås:** orkestrerare 2026-11-22T22:31Z (lokal 2026-11-22 23:31)
 **Start:** 2026-11-22 22:55
-**Senaste heartbeat:** 2026-11-22 23:28
+**Senaste heartbeat:** 2026-11-22 23:31
 **Global varianttotal:** 23/50 (J3:s screening oräknad)
 **Deadline:** måndag 2026-11-23 22:00
-**Läge:** KÖR. J2 och J6 startar.
+**Läge:** STOP – klar
 
 **Källås (hämtning):** inga
 
@@ -39,3 +65,4 @@
 - 11-22 23:23 J5 KLAR: U4 EWMA vald (förslag, ej aktiverat). Nästa: J7.
 - 11-22 23:23 J7 startad. Källås JobTech/SCB/Eurostat.
 - 11-22 23:28 J7 KLAR. Källås släppt. Alla jobb klara; skriver slutrapport.
+- 11-22 23:31 Slutrapport skriven, STOP. Läckagegranskning J2/J1: inget hittat; robust utan 2022–23.
