@@ -182,6 +182,17 @@ def main() -> None:
                                                  for p, v in s.items()]
     _write("ai", pd.DataFrame(ai), "AI and productivity series")
 
+    # Swedish AI indicator (J7): job ads per occupation field, firms' AI use, productivity by industry
+    try:
+        import json as _json
+
+        from kpif_nowcast import j7_ai
+
+        approved = _json.loads((ROOT / "docs" / "auto" / "j7" / "approved_terms.json").read_text(encoding="utf-8"))
+        _write("ai_indicator", j7_ai.tidy_rows(j7_ai.build(approved)), "AI indicator, method in docs/ai-indikator.md")
+    except Exception as exc:  # noqa: BLE001 - the rest of the dashboard must not depend on it
+        print(f"  ai_indicator skipped: {type(exc).__name__}: {exc}")
+
     print("\nTop pressure now:")
     print(ov.dropna(subset=["pressure"]).sort_values("pressure", ascending=False)[["key", "period", "value", "pressure"]]
           .head(8).round(2).to_string(index=False))

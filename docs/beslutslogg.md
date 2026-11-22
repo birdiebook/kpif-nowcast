@@ -272,3 +272,11 @@ Minsta skillnad som går att upptäcka (5 %, 80 % styrka): ca 0,06–0,08 pe på
 Utfall: 0,064 (2015–26) och 0,059 (2024–26). Ingen egen modell är i närheten av rb_updated.
 **Öppna frågor:** Komponentmodellen med el kan bara utvärderas från 2024. Längre elhistorik behövs
 för att modellvalet ska kunna göras på 2015–2026.
+
+## 2026-11-22 – J7 Svensk AI-indikator
+**Vad:** AI-spridning = z-snitt av maskininlärningsandelen i platsannonser (JobTech) och andelen företag som
+använder AI (Eurostat). Produktivitet per bransch (Eurostat nama_10_lp_a21) visas bredvid som utfall.
+**Val efter resultat:** huvudserien skulle enligt planen vara "AI" (bredaste godkända termen), men den har ett
+mätbrott 2025 i JobTech:s matchning (×10 på ett år). Därför används "maskininlärning". **Resultat:** spridningen
+är 2025 den högsta i perioden; Sverige före EU i företagens AI-användning (35 mot 20 %); produktiviteten i
+svensk IT och kommunikation +28 % 2023→2025 (EU +5 %), utan orsaksslutsats. Detaljer: [docs/ai-indikator.md](ai-indikator.md).
