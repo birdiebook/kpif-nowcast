@@ -13,32 +13,26 @@ misslyckande för projektet.
 Johannes bakgrund: BI och data engineering. Han kan SQL, pipelines och datakvalitet
 väl – förklara inte det. Förklara istället ML-, statistik- och prognoskoncept.
 
-## Lärregler (gäller alltid)
+## Arbetsregler
 
-1. **Förklara varje modelleringsval** kort och i klartext: vad, varför och vilket
-   alternativ som valdes bort. Ingen matematik om den inte efterfrågas – intuition först.
-2. **Stanna vid beslutspunkter.** Val som påverkar resultatet (uppdelning i tränings-
-   och testdata, utvärderingsmått, vilka variabler som får användas, prognoshorisont)
-   fattar Johannes. Presentera alternativen och en rekommendation, kör inte vidare tyst.
-3. **Be om en gissning först.** Innan en backtest eller jämförelse körs: fråga vad
-   Johannes tror att resultatet blir. Jämför efteråt.
-4. **Flagga läckagerisk direkt.** All data måste vara sådan som fanns tillgänglig vid
-   prognostidpunkten. Var särskilt vaksam på reviderade siffror, publiceringsfördröjning,
-   och features beräknade över hela perioden (t.ex. normalisering på all data).
-5. **Jämför alltid mot baslinje.** Inget resultat rapporteras utan jämförelse mot
-   naiva baslinjer och, där det finns, Riksbankens prognos.
-6. **Var ärlig om osäkerhet.** Säg när en förbättring kan vara slump (få observationer!),
-   och när något inte gick att verifiera.
-7. **Förhör efter varje fas.** När en fas är klar: ställ 3–5 frågor som en granskare
-   eller intervjuare skulle ställa. Hjälp Johannes formulera svaren i `docs/beslutslogg.md`
-   – men med hans ord, skriv inte åt honom.
-8. **Planterade fel** (när Johannes ber om det): bygg in ett realistiskt fel, t.ex.
-   läckage, utan att säga var, och låt honom hitta det.
+Håll det enkelt och fokusera på det som gör skillnad för resultatet. Inga
+quizfrågor eller pedagogiska övningar om Johannes inte ber om det.
+
+1. **Förklara kort** de modelleringsval som spelar roll: vad och varför, i klartext.
+2. **Stanna bara vid verkliga beslutspunkter** (uppdelning i tränings-/testdata,
+   utvärderingsmått, prognoshorisont). Ge en rekommendation, inte en meny.
+3. **Flagga läckagerisk direkt.** All data måste vara sådan som fanns tillgänglig vid
+   prognostidpunkten: publiceringsfördröjning, reviderade siffror, features beräknade
+   över hela perioden.
+4. **Jämför alltid mot baslinje** – naiva baslinjer och, där det finns, Riksbankens prognos.
+5. **Var ärlig om osäkerhet.** Säg när en förbättring kan vara slump, och när något
+   inte gick att verifiera.
+6. **Beslutsloggen** (`docs/beslutslogg.md`) uppdateras kort vid viktiga val.
 
 ## Faser
 
 - **Fas 0** – grundupplägg ✅
-- **Fas 1** – kartlägg datakällor → `docs/datakallor.md`
+- **Fas 1** – kartlägg datakällor → `docs/datakallor.md` ✅
 - **Fas 2** – KPIF-historik, naiva baslinjer, tidsbaserad backtest
 - **Fas 3** – första modellen: el och drivmedel
 - **Fas 4** – prognos per komponent (energi, livsmedel, varor, tjänster) viktad med SCB:s vikter
