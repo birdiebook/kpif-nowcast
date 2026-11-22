@@ -13,5 +13,6 @@ J3:s screening räknas inte.
 | 15–17 | J4 | D1 detail_base, D2 detail_energy, D3 detail_energy_easter (TAB6613 revised) | 6ecd5cf | | | | | |
 | (resultat 15–17) | J4 | D1 0,335 · D2 0,243 · D3 0,243 vs comp_fuel 0,316 | 6ecd5cf | se rad | 141 | 0,078 · 0,003 · 0,003 | 0,078 · 0,010 · 0,010 | 20261122T222015Z_j4_detail |
 | 18–23 | J5 | U1 abs_all, U2 abs_36, U3 signed_all, U4 ewma, U5 scaled_energy, U6 qreg_energy | 767f2e4 | | | | | |
+| (resultat 18–23) | J5 | träff 50/80/90: U1 40/62/77 · U2 49/77/89 · U3 40/63/73 · U4 52/80/89 · U5 40/68/76 · U6 35/63/77 | se rad | pinball U4 0,085 | 142 | – | – | 20261122 j5_intervals |
 
 **Löpande total: 23/50**
