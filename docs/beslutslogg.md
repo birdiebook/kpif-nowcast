@@ -94,3 +94,22 @@ från eget 12-månaderssnitt. Enkätmånad t-1 används för prognos av t.
 samma information. Skillnaden mellan varianterna är brus, och att välja den som råkade vinna
 på testperioden vore överanpassning. Huvudmodellen förblir komponentmodell med drivmedel + el.
 Prisplanerna kan vara mer värda för längre horisonter (fas 5).
+
+## 2026-11-22 – Fas 4b: skattekalender – hjälper vid stora händelser, inte i snitt
+**Vad:** Skatteeffekt per månad = KPIF m/m − KPIF med konstant skatt (KPIF-KS, SCB TAB6592).
+Skatteändringar beslutas i förväg, så effekten för månad t räknas som känd vid deadline
+(antagande: full genomslag, som i SCB:s KS-metod). Historiken rensas från skatteeffekter,
+modellen körs på rensade data och månadens kända skatteeffekt läggs tillbaka.
+Fördelning mellan energi och övrigt via KPIF-XE-KS (finns från ~2020), annars efter vikt.
+**Verifierat mot källor:** matmomsen halverades 12 → 6 % från 1 april 2026 (regeringen, SCB:
+livsmedel −5,5 % i april). Sänkt skatt på bensin/diesel juli 2026 (SCB, TV4/TT). Samma
+månad sänktes också kollektivtrafik- och förskoleavgifter, men det är avgifter och syns inte i KS.
+**Resultat, MAE:** 2024–2026: 0,375 → 0,388. 2015–2026: 0,316 → 0,327.
+April 2026 går från 0,75 till 0,03 i fel, men övriga månader blir något sämre.
+**Varför sämre i snitt (hypoteser):** de återkommande små skatteändringarna (januari +0,1–0,3,
+juli −0,2) fångas redan av säsongsmönstret, så rensningen tillför brus. Genomslaget är inte
+alltid fullt eller omedelbart. Och de största kvarvarande missarna (jan 2025, mars 2026)
+har ingen skatteeffekt alls. De är el, nätavgifter och annat.
+**Beslut:** Skattekalendern ingår inte i huvudmodellen. Vid skarpa prognoser görs en
+**manuell justering för stora, beslutade engångshändelser** (t.ex. momsändringar), vilket
+också är så professionella prognosmakare arbetar.

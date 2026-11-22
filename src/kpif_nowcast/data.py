@@ -54,6 +54,47 @@ def build_components() -> pd.DataFrame:
     ]
 
 
+def build_tax_effects() -> pd.DataFrame:
+    """Mechanical effect of tax/subsidy changes on KPIF's monthly change, in pp.
+
+    tax_total  = KPIF m/m - KPIF-KS m/m (KPIF at constant taxes, TAB6592)
+    tax_xe     = KPIF-XE m/m - KPIF-XE-KS m/m (excl. energy; TAB6593 vs TAB6746)
+    Tax changes are decided in advance (budget), so the mechanical effect for month t
+    is treated as known at the forecast deadline. ASSUMPTION: full pass-through, as in SCB's KS method.
+    """
+    ks = scb.fetch_table("TAB6592", {"ContentsCode": "000007ZT", "Tid": "*"})
+    xe = scb.fetch_table("TAB6593", {"ContentsCode": "*", "Tid": "*"})
+    xe_ks = scb.fetch_table("TAB6746", {"Analysmatt": "KPIF-XE-KS", "ContentsCode": "000008F6", "Tid": "*"})
+
+    def series(df: pd.DataFrame, code_col: str | None = None, code: str | None = None) -> pd.Series:
+        if code_col:
+            df = df[df[code_col] == code]
+        s = pd.Series(df["value"].to_numpy(dtype=float), index=scb.month_to_period(df["Tid"]))
+        return s.sort_index()
+
+    kpif = load_kpif()["index"]
+    xe_index_code = xe["ContentsCode"].iloc[0]  # first content code is the index
+    out = pd.DataFrame(
+        {
+            "kpif": kpif,
+            "kpif_ks": series(ks),
+            "kpif_xe": series(xe, "ContentsCode", xe_index_code),
+            "kpif_xe_ks": series(xe_ks),
+        }
+    )
+    mm = lambda s: (s / s.shift(1) - 1) * 100  # noqa: E731
+    out["tax_total"] = mm(out["kpif"]) - mm(out["kpif_ks"])
+    out["tax_xe_own"] = mm(out["kpif_xe"]) - mm(out["kpif_xe_ks"])
+    out.index.name = "month"
+    return out
+
+
+def load_tax_effects() -> pd.DataFrame:
+    df = pd.read_csv(PROCESSED_DIR / "tax_effects.csv")
+    df["month"] = pd.PeriodIndex(df["month"], freq="M")
+    return df.set_index("month")
+
+
 def load_components() -> pd.DataFrame:
     df = pd.read_csv(PROCESSED_DIR / "components.csv")
     df["month"] = pd.PeriodIndex(df["month"], freq="M")
@@ -71,6 +112,7 @@ def refresh() -> None:
     comp = build_components()
     comp.to_csv(PROCESSED_DIR / "components.csv", index=False)
     print(f"Components: {sorted(comp['component'].unique())}, {comp['month'].min()}..{comp['month'].max()}")
+    build_tax_effects().to_csv(PROCESSED_DIR / "tax_effects.csv")
     rb = build_riksbank_forecasts()
     rb.to_csv(PROCESSED_DIR / "riksbank_kpif_forecasts.csv", index=False)
     print(f"KPIF: {kpif.index.min()}..{kpif.index.max()} ({len(kpif)} months)")

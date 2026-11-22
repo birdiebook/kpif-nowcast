@@ -82,6 +82,11 @@ Adding NIER business survey price plans (services, grocery and specialty retail)
 meaningful difference one month ahead (0.375 → 0.369, within noise), so they're left out of
 the main model for now.
 
+A tax-change calendar (from SCB's CPIF at constant taxes) nails the April 2026 food VAT cut
+(error 0.75 → 0.03 pp) but makes the average slightly worse (0.375 → 0.388): routine tax
+changes are already in the seasonal pattern. Large one-off policy changes will instead be
+handled as a manual adjustment in live forecasts.
+
 Electricity prices: [Elpriset just nu.se](https://www.elprisetjustnu.se) (ENTSO-E data).
 Oil: FRED. Exchange rates and forecasts: Sveriges Riksbank. CPI: Statistics Sweden (CC0).
 

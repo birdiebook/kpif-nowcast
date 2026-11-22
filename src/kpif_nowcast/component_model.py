@@ -53,10 +53,37 @@ def fit_correction(resid: pd.Series, features: pd.DataFrame, spec: Correction) -
     return res
 
 
+def allocate_tax(components: pd.DataFrame, tax: pd.DataFrame) -> pd.DataFrame:
+    """Split the monthly tax effect on KPIF (pp) across components.
+
+    Energy gets tax_total minus the non-energy part (from KPIF-XE vs KPIF-XE-KS) when that
+    split exists (~2020 onwards); the non-energy part (or the whole effect, earlier) is spread
+    across components by weight. Rough, but the total is exact, which is what the forecast adds back.
+    """
+    w = components.pivot(index="month", columns="component", values="weight") / 1000
+    total = tax["tax_total"].reindex(w.index).fillna(0)
+    nonenergy = (tax["tax_xe_own"].reindex(w.index) * (1 - w["energy"])).fillna(total)
+    energy_part = total - nonenergy
+    others = w.drop(columns="energy")
+    alloc = others.div(others.sum(axis=1), axis=0).mul(nonenergy, axis=0)
+    alloc["energy"] = energy_part + 0.0
+    has_split = tax["tax_xe_own"].reindex(w.index).notna()
+    # before the split exists: spread everything by weight, energy included
+    alloc.loc[~has_split] = w.loc[~has_split].mul(total[~has_split], axis=0)
+    return alloc[w.columns]
+
+
 def component_forecast(
-    index: pd.Series, components: pd.DataFrame, features: pd.DataFrame, corrections: dict[str, Correction]
+    index: pd.Series,
+    components: pd.DataFrame,
+    features: pd.DataFrame,
+    corrections: dict[str, Correction],
+    tax: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
+    """If `tax` is given: model tax-cleaned contributions, then add back month t's known tax effect."""
     effects = components.pivot(index="month", columns="component", values="effect_month")
+    if tax is not None:
+        effects = effects - allocate_tax(components, tax).reindex(effects.index).fillna(0)
     effects = effects.reindex(pd.period_range(effects.index.min(), effects.index.max() + 1, freq="M"))
     base = effects.apply(seasonal_trend_additive)  # includes next (unpublished) month
 
@@ -72,6 +99,9 @@ def component_forecast(
     fc = fc.reindex(valid)
     out = fc.add_prefix("fc_")
     out["mm_hat_pp"] = fc.sum(axis=1)
+    if tax is not None:
+        out["tax_effect"] = tax["tax_total"].reindex(out.index).fillna(0)
+        out["mm_hat_pp"] += out["tax_effect"]
     out["yy_hat"] = yy_from_mm(index, (out["mm_hat_pp"] / 100).reindex(index.index)).reindex(out.index)
     return out.join(pd.concat(coefs, axis=1)) if coefs else out
 
