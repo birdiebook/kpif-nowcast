@@ -272,3 +272,6 @@ Minsta skillnad som går att upptäcka (5 %, 80 % styrka): ca 0,06–0,08 pe på
 Utfall: 0,064 (2015–26) och 0,059 (2024–26). Ingen egen modell är i närheten av rb_updated.
 **Öppna frågor:** Komponentmodellen med el kan bara utvärderas från 2024. Längre elhistorik behövs
 för att modellvalet ska kunna göras på 2015–2026.
+
+## 2026-11-22 – J5 Prognosintervall (förregistrering)
+Hypotes, gissning och metoder U1–U6: [docs/auto/j5/hypotes.md](auto/j5/hypotes.md).
