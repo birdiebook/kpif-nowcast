@@ -1,13 +1,13 @@
 # Status: autonom körning
 
-**Lås:** orkestrerare 2026-11-22T22:23Z (lokal 2026-11-22 23:23)
+**Lås:** orkestrerare 2026-11-22T22:28Z (lokal 2026-11-22 23:28)
 **Start:** 2026-11-22 22:55
-**Senaste heartbeat:** 2026-11-22 23:23
+**Senaste heartbeat:** 2026-11-22 23:28
 **Global varianttotal:** 23/50 (J3:s screening oräknad)
 **Deadline:** måndag 2026-11-23 22:00
 **Läge:** KÖR. J2 och J6 startar.
 
-**Källås (hämtning):** JobTech, SCB, Eurostat: J7
+**Källås (hämtning):** inga
 
 ## Jobb
 
@@ -19,7 +19,7 @@
 | J3 Katalogtest | auto/j3-katalog | C:\dev\kpif-auto\j3 | KLAR (pushad) | 1/10 (+screening) | 1372e0e | Inget håller: 0/45 serier överlever BH på h=1/3/12; kombination p 0,43 (14/50) | – |
 | J4 Detaljnivå | auto/j4-detalj | C:\dev\kpif-auto\j4 | KLAR (pushad) | 3/10 | 8eb63d3 | D2 0,243 vs comp_fuel 0,316, Holm 0,010 (17/50): klarade skärmen, OBEKRÄFTAD (revisionsläckage möjligt); = J2 V2 | – |
 | J5 Osäkerhet | auto/j5-osakerhet | C:\dev\kpif-auto\j5 | KLAR (pushad) | 6/10 | de6d6ad | U4 EWMA 52/80/89 % (±5 OK), U2 rullande 36 OK; dagens metod 40/62/77 % (23/50) | – |
-| J7 AI-indikator | auto/j7-ai | C:\dev\kpif-auto\j7 | utforskar API:er | – | – | – | – |
+| J7 AI-indikator | auto/j7-ai | C:\dev\kpif-auto\j7 | KLAR (pushad) | – | dfaca1f | Indikator klar; 'AI'-termen har mätbrott 2025 → huvudserie maskininlärning; SE 35 % vs EU 20 % AI-företag | – |
 
 ## Logg
 - 2026-11-22 22:55 Statusgren och worktree skapade från origin/main @ a8cd686. BRIEF.md sparad.
@@ -38,3 +38,4 @@
 - 11-22 23:21 J5 förregistrerad (U1–U6).
 - 11-22 23:23 J5 KLAR: U4 EWMA vald (förslag, ej aktiverat). Nästa: J7.
 - 11-22 23:23 J7 startad. Källås JobTech/SCB/Eurostat.
+- 11-22 23:28 J7 KLAR. Källås släppt. Alla jobb klara; skriver slutrapport.
