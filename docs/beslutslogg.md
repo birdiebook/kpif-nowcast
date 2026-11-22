@@ -275,3 +275,8 @@ för att modellvalet ska kunna göras på 2015–2026.
 
 ## 2026-11-22 – J5 Prognosintervall (förregistrering)
 Hypotes, gissning och metoder U1–U6: [docs/auto/j5/hypotes.md](auto/j5/hypotes.md).
+**Resultat (urvalsevidens, 23/50 varianter):** EWMA-normaliserade band (U4) gav träffgrad 52/80/89 % och lägst
+pinball; rullande 36 mån (U2) klarade också ±5 pe. Expanderande metoder, som dagens, undertäcker (40/62/77 %).
+Att skala med elprisets svängning hjälpte inte; det är felnivåns skift över tid som spelar roll. I oroliga
+månader är banden fortfarande för smala. Förslag till forecast.py finns men är inte aktiverat.
+Detaljer: [docs/auto/j5/resultat.md](auto/j5/resultat.md).
