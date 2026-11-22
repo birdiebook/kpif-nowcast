@@ -280,3 +280,6 @@ senaste ≤5 år) MAE 0,243 mot comp_fuel 0,316 på 2015–26, Holm p = 0,014: k
 rb_updated 0,256 är p = 0,57, alltså ingen skillnad. Rå el ger −0,037, så dubbelräkningen var verklig.
 Gissningen innan underskattade effekten (−0,02 till −0,04). V2 fryses som skuggprognos från 2026-12.
 Detaljer: [docs/auto/j2/resultat.md](auto/j2/resultat.md).
+
+## 2026-11-22 – J1 Hybridmodell (förregistrering)
+Hypotes, gissning och exakt variantlista (C1–C4, H1–H4): [docs/auto/j1/hypotes.md](auto/j1/hypotes.md). Bas: auto/j2-done.
