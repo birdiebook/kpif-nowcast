@@ -275,3 +275,6 @@ för att modellvalet ska kunna göras på 2015–2026.
 
 ## 2026-11-22 – J3 Prognostest av datakatalogen (förregistrering)
 Protokoll, gissning och kombinationsregel: [docs/auto/j3/hypotes.md](auto/j3/hypotes.md). Bas rb_updated (h=1), Riksbanken (h=3, 12).
+**Resultat (urvalsevidens, 14/50 varianter):** ingen av 45 serier överlever Benjamini-Hochberg på h=1, 3
+eller 12. Kombinationen av de tre bästa h=1-serierna gav MAE 0,279 mot rb_updated 0,281 (p = 0,43).
+Inget håller; behåll ingen serie. Detaljer: [docs/auto/j3/resultat.md](auto/j3/resultat.md).
