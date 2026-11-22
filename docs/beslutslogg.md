@@ -283,3 +283,7 @@ Detaljer: [docs/auto/j2/resultat.md](auto/j2/resultat.md).
 
 ## 2026-11-22 – J1 Hybridmodell (förregistrering)
 Hypotes, gissning och exakt variantlista (C1–C4, H1–H4): [docs/auto/j1/hypotes.md](auto/j1/hypotes.md). Bas: auto/j2-done.
+**Resultat (urvalsevidens, 13/50 varianter):** ingen variant klarade urvalsskärmen. Bäst var 50/50-snittet
+av rb_updated och J2:s V2: MAE 0,217 mot 0,256 på 2015–26, ensidigt p = 0,015, Holm p = 0,117 över 8
+varianter. Skattade vikter gav inget utöver 50/50. Gissningen innan stämde. Ingen frysning; förslag att
+följa 50/50-snittet live. Detaljer: [docs/auto/j1/resultat.md](auto/j1/resultat.md).
