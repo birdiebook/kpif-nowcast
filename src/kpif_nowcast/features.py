@@ -1,7 +1,8 @@
 """Monthly features for the KPIF nowcast.
 
 Every feature for target month t must be observable at the deadline (day 4 of t+1):
-- electricity: full month t spot prices (published the day before delivery) -> OK
+- electricity: full month t spot prices (published the day before delivery) -> OK.
+  Before 2021-11 from Energinet (cached backfill), from 2021-11 elprisetjustnu.se.
 - fuel proxy: Brent in SEK, days 1-25 of t (mirrors SCB's measurement window) -> OK
 """
 
@@ -12,7 +13,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from kpif_nowcast.sources import elpris, fred, konj, riksbank
+from kpif_nowcast.sources import elpris, energinet, fred, konj, riksbank
 
 PROCESSED_DIR = Path(__file__).resolve().parents[2] / "data" / "processed"
 
@@ -24,12 +25,31 @@ ZONE_WEIGHTS = {"SE3": 0.7, "SE4": 0.3}
 FUEL_WINDOW_LAST_DAY = 25
 
 
+def electricity_daily() -> pd.DataFrame:
+    """Daily spot price per zone (SEK/kWh): Energinet before 2021-11-01, elprisetjustnu.se after.
+
+    elprisetjustnu.se values are used unchanged wherever they exist, so everything from 2021-11
+    is identical to before the backfill. The Energinet part is read from the local cache only
+    (run `python -m kpif_nowcast.sources.energinet` once to fill it); without a cache the
+    history simply starts 2021-11, as before.
+    """
+    recent = pd.concat([elpris.daily_prices(z) for z in ZONE_WEIGHTS], axis=1)
+    splice = pd.Timestamp(elpris.FIRST_DAY)
+    hourly = energinet.fetch_all(fetch_missing=False)
+    if hourly.empty:
+        return recent
+    fx = energinet.sek_per_eur()
+    old = pd.concat([energinet.daily_prices(z, hourly, fx) for z in ZONE_WEIGHTS], axis=1)
+    old = old[old.index < splice]
+    return pd.concat([old, recent]).sort_index()
+
+
 def electricity_monthly(min_days: int = 28) -> pd.DataFrame:
     """Monthly mean spot price per zone and a weighted average (SEK/kWh).
 
     By default only complete months; a live forecast may pass min_days=1 to use a partial month.
     """
-    daily = pd.concat([elpris.daily_prices(z) for z in ZONE_WEIGHTS], axis=1)
+    daily = electricity_daily()
     groups = daily.groupby(daily.index.to_period("M"))
     monthly = groups.mean()
     monthly["el_days"] = groups.size()
