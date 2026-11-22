@@ -1,9 +1,9 @@
 # Status: autonom körning
 
-**Lås:** orkestrerare 2026-11-22T22:07Z (lokal 2026-11-22 23:07)
+**Lås:** orkestrerare 2026-11-22T22:08Z (lokal 2026-11-22 23:08)
 **Start:** 2026-11-22 22:55
-**Senaste heartbeat:** 2026-11-22 23:07
-**Global varianttotal:** 5/50 (J3:s screening oräknad)
+**Senaste heartbeat:** 2026-11-22 23:08
+**Global varianttotal:** 13/50 (J3:s screening oräknad)
 **Deadline:** måndag 2026-11-23 22:00
 **Läge:** KÖR. J2 och J6 startar.
 
@@ -15,7 +15,7 @@
 |---|---|---|---|---|---|---|---|
 | J2 Elmodellen | auto/j2-el | C:\dev\kpif-auto\j2 | KLAR (pushad, tag auto/j2-done) | 5/10 | 438480b | V2 j2_el_dev MAE 0,243 vs comp_fuel 0,316, Holm p 0,014 (5/50): klarade urvalsskärmen; vs rb_updated p 0,57 | – |
 | J6 Arbetsförmedlingen | auto/j6-af | – | ej startad | – | – | – | – |
-| J1 Hybrid | auto/j1-hybrid | – | väntar på J2 | 0/10 | – | – | – |
+| J1 Hybrid | auto/j1-hybrid | C:\dev\kpif-auto\j1 | förregistrerad, bygger | 8/10 | 9c2f5a3 | – | – |
 | J3 Katalogtest | auto/j3-katalog | – | väntar på J1 | 0/10 | – | – | – |
 | J4 Detaljnivå | auto/j4-detalj | – | ledig plats | 0/10 | – | – | – |
 | J5 Osäkerhet | auto/j5-osakerhet | – | ledig plats | 0/10 | – | – | – |
@@ -28,3 +28,4 @@
 - 23:03 Worktrees C:\dev\kpif-auto\j2 (auto/j2-el) och j6 (auto/j6-af) skapade från origin/main @ a8cd686, data kopierad.
 - 11-22 23:05 J2 förregistrerad (V1–V5), auto/j2-el @ 450a18e.
 - 11-22 23:07 J2 KLAR: V2 klarade urvalsskärmen mot comp_fuel. Fryst som skuggprognos från 2026-12 (tag auto/j2-done @ 438480b). J1 förgrenas från taggen.
+- 11-22 23:08 J1 förregistrerad (8 varianter), bas auto/j2-done @ 438480b.
