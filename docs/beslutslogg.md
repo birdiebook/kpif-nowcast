@@ -275,3 +275,7 @@ för att modellvalet ska kunna göras på 2015–2026.
 
 ## 2026-11-22 – J4 KPIF underifrån på detaljnivå (förregistrering)
 Hypotes, gissning och varianter D1–D3: [docs/auto/j4/hypotes.md](auto/j4/hypotes.md). TAB6613 är omräknad → revised.
+**Resultat (urvalsevidens, 17/50 varianter, obekräftat p.g.a. omräknad TAB6613):** D2 (el och drivmedel
+på rätt delindex) MAE 0,243 mot comp_fuel 0,316, Holm p = 0,010. Bara grupper utan korrektion (D1) är sämre
+(0,335). Påsken gav inget. Vinsten är densamma som J2 V2 utan detaljdata, så J2 V2 föredras. Kvarvarande fel:
+paketresor, livsmedel, persontransporter. Detaljer: [docs/auto/j4/resultat.md](auto/j4/resultat.md).
