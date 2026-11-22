@@ -57,6 +57,15 @@ def seasonal_trend_mm(index: pd.Series, years: int = 5) -> pd.Series:
     return trend_12m.shift(1) + seasonal
 
 
+def seasonal_trend_additive(x: pd.Series, years: int = 5) -> pd.Series:
+    """Same idea as seasonal_trend_mm, for any additive monthly series
+    (e.g. a component's contribution to KPIF's monthly change). Forecast for t uses data up to t-1."""
+    trend_12m = x.rolling(12).mean()
+    deviation = x - trend_12m
+    seasonal = pd.concat([deviation.shift(12 * k) for k in range(1, years + 1)], axis=1).mean(axis=1)
+    return trend_12m.shift(1) + seasonal
+
+
 def seasonal_trend(index: pd.Series, years: int = 5) -> pd.Series:
     return yy_from_mm(index, seasonal_trend_mm(index, years))
 

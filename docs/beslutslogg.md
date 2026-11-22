@@ -61,3 +61,22 @@ Elpriser bara från 2021-11 (elprisetjustnu.se) i väntan på ENTSO-E-nyckel.
   Sådant vet Riksbanken i förväg men syns inte i prisdata. Ej verifierat.
 - Viktningen 70/30 mellan SE3 och SE4 är ett antagande.
 **Nästa:** dela upp KPIF i komponenter (fas 4) för att se exakt vad som missas de månaderna.
+
+## 2026-11-22 – Fas 4: komponentmodell
+**Vad:** Prognos per analysgrupp i SCB:s TAB6628 (tjänster, varor, livsmedel, energi,
+kapitalstock), på varje grupps *bidrag* till KPIF:s månadsförändring. Bidragen summerar
+till KPIF m/m (avvikelse ~0,03 pe från avrundning). Energi får regressionskorrigering
+(drivmedel + el), övriga grupper säsong+trend.
+**Varför bidrag och inte index + vikter:** att kedja ihop gruppindex med SCB:s vikter
+reproducerade inte KPIF tillräckligt exakt (indexfel 0,13 i snitt). Bidragen gör det.
+**Resultat, MAE 2024–2026:** Riksbanken 0,33 · komponentmodell 0,375 · fas 3 0,395 · baslinje 0,45.
+2015–2026 (bara drivmedel): komponentmodell 0,316 ≈ fas 3 0,316 ≈ Riksbanken 0,320.
+**Var felet sitter 2024–2026 (MAE i pe av KPIF m/m):** energi 0,24 (från 0,35),
+tjänster 0,19, varor 0,10, livsmedel 0,09, kapitalstock 0,01.
+**Lärdomar:**
+- Energi var största felkällan, och elpriset tar bort en tredjedel av energifelet.
+- Januari är svårast: energin stiger mer än modellen tror (nätavgifter, skatter, vinterpris).
+- April 2026: livsmedel föll kraftigt, troligen sänkt matmoms. Ej verifierat i källa.
+- Tjänster är nu näst största felkällan, och där har vi ingen förklarande variabel än.
+**Nästa kandidater:** (1) kalender över kända skatte-/avgiftsändringar, (2) Konjunkturinstitutets
+prisplaner för tjänster och livsmedel, (3) längre elhistorik via ENTSO-E, (4) andel rörliga elavtal.

@@ -62,7 +62,21 @@ but clearly worse in 2024–2026.
 
 Energy prices help, but the Riksbank is still ahead in recent years. The biggest misses
 are January and March–April, likely one-off tax and fee changes that are known in advance
-but invisible in price data. Next: forecasting KPIF component by component.
+but invisible in price data.
+
+**Phase 4: bottom-up by component**
+
+Each KPIF component's contribution to the monthly change (services, goods, food, energy,
+capital stock) is forecast separately and summed. Energy gets the price correction.
+
+| Forecast | MAE 2024–2026 |
+|---|---|
+| Riksbank | 0.33 |
+| Component model (fuel + electricity) | 0.375 |
+| Phase 3 model | 0.395 |
+| Seasonal baseline | 0.45 |
+
+Remaining error is mostly energy (January fee and tax changes) and services.
 
 Electricity prices: [Elpriset just nu.se](https://www.elprisetjustnu.se) (ENTSO-E data).
 Oil: FRED. Exchange rates and forecasts: Sveriges Riksbank. CPI: Statistics Sweden (CC0).
@@ -76,4 +90,5 @@ python -m kpif_nowcast.backtest         # phase 2 scores + chart in outputs/
 python -m kpif_nowcast.sources.elpris   # electricity prices (slow first time, cached)
 python -m kpif_nowcast.features         # monthly energy features
 python -m kpif_nowcast.backtest_phase3  # phase 3 scores + chart
+python -m kpif_nowcast.backtest_phase4  # phase 4 component model
 ```
