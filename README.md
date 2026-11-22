@@ -99,16 +99,19 @@ A tax-change calendar (from SCB's CPIF at constant taxes) nails the April 2026 f
 changes are already in the seasonal pattern. Large one-off policy changes will instead be
 handled as a manual adjustment in live forecasts.
 
-Electricity prices: [Elpriset just nu.se](https://www.elprisetjustnu.se) (ENTSO-E data).
+Electricity prices: [Elpriset just nu.se](https://www.elprisetjustnu.se) (ENTSO-E data) from 2021-11;
+before that Source: Energinet ([www.energidataservice.dk](https://www.energidataservice.dk), CC BY 4.0;
+converted from EUR/MWh to SEK/kWh daily means).
 Oil: FRED. Exchange rates and forecasts: Sveriges Riksbank. CPI: Statistics Sweden (CC0).
 
 Run it yourself:
 
 ```
 python -m venv .venv && .venv/Scripts/pip install -e .
-python -m kpif_nowcast.data             # fetch CPIF + Riksbank forecasts
+python -m kpif_nowcast.data             # fetch CPIF, Riksbank forecasts + SCB detail tables
 python -m kpif_nowcast.backtest         # phase 2 scores + chart in outputs/
 python -m kpif_nowcast.sources.elpris   # electricity prices (slow first time, cached)
+python -m kpif_nowcast.sources.energinet  # SE3/SE4 history 2011-2024 (~35 min first time, rate limited, cached)
 python -m kpif_nowcast.features         # monthly energy features
 python -m kpif_nowcast.backtest_phase3  # phase 3 scores + chart
 python -m kpif_nowcast.backtest_phase4  # phase 4 component model

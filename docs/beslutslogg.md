@@ -128,3 +128,19 @@ och drar ner. Övriga komponenter är svagt negativa (säsong).
 **Risker:** elpriset kan falla resten av månaden (21 av 30 dagar kända). Elbidraget är en
 extrapolation nära kanten av vad modellen sett sedan 2021. Kontrollera före slutlig prognos
 om några skatter eller avgifter ändras i november.
+
+## 2026-11-22 – Elhistorik från 2011 via Energinet (bara data, ingen modelländring)
+**Vad:** Spotpris SE3/SE4 före 2021-11 hämtas från Energinets Energi Data Service (CC BY 4.0,
+ingen nyckel). Det skarvas mot elprisetjustnu.se, som används oförändrat från 2021-11-01.
+`el_spot` och `el_chg` finns nu från 2011-11 respektive 2011-12, med samma 70/30-viktning.
+**Varför:** Fixen för dubbelräkning av el (femårig säsongsfaktor + el_chg) måste valideras
+på 2015–2023, och då behövs elpriser före elkrisen.
+**Skarv:** På överlappet 2021-11 till 2024-12 skiljer månadspriset i snitt 0,001 SEK/kWh
+(max 0,005, ≈0,1 %) och `el_chg` högst 0,006. Det är försumbart, troligen växelkursskillnad.
+Värdena från 2021-12 är exakt oförändrade.
+**Modellen:** oförändrad. `ENERGY` tränar fortfarande från 2021-12, så backtesten 2024–2026
+ger samma siffror (comp_fuel_el MAE 0,375).
+**Även tillagt (används inte än):** SCB TAB6613 (KPIF per COICOP, alla nivåer), TAB3571
+(andel elavtal) och TAB3950 (elnätspriser). Publiceringsfördröjning och revideringar står i
+`docs/datakallor.md`. Två fällor: TAB3571 har reviderats i efterhand (2022, 2023–24) och
+TAB3950 publiceras först i maj, alltså efter januari-KPI.
