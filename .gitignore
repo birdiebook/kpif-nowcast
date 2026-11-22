@@ -1,0 +1,29 @@
+# Data hämtas med skript och committas aldrig (licensvillkor + storlek)
+data/*
+!data/README.md
+
+# Hemligheter
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Modellartefakter och körresultat
+models/
+outputs/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
