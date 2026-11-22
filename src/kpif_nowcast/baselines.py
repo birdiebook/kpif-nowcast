@@ -42,8 +42,8 @@ def seasonal_mean(index: pd.Series, years: int = 5) -> pd.Series:
     return yy_from_mm(index, lags.mean(axis=1))
 
 
-def seasonal_trend(index: pd.Series, years: int = 5) -> pd.Series:
-    """Seasonal pattern + current trend.
+def seasonal_trend_mm(index: pd.Series, years: int = 5) -> pd.Series:
+    """Seasonal pattern + current trend, as a m/m forecast (fraction).
 
     m/m forecast = (average m/m over the last 12 months)
                  + (how much this calendar month has typically deviated from
@@ -54,7 +54,11 @@ def seasonal_trend(index: pd.Series, years: int = 5) -> pd.Series:
     trend_12m = mm.rolling(12).mean()
     deviation = mm - trend_12m
     seasonal = pd.concat([deviation.shift(12 * k) for k in range(1, years + 1)], axis=1).mean(axis=1)
-    return yy_from_mm(index, trend_12m.shift(1) + seasonal)
+    return trend_12m.shift(1) + seasonal
+
+
+def seasonal_trend(index: pd.Series, years: int = 5) -> pd.Series:
+    return yy_from_mm(index, seasonal_trend_mm(index, years))
 
 
 # seasonal_last_year is mathematically identical to naive_yy (repeating last

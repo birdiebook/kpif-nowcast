@@ -49,12 +49,31 @@ data/               not committed – fetched by scripts
 | Naive (same y/y as last month) | 0.38 |
 
 A simple seasonal baseline is already close to the Riksbank over the full period,
-but clearly worse in 2024–2026. Next: electricity and fuel prices.
+but clearly worse in 2024–2026.
+
+**Phase 3: adding energy prices**
+
+| Forecast | MAE 2015–2026 | MAE 2024–2026 |
+|---|---|---|
+| Riksbank | 0.32 | 0.33 |
+| Baseline + fuel (Brent in SEK) | 0.32 | 0.45 |
+| Baseline + fuel + electricity spot | – | 0.40 |
+| Seasonal baseline | 0.34 | 0.45 |
+
+Energy prices help, but the Riksbank is still ahead in recent years. The biggest misses
+are January and March–April, likely one-off tax and fee changes that are known in advance
+but invisible in price data. Next: forecasting KPIF component by component.
+
+Electricity prices: [Elpriset just nu.se](https://www.elprisetjustnu.se) (ENTSO-E data).
+Oil: FRED. Exchange rates and forecasts: Sveriges Riksbank. CPI: Statistics Sweden (CC0).
 
 Run it yourself:
 
 ```
 python -m venv .venv && .venv/Scripts/pip install -e .
-python -m kpif_nowcast.data       # fetch data
-python -m kpif_nowcast.backtest   # scores + chart in outputs/
+python -m kpif_nowcast.data             # fetch CPIF + Riksbank forecasts
+python -m kpif_nowcast.backtest         # phase 2 scores + chart in outputs/
+python -m kpif_nowcast.sources.elpris   # electricity prices (slow first time, cached)
+python -m kpif_nowcast.features         # monthly energy features
+python -m kpif_nowcast.backtest_phase3  # phase 3 scores + chart
 ```

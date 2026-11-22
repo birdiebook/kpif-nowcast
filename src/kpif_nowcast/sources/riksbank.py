@@ -13,6 +13,18 @@ import pandas as pd
 import requests
 
 FORECAST_URL = "https://api.riksbank.se/monetary_policy_data/v1/forecasts"
+SWEA_URL = "https://api.riksbank.se/swea/v1/Observations/{series}/{start}"
+
+
+def fetch_swea(series: str = "SEKUSDPMI", start: str = "2000-01-01") -> pd.Series:
+    """Daily SWEA series, e.g. SEKUSDPMI (SEK per USD), SEKEURPMI, SEKKIX92."""
+    resp = requests.get(SWEA_URL.format(series=series, start=start), timeout=60)
+    resp.raise_for_status()
+    payload = resp.json()
+    RAW_DIR.mkdir(parents=True, exist_ok=True)
+    (RAW_DIR / f"riksbank_{series}_{date.today():%Y%m%d}.json").write_text(json.dumps(payload), encoding="utf-8")
+    s = pd.Series({pd.Timestamp(o["date"]): float(o["value"]) for o in payload}, name=series)
+    return s.sort_index()
 RAW_DIR = Path(__file__).resolve().parents[3] / "data" / "raw"
 
 

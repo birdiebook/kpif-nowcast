@@ -43,3 +43,21 @@ Riksbanken: senaste prognosomgång publicerad före deadline, där t fortfarande
 - Riksbankens prognos är oftast 1–3 månader gammal vid vår deadline.
 **Öppna frågor:** Varför tappar säsongsmodellerna 2024–2026? Kandidater: elprisets
 svängningar, COICOP 2018-bytet, ändrade säsongsmönster.
+
+## 2026-11-22 – Fas 3: energipriser
+**Vad:** Säsong+trend-baslinjen plus en korrigering för månadens energiprisrörelser:
+drivmedel (Brent i SEK, dag 1–25, log-förändring) och el (spotpris SE3/SE4 viktat 70/30,
+förändring i kr/kWh). Linjär regression utan intercept, expanderande fönster.
+Elpriser bara från 2021-11 (elprisetjustnu.se) i väntan på ENTSO-E-nyckel.
+**Resultat, MAE:**
+- 2015–2026: drivmedelsmodell 0,316 · Riksbanken 0,320 · baslinje 0,335 (skillnaden mot Riksbanken är brus).
+- 2024–2026 (34 mån): Riksbanken 0,33 · drivmedel+el 0,40 · naiv 0,40 · baslinje 0,45.
+**Koefficienter (rimliga):** +10 % oljepris i kronor → ca +0,1 pe på KPIF samma månad.
++1 kr/kWh i spotpris → ca +0,8 pe.
+**Lärdomar:**
+- Energipriser förbättrar baslinjen tydligt 2024–2026 (0,45 → 0,40) men räcker inte för att nå Riksbanken.
+- De största missarna är januari och mars–april (2026-03: +1,4 pe, 2025-01: −1,2 pe).
+  Hypotes: engångshändelser som skatte- och momsändringar och årliga vikt-/avgiftsbyten.
+  Sådant vet Riksbanken i förväg men syns inte i prisdata. Ej verifierat.
+- Viktningen 70/30 mellan SE3 och SE4 är ett antagande.
+**Nästa:** dela upp KPIF i komponenter (fas 4) för att se exakt vad som missas de månaderna.
