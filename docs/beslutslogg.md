@@ -275,3 +275,8 @@ för att modellvalet ska kunna göras på 2015–2026.
 
 ## 2026-11-22 – J2 Elmodellen på lång historik (förregistrering)
 Hypotes, gissning och exakt variantlista (V1–V5): [docs/auto/j2/hypotes.md](auto/j2/hypotes.md). Resultat läggs till när jobbet är klart.
+**Resultat (urvalsevidens, 5/50 varianter):** V2 `j2_el_dev` (el som avvikelse från samma kalendermånad
+senaste ≤5 år) MAE 0,243 mot comp_fuel 0,316 på 2015–26, Holm p = 0,014: klarade urvalsskärmen. Mot
+rb_updated 0,256 är p = 0,57, alltså ingen skillnad. Rå el ger −0,037, så dubbelräkningen var verklig.
+Gissningen innan underskattade effekten (−0,02 till −0,04). V2 fryses som skuggprognos från 2026-12.
+Detaljer: [docs/auto/j2/resultat.md](auto/j2/resultat.md).
