@@ -1,0 +1,12 @@
+utc,git_sha,variant,period,n,MAE,dm_p_vs_rb_updated
+2026-11-23T08:59:49Z,555c758+dirty,k2_avg_ridge_s [decfix],2015-02..2026-10,141,0.2073,nan
+2026-11-23T08:59:49Z,555c758+dirty,k2_avg_lasso_s [decfix],2015-02..2026-10,141,0.2129,nan
+2026-11-23T08:59:49Z,555c758+dirty,k2_avg_hgb_s [decfix],2015-02..2026-10,141,0.2024,nan
+2026-11-23T08:59:49Z,555c758+dirty,k2_avg_ens_s [decfix],2015-02..2026-10,141,0.202,nan
+2026-11-23T08:59:49Z,555c758+dirty,k2_avg_ridge_l [decfix],2015-02..2026-10,141,0.2013,nan
+2026-11-23T08:59:49Z,555c758+dirty,k2_rb_ridge_s [decfix],2015-02..2026-10,141,0.2131,nan
+2026-11-23T08:59:49Z,555c758+dirty,k2_j2_ridge_s [decfix],2015-02..2026-10,141,0.2299,nan
+2026-11-23T08:59:49Z,555c758+dirty,k2_rb_hgb_s [decfix],2015-02..2026-10,141,0.2407,nan
+2026-11-23T08:59:49Z,555c758+dirty,avg_5050 [decfix],2015-02..2026-10,141,0.2165,nan
+2026-11-23T08:59:49Z,555c758+dirty,j2 [decfix],2015-02..2026-10,141,0.2429,nan
+2026-11-23T08:59:49Z,555c758+dirty,rb_updated [decfix],2015-02..2026-10,141,0.2555,nan

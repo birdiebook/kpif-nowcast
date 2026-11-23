@@ -1,0 +1,25 @@
+{
+  "target_month": "2026-11",
+  "model": "k2_avg_ridge_l",
+  "description": "K2: 50/50 + ridge residual (14 + 43 catalog features)",
+  "status": "PRELIMINARY",
+  "deadline": "2026-12-04",
+  "forecast_yy": 1.63,
+  "forecast_yy_rounded": 1.6,
+  "forecast_mm_pp": null,
+  "last_known": {
+    "month": "2026-10",
+    "yy": 1.1
+  },
+  "inputs": {
+    "el_days": 22,
+    "fuel_last_day": "2026-11-17",
+    "el_chg": 0.9574,
+    "fuel_chg": -0.2702
+  },
+  "run": {
+    "made_at": "2026-11-23T10:05:10",
+    "code_commit": "635f1cb",
+    "as_of": "2026-11-23"
+  }
+}

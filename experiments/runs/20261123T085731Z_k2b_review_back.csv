@@ -1,0 +1,7 @@
+utc,git_sha,variant,period,n,MAE,dm_p_vs_rb_updated
+2026-11-23T08:57:31Z,555c758+dirty,k2_avg_ridge_s [back],2015-02..2026-10,141,0.2125,nan
+2026-11-23T08:57:31Z,555c758+dirty,k2_avg_ens_s [back],2015-02..2026-10,141,0.2073,nan
+2026-11-23T08:57:31Z,555c758+dirty,k2_avg_ridge_l [back],2015-02..2026-10,141,0.2078,nan
+2026-11-23T08:57:31Z,555c758+dirty,avg_5050 [back],2015-02..2026-10,141,0.2165,nan
+2026-11-23T08:57:31Z,555c758+dirty,j2 [back],2015-02..2026-10,141,0.2429,nan
+2026-11-23T08:57:31Z,555c758+dirty,rb_updated [back],2015-02..2026-10,141,0.2555,nan
