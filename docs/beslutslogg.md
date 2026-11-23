@@ -426,3 +426,6 @@ livsmedel): [docs/auto2/k8/hypotes.md](auto2/k8/hypotes.md).
 mot 0,201 (0,55). Livsmedelsbidragets eget fel sjunker 10 % med fasta laggar (0,076 → 0,069 pe), 35 % 2022–23, men
 i totalen blir det ≤ 0,002 pe. Ingen frysning. Nästa kandidat: skatterensad livsmedelsbas (momssänkningen 2026-04).
 Detaljer: [docs/auto2/k8/resultat.md](auto2/k8/resultat.md).
+
+## 2026-11-23 – K13 Skatterensad bas (förregistrering)
+Säsong och trend skattas på bidrag där identifierade skatteengångshändelser (KS-delen, per komponent) är borttagna; effekten läggs tillbaka i prognosmånaden bara om beslutet är fattat före deadline. 2 varianter (`k13_j2_clean`, `k13_ens_clean`): [docs/auto2/k13/hypotes.md](auto2/k13/hypotes.md).
