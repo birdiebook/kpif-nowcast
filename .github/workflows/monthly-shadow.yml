@@ -1,6 +1,6 @@
 # Shadow forecasts, days 1-4 of each month (before SCB's flash estimate).
 # Writes forecasts/shadow/<model>/<month>.json and the champion/challenger table in
-# forecasts/SCORECARD.md, and commits them back. The live forecasts/<month>.json is not touched.
+# forecasts/SCORECARD.md and the monthly letter docs/manadsbrev/<month>.md (K5), and commits them back. The live forecasts/<month>.json is not touched.
 # A FINAL shadow file is never overwritten, so the later daily runs leave it as it is.
 # Runs only on schedule or by hand; scheduled runs only happen on the default branch (after merge).
 #
@@ -59,7 +59,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add forecasts/shadow forecasts/SCORECARD.md
+          git add forecasts/shadow forecasts/SCORECARD.md docs/manadsbrev
           if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
           git commit -m "Shadow forecasts $(date +%F)"
           git pull --rebase origin "${GITHUB_REF_NAME}"

@@ -1,7 +1,8 @@
 """The steps the GitHub Actions workflows run, as one command per job so they run the same locally.
 
     python -m kpif_nowcast.pipeline weekly   [--offline]   # Sunday: fetch everything + data tests
-    python -m kpif_nowcast.pipeline monthly  [--offline]   # day 1-4: fetch forecast inputs, shadows, scorecard, explain
+    python -m kpif_nowcast.pipeline monthly  [--offline]   # day 1-4: fetch forecast inputs, shadows, scorecard, explain, letter
+    python -m kpif_nowcast.pipeline manadsbrev [--month YYYY-MM]  # K5: docs/manadsbrev/<month>.md
     python -m kpif_nowcast.pipeline explain  [--offline]   # K3: explanations to outputs/explain/ (not committed)
     python -m kpif_nowcast.pipeline fetch    [--offline] [--no-observations]
     python -m kpif_nowcast.pipeline shadow   [--offline] [--as-of YYYY-MM-DD] [--force]
@@ -89,6 +90,21 @@ def explain(strict: bool = True) -> None:
         print(f"WARNING: explanation failed, shadows and scorecard unaffected: {exc!r}", flush=True)
 
 
+def manadsbrev(month: str | None = None, strict: bool = True) -> None:
+    """K5 monthly letter docs/manadsbrev/<month>.md (default: the next unpublished month).
+
+    In `monthly` it is not fatal: the shadow forecasts and the scorecard are committed regardless.
+    """
+    from kpif_nowcast import manadsbrev as mb
+
+    try:
+        mb.write(month or str(mb.default_month()))
+    except Exception as exc:
+        if strict:
+            raise
+        print(f"WARNING: monthly letter failed, shadows and scorecard unaffected: {exc!r}", flush=True)
+
+
 def scorecard() -> None:
     from kpif_nowcast import scorecard as sc
 
@@ -97,11 +113,12 @@ def scorecard() -> None:
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("command", choices=["weekly", "monthly", "fetch", "shadow", "check", "scorecard", "explain", "prune"])
+    parser.add_argument("command", choices=["weekly", "monthly", "fetch", "shadow", "check", "scorecard", "explain", "manadsbrev", "prune"])
     parser.add_argument("--offline", action="store_true")
     parser.add_argument("--no-observations", action="store_true", help="fetch: skip the observation table")
     parser.add_argument("--as-of", help="shadow: date for FINAL/PRELIMINARY/LATE (default today)")
     parser.add_argument("--force", action="store_true", help="shadow: overwrite FINAL files")
+    parser.add_argument("--month", help="manadsbrev: target month YYYY-MM (default: next unpublished month)")
     parser.add_argument("--keep", type=int, default=4, help="prune: dated versions to keep per raw response")
     args = parser.parse_args(argv)
     if args.offline or os.environ.get("KPIF_OFFLINE", "") not in ("", "0"):
@@ -115,6 +132,9 @@ def main(argv: list[str] | None = None) -> None:
         shadow(args.as_of, args.force)
         scorecard()
         explain(strict=False)
+        manadsbrev(strict=False)
+    elif args.command == "manadsbrev":
+        manadsbrev(args.month)
     elif args.command == "explain":
         explain()
     elif args.command == "fetch":

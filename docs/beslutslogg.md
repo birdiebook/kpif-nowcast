@@ -404,3 +404,14 @@ kandidatlistorna i J3/K2 och den nationella dashboarden. `by_key`, `refresh` och
 241 serier, 11 mått (AF-andel och antal, varsel, BAS, AKU, småhuspris, FPI, konkurser, folkmängd), bara deskriptivt.
 Inga modellvarianter. Länskarta BLOCKED (inget öppet länslager utan konto eller nytt GIS-paket), rutnätskarta i stället.
 Detaljer: [docs/auto2/k4/resultat.md](auto2/k4/resultat.md), [kvalitet](auto2/k4/kvalitet.md), [läget](auto2/k4/lage.md).
+
+## 2026-11-23 – K5 Sverigeläget v2 och månadsbrev
+**Val:** dashboardens sida versioneras nu i repot (`src/kpif_nowcast/templates/sverige_index.html`) och kopieras till
+`outputs/sverige/index.html`; `outputs/sverige/MANIFEST.json` listar alla filer som ska laddas upp. Nya dataset:
+länen (K4, rutnätskarta), Arbetsförmedlingen (J6), AI-indikatorn (J7:s metod räknad på observationstabellen, eftersom
+J7:s råcache inte finns och ingen ny hämtning gjordes), prisleden (K0), prognoserna med skuggor märkta "urvalsevidens",
+champion/challenger och K3:s förklaring. Månadsbrevet (`python -m kpif_nowcast.manadsbrev <månad>`) har
+informationsdatum = tidigast av i dag och månadens deadline och använder bara data kända då (observationstabellen
+klipps på known_from, prognosfiler på made_at, processad data som i `tests/test_explain.py`). Steg i
+`pipeline monthly` (inte fatalt), committas av månadsjobbet. Inga modellvarianter.
+Detaljer: [docs/auto2/k5/resultat.md](auto2/k5/resultat.md).
