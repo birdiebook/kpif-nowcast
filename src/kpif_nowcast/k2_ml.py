@@ -56,6 +56,10 @@ VARIANTS = {
     "k2_j2_ridge_s": Variant("j2", "ridge", "S"),
     "k2_rb_hgb_s": Variant("rb", "hgb", "S"),
 }
+# Added after the results (marked as such in docs/auto2/k2/resultat.md, counts against the cap, not in the
+# Holm family): k2_avg_ridge_l without the revised=True catalog series, to check the revision-leak flag.
+POSTHOC = {"k2_avg_ridge_lnr": Variant("avg", "ridge", "LNR")}
+ALL_VARIANTS = {**VARIANTS, **POSTHOC}
 
 
 def catalog_keys() -> list[tuple[str, str, bool]]:
@@ -101,7 +105,10 @@ def build_design(kpif, comps, feats, contracts, se3, rb_fc, obs, with_catalog: b
 
 
 def feature_cols(d: pd.DataFrame, fset: str) -> list[str]:
-    return SMALL if fset == "S" else SMALL + [c for c in d.columns if c.startswith("cat_")]
+    if fset == "S":
+        return SMALL
+    revised = {f"cat_{k}" for k, _, r in catalog_keys() if r} if fset == "LNR" else set()
+    return SMALL + [c for c in d.columns if c.startswith("cat_") and c not in revised]
 
 
 def _make(model: str, params: dict):
@@ -166,7 +173,7 @@ class K2Runner:
         return self.cache[key]
 
     def resid(self, name: str, i: int, X_row: np.ndarray | None = None) -> float:
-        v = VARIANTS[name]
+        v = ALL_VARIANTS[name]
         members = ["ridge", "hgb"] if v.model == "ens" else [v.model]
         preds = []
         for m in members:
@@ -178,7 +185,7 @@ class K2Runner:
         return float(np.mean(preds))
 
     def forecast(self, name: str, i: int) -> float:
-        return float(self.d[VARIANTS[name].base].iat[i]) + self.resid(name, i)
+        return float(self.d[ALL_VARIANTS[name].base].iat[i]) + self.resid(name, i)
 
     def series(self, name: str) -> pd.Series:
         return pd.Series([self.forecast(name, i) for i in range(len(self.d))], index=self.d.index, name=name)
@@ -318,5 +325,54 @@ def main() -> None:
     preds.join(actual).to_csv(root / "outputs" / "k2_preds.csv")
 
 
+def posthoc() -> None:
+    """Post-hoc diagnostic (not in the Holm family): k2_avg_ridge_lnr vs 50/50 and k2_avg_ridge_l."""
+    from kpif_nowcast.data import load_components, load_el_contracts, load_kpif, load_riksbank_forecasts
+    from kpif_nowcast.evaluation import log_run
+    from kpif_nowcast.features import load_features
+    from kpif_nowcast.j1_hybrid import dm_one_sided
+    from kpif_nowcast.j2_el import zone_monthly_spot
+    from kpif_nowcast.observations import load as load_obs
+
+    warnings.filterwarnings("ignore")
+    d = build_design(load_kpif(), load_components(), load_features(), load_el_contracts(),
+                     zone_monthly_spot("SE3"), load_riksbank_forecasts(), load_obs())
+    run = K2Runner(d)
+    preds = pd.DataFrame({"avg_5050": d["avg"], "rb_updated": d["rb"],
+                          "k2_avg_ridge_l": run.series("k2_avg_ridge_l"),
+                          "k2_avg_ridge_lnr": run.series("k2_avg_ridge_lnr")})
+    rows, log_rows = [], []
+    for label, start in [("2015-02..2026-10", "2015-02"), ("2024-01..2026-10 (used)", "2024-01")]:
+        p = preds.loc[pd.Period(start, "M"): pd.Period("2026-10", "M")]
+        p = p[d["actual"].reindex(p.index).notna()]
+        err = p.sub(d["actual"].reindex(p.index), axis=0)
+        r = {"period": label, "n": len(p), **{f"MAE {c}": err[c].abs().mean() for c in err}}
+        r["p1 lnr vs 50/50"] = dm_one_sided(err["k2_avg_ridge_lnr"].to_numpy(), err["avg_5050"].to_numpy())[1]
+        r["p two-sided lnr vs ridge_l"] = __import__("kpif_nowcast.evaluation", fromlist=["dm_test"]).dm_test(
+            err["k2_avg_ridge_lnr"].to_numpy(), err["k2_avg_ridge_l"].to_numpy()).p
+        rows.append(r)
+        log_rows.append({"variant": "k2_avg_ridge_lnr (posthoc)", "period": label, "n": len(p),
+                         "MAE": round(r["MAE k2_avg_ridge_lnr"], 4),
+                         "dm_p_vs_rb_updated": round(dm_one_sided(err["k2_avg_ridge_lnr"].to_numpy(),
+                                                                  err["rb_updated"].to_numpy())[1], 4)})
+    tab = pd.DataFrame(rows).set_index("period").T
+    print(tab)
+    path = log_run("k2_ml_posthoc", log_rows)
+    from pathlib import Path
+
+    out = Path(__file__).resolve().parents[2] / "docs" / "auto2" / "k2" / "results_raw.md"
+    out.write_text(out.read_text(encoding="utf-8") + f"
+## Post-hoc (added after results): k2_avg_ridge_lnr = "
+                   f"k2_avg_ridge_l without revised series
+
+{tab.to_markdown(floatfmt='.3f')}
+
+Run log: `{path.name}`
+",
+                   encoding="utf-8")
+
+
 if __name__ == "__main__":
-    main()
+    import sys
+
+    posthoc() if sys.argv[1:] == ["posthoc"] else main()
