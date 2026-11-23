@@ -9,16 +9,18 @@
 
 | Spår | Gren | Worktree | Steg | Varianter | Senaste SHA | Resultat / BLOCKED |
 |---|---|---|---|---|---|---|
-| K0 Prisleden | auto2/k0 | C:\dev\kpif-auto2\k0 | ministeg klart (pytest 39 ok) | 0 (screening oräknad) | 42b717b | – |
-| K1 Drift | auto2/k1 | C:\dev\kpif-auto2\k1 | worktree klar | – | 42b717b | – |
-| K2 ML | auto2/k2 | C:\dev\kpif-auto2\k2 | worktree klar | 0/10 | 42b717b | – |
+| K0 Prisleden | auto2/k0 | C:\dev\kpif-auto2\k0 | pågår: katalog + screening | 0/2 (screening oräknad) | 42b717b | – |
+| K1 Drift | auto2/k1 | C:\dev\kpif-auto2\k1 | pågår: pipeline, workflows | – | 42b717b | – |
+| K2 ML | auto2/k2 | C:\dev\kpif-auto2\k2 | pågår: förregistrering | 0/10 | 42b717b | – |
 | K3 Förklaring | – | – | väntar | – | – | – |
 | K4 Regionalt | – | – | väntar | – | – | – |
 | K5 Sverigeläget v2 | – | – | väntar (K1, K3, K4) | – | – | – |
 | K6 Om lätt | – | – | väntar | – | – | – |
 
 ## Källlås
-(ingen)
+- SCB, KI, FRED, Riksbanken, Medlingsinstitutet, Swedavia: K0
 
 ## Logg
+- 2026-11-23 09:35: K0, K1, K2 startade (agenter). Variantbudget: K2 10, K0 2, K6 ≤4, reserv 14.
+- 2026-11-23: kpif-auto2-restart skapad (varje timme :19). Sparades utan auto-läge; Johannes har slagit på Auto i appen.
 - 2026-11-23: ministeg: worktrees k0–k2 från origin/main, data kopierad, PYTHONPATH pekar på worktree, pytest 39 passed / 4 skipped.
