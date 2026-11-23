@@ -1,6 +1,6 @@
 # Status: autonom körning 2 (Sverige på djupet)
 
-**Lås:** orkestrerare 2026-11-23T08:26Z (lokal 2026-11-23 09:26) · heartbeat 2026-11-23T08:26Z
+**Lås:** orkestrerare 2026-11-23T08:40Z (lokal 2026-11-23 09:40) · heartbeat 2026-11-23T08:40Z
 **Start:** 2026-11-23 · **Bas:** main @ 42b717b
 **Varianter i körningen:** 0/30 (projektet totalt 23 + 0 = 23)
 **Merge:** klara spår mergas till main av orkestreraren (ändrat 2026-11-23) · **Brief:** [BRIEF.md](BRIEF.md) · regler: `docs/autonom-korning-2.md` på main
