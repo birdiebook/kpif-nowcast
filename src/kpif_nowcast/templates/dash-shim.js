@@ -67,7 +67,7 @@
     pending = true;
     const go = () => { pending = false; for (const name of draws.keys()) run(name); };
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", go, { once: true });
-    else requestAnimationFrame(go);
+    else setTimeout(go, 0); // not requestAnimationFrame: it never fires in a background tab
   }
 
   let lastW = window.innerWidth, timer = null;

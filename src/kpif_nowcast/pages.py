@@ -68,8 +68,9 @@ def build_site(src_dir: Path, site_dir: Path = SITE_DIR) -> dict:
     laddas" for that section) instead of failing the whole site.
     """
     need, _ = page_datasets()
-    if site_dir.exists():
-        shutil.rmtree(site_dir)
+    if site_dir.exists():  # empty it but keep the folder (on Windows it may be a running server's cwd)
+        for p in site_dir.iterdir():
+            shutil.rmtree(p) if p.is_dir() else p.unlink()
     (site_dir / "data").mkdir(parents=True)
     written, missing = [], []
     for name in sorted(need):

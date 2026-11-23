@@ -461,3 +461,12 @@ Omkörbart: `python -m kpif_nowcast.k12_global` (K8 tas med automatiskt). Detalj
 ## 2026-11-23 – K13 Skatterensad bas (förregistrering)
 Säsong och trend skattas på bidrag där identifierade skatteengångshändelser (KS-delen, per komponent) är borttagna; effekten läggs tillbaka i prognosmånaden bara om beslutet är fattat före deadline. 2 varianter (`k13_j2_clean`, `k13_ens_clean`): [docs/auto2/k13/hypotes.md](auto2/k13/hypotes.md).
 **Resultat (urvalsevidens, 2 varianter, ingen klarade urvalsskärmen):** `k13_j2_clean` 0,239 mot J2 V2 0,243 (rå p 0,27, Holm 0,54), `k13_ens_clean` 0,203 mot 0,201 (Holm 0,73). Utan händelsemånaderna är skillnaden noll; momsen 2026-04 fångas, men drivmedelssänkningarna slår inte igenom fullt samma månad. **Skarp prognos 2026-11:** rensad bas ger +0,13 pe (2,05 → 2,18) → förslag `--adjust` ~+0,15 inkl. månadskort (manuell justering, inte modelländring). December: +0,40 pe när koldioxidskattesänkningen upphör, +~0,15 månadskort. Kalender: [docs/skattekalender.md](skattekalender.md). Detaljer: [docs/auto2/k13/resultat.md](auto2/k13/resultat.md).
+
+## 2026-11-23 – K10 Sverigeläget på GitHub Pages
+
+Samma sida som i Claude Data (`templates/sverige_index.html`) publiceras också som statisk sida på GitHub Pages. En
+liten shim (`templates/dash-shim.js`) ersätter de fyra delar av `dash`-API:t som sidan använder och läser `data/<id>.json`.
+`python -m kpif_nowcast.pipeline site` bygger `site/` (gitignorerat), och `.github/workflows/pages.yml` publicerar efter
+varje lyckad veckohämtning och månadskörning, från samma Actions-cache. Varför: Claude Data kräver manuell uppladdning,
+Pages blir aktuell av sig själv. Bara aggregerad öppen data som redan finns i dashboarden. Pages måste slås på en gång
+(Settings → Pages → Source: GitHub Actions). Detaljer: [docs/auto2/k10/resultat.md](auto2/k10/resultat.md).
