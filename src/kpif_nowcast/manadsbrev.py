@@ -14,6 +14,12 @@ letter is restricted to what was known then:
   as tests/test_explain.py). The outcome part of the explanation is never used.
 "What changed" compares the picture at the cutoff with the picture at the previous month's cutoff.
 
+L9: "Beslutade engångshändelser" shows the administered-price calendar's suggestion (admin_calendar) for the
+target month, and "Förhandsvisning" the suggestion for the next month. Both use only events decided before the
+target's deadline and on or before the cutoff (admin_calendar.known_at); realised KS parts behind K13's end
+events and the KPIF index behind the y/y factor are cut to month-1, like the explanation. Both are proposals:
+Johannes decides on any --adjust, and a recorded decision is shown when it was made by the cutoff.
+
 Descriptive text only: levels, changes and rankings, no causal claims. Shadows and the K2 candidate are
 labelled as selection evidence. No personal data.
 """
@@ -355,12 +361,100 @@ def headline(month: pd.Period, fc_facts: dict, sit: dict, e: dict | None) -> lis
     if "ppi_itpi_consumer" in sit and "ki_prices_grocery" in sit:
         out.append(f"- Prisleden: producentpriser konsumtionsvaror {num(sit['ppi_itpi_consumer'][1], 1, True)} % på ett år, "
                    f"dagligvaruhandelns prisplaner nettotal {num(sit['ki_prices_grocery'][1], 0)}.")
+    if "admin" in fc_facts:
+        a = fc_facts["admin"]
+        adj = f"{num(a.adjust, 2, True)} pe i årstakt" if a.used and a.adjust else "ingen justering"
+        txt = f"- Beslutade engångshändelser (kalendern för administrerade priser, förslag): {adj} för {month_sv(str(month))}"
+        pv = fc_facts.get("preview")
+        if pv is not None and pv.used and pv.adjust:
+            txt += f", {num(pv.adjust, 2, True)} pe för {month_sv(str(month + 1))}"
+        out.append(txt + ". Johannes beslutar om användningen.")
     if "af_inskrivna" in sit:
         p, v, prev = sit["af_inskrivna"]
         if prev:
             out.append(f"- Arbetsmarknad: inskrivna arbetslösa {num((v / prev - 1) * 100, 1, True)} % mot ett år tidigare ({month_sv(str(p))}).")
     out.append("")
     return out
+
+
+# ------------------------------------------------------------------ administered prices (L9)
+
+# Decisions on the calendar's suggestion (beslutslogg), shown when made by the cutoff: month -> (date, text)
+ADMIN_DECISIONS = {
+    "2026-11": ("2026-11-23", "Johannes beslutade 2026-11-23 att inte justera novemberprognosen; den schemalagda "
+                              "slutprognosen körs oförändrad (beslutsloggen)."),
+}
+
+
+def admin_inputs(month: pd.Period, inp=None) -> tuple[list, pd.Series | None]:
+    """Calendar events and KPIF index as known for `month`: KS parts and index cut to month-1."""
+    from kpif_nowcast import admin_calendar as ac
+
+    parts, index = ac._load_parts_and_index()
+    if inp is not None:
+        index = inp.kpif["index"]
+    if parts is not None:
+        parts = parts.loc[: month - 1]
+    if index is not None:
+        index = index.loc[: month - 1]
+    return ac.all_events(parts), index
+
+
+def section_admin(month: pd.Period, cutoff: pd.Timestamp, events: list, index: pd.Series | None) -> tuple[list[str], dict]:
+    from kpif_nowcast import admin_calendar as ac
+
+    s = ac.suggest(month, events, index, cutoff)
+    lines = ac.markdown_section(s, "##")
+    dec = ADMIN_DECISIONS.get(str(month))
+    if dec and pd.Timestamp(dec[0]) <= cutoff:
+        lines += [f"**Beslut:** {dec[1]}", ""]
+    return lines, {"admin": s}
+
+
+def section_preview(month: pd.Period, cutoff: pd.Timestamp, events: list, index: pd.Series | None,
+                    rb_fc: pd.DataFrame | None, fc_facts: dict) -> tuple[list[str], dict]:
+    """The next month: the calendar's suggestion at this letter's cutoff and what it means for that forecast."""
+    from kpif_nowcast import admin_calendar as ac
+
+    nxt = month + 1
+    s = ac.suggest(nxt, events, index, cutoff)
+    lines = [f"## Förhandsvisning: {month_sv(str(nxt))}", "",
+             f"*Kalenderns förslag för {nxt} med beslut kända vid informationsdatumet {cutoff.date()}. Prognosen för "
+             f"{month_sv(str(nxt))} görs i månadsrutinen dag 1–4 i {month_sv(str(nxt + 1))}; förslaget räknas om då "
+             "med beslut fram till dess. Johannes beslutar om justeringen används.*", ""]
+    if s.used:
+        lines += [f"- {ac._short(e.label, 90)}: {ac._num(e.suggest_pe)} pe m/m ({e.method}, beslut senast {e.decided})."
+                  for e in s.used]
+        lines += [f"- Summa {ac._num(s.mm_pe)} pe m/m, i årstakt **{ac._num(s.adjust, 2)} pe**: används förslaget blir den "
+                  f"skarpa prognosen för {month_sv(str(nxt))} modellens siffra plus {num(s.adjust, 2)} procentenheter. "
+                  "Huvudmodellen ser drivmedel bara via Brent i SEK, så skatteändringar på drivmedel finns inte i modellens "
+                  "siffra, och inte regionala biljettpriser heller."]
+    else:
+        lines.append(f"- Inga beslutade engångshändelser med känd storlek för {month_sv(str(nxt))}.")
+    for e in s.listed:
+        size = "?" if e.pe is None else ac._num(e.pe)
+        lines.append(f"- Ej med ({ac.why_not_used(e, nxt, cutoff)}): {size} pe, {ac._short(e.label, 90)}.")
+    lines.append(f"- Eko av tidigare engångshändelser i modellens trend och säsong: {ac._num(s.echo_pe)} pe m/m "
+                 "(information, ingår inte i förslaget).")
+    facts = {"preview": s}
+    if rb_fc is not None and len(rb_fc):
+        from kpif_nowcast.riksbank_benchmark import riksbank_at_deadline
+
+        rb = riksbank_at_deadline(rb_fc[rb_fc["published"] <= cutoff], pd.PeriodIndex([month, nxt]))
+        if nxt in rb.index:
+            r = rb.loc[nxt]
+            prev = rb["riksbank"].get(month)
+            txt = (f"- Riksbankens senaste bana vid informationsdatumet ({r['rb_round']}): {num(float(r['riksbank']), 1)} % "
+                   f"för {month_sv(str(nxt))}")
+            if prev is not None and pd.notna(prev):
+                txt += f" mot {num(float(prev), 1)} % för {month_sv(str(month))}"
+            lines.append(txt + ". Om banan räknar med de beslutade ändringarna är inte verifierat här.")
+            facts["rb_next"] = float(r["riksbank"])
+    if "live" in fc_facts:
+        lines.append(f"- Som jämförelse: skarp prognos för {month_sv(str(month))} {num(fc_facts['live'], 2)} %. "
+                     "Ingen prognos för nästa månad görs här (energipriserna för månaden saknas).")
+    lines.append("")
+    return lines, facts
 
 
 # ------------------------------------------------------------------ assembly
@@ -393,12 +487,24 @@ def build(month: str | pd.Period, table: pd.DataFrame | None = None, inp=None, i
         print(f"explanation skipped: {exc!r}")
 
     fc_lines, fc_facts = section_forecast(month, cutoff, e, champ)
+    admin_lines, preview_lines = [], []
+    try:
+        events, index = admin_inputs(month, inp)
+        admin_lines, a_facts = section_admin(month, cutoff, events, index)
+        fc_facts.update(a_facts)
+        rb_fc = getattr(inp, "rb_fc", None)
+        preview_lines, p_facts = section_preview(month, cutoff, events, index, rb_fc, fc_facts)
+        fc_facts.update(p_facts)
+    except Exception as exc:  # noqa: BLE001 - the letter is still useful without the calendar
+        print(f"admin calendar skipped: {exc!r}")
     sit_lines, sit = section_situation(t_now)
     lines = [f"# Månadsbrev: KPIF och läget i Sverige, {month_sv(str(month))}", "",
              f"*Informationsdatum {cutoff.date()} (data kända då). Genererat av `python -m kpif_nowcast.manadsbrev {month}`; "
              "beskrivande, inga orsaksslutsatser. Dashboard: Sverigeläget.*", ""]
     lines += headline(month, fc_facts, sit, e)
     lines += fc_lines
+    lines += admin_lines
+    lines += preview_lines
     lines += sit_lines
     lines += section_changes(t_now, t_prev, prev_cutoff, e)
     lines += ["## Om brevet", "",

@@ -8,6 +8,11 @@ Two kinds of evidence, kept apart:
   models are compared on the same months.
 
 Benchmarks rb_updated and the Riksbank forecast are computed from data with the same deadline rule.
+
+L9: SCB's flash estimate (Snabb-KPI, catalog_flash: kpif_flash_yy, kpif_flash_err_yy) as a reference. For the
+months with a flash (from 2024-09), descriptive only: the flash's own error against the first-published outcome,
+and each model's backtest forecast against the flash and against the outcome, on the same months for all.
+No tests, no p-values: it shows how close the models come to SCB's own early figure.
 """
 
 from __future__ import annotations
@@ -49,10 +54,10 @@ def _mae(pred: pd.DataFrame, actual: pd.Series) -> tuple[pd.Series, int]:
     return p.sub(actual.reindex(p.index), axis=0).abs().mean(), len(p)
 
 
-def table(inp: Inputs, live: pd.DataFrame | None = None) -> tuple[pd.DataFrame, dict]:
+def table(inp: Inputs, live: pd.DataFrame | None = None, hist: pd.DataFrame | None = None) -> tuple[pd.DataFrame, dict]:
     actual = inp.kpif["yy_official"]
     last = actual.dropna().index.max()
-    hist = histories(inp).loc[: last]
+    hist = (histories(inp) if hist is None else hist).loc[: last]
     cols = list(hist)
     # models with a forecast from early 2015 (rb_updated starts 2015-02: first Riksbank vintage 2015:1)
     long_cols = [c for c in cols if (fv := hist[c].first_valid_index()) is not None and fv <= pd.Period("2015-03", "M")]
@@ -78,13 +83,77 @@ def table(inp: Inputs, live: pd.DataFrame | None = None) -> tuple[pd.DataFrame, 
     return df, meta
 
 
-def section(inp: Inputs | None = None) -> list[str]:
+FLASH_YY, FLASH_ERR_YY = "kpif_flash_yy", "kpif_flash_err_yy"
+
+
+def load_flash(table: pd.DataFrame | None = None) -> tuple[pd.Series, pd.Series]:
+    """Snabb-KPI KPIF y/y and its error against the first-published outcome (latest vintage; ex post use)."""
+    from kpif_nowcast import observations as obs
+
+    table = obs.load() if table is None else table
+    latest = "2100-01-01"
+    return obs.as_of(FLASH_YY, latest, table), obs.as_of(FLASH_ERR_YY, latest, table)
+
+
+def flash_reference(pred: pd.DataFrame, actual: pd.Series, flash: pd.Series,
+                    flash_err: pd.Series | None = None) -> tuple[pd.DataFrame, dict]:
+    """Per model (columns of `pred`): MAE against the outcome and against the flash, mean signed difference to
+    the flash and share within 0.1 pp of it, on the months where the flash, the outcome and every model exist.
+    The row "snabb_kpi" is the flash itself (error from `flash_err`, first-published outcome; else flash - actual)."""
+    flash, actual = flash.dropna(), actual.dropna()
+    months = flash.index.intersection(actual.index)
+    p = pred.reindex(months).dropna()
+    m = p.index
+    if not len(m):
+        return pd.DataFrame(), {"n": 0}
+    d_flash = p.sub(flash.reindex(m), axis=0)
+    d_out = p.sub(actual.reindex(m), axis=0)
+    df = pd.DataFrame({
+        "MAE mot utfall": d_out.abs().mean(),
+        "MAE mot snabb-KPI": d_flash.abs().mean(),
+        "Medel prognos − snabb": d_flash.mean(),
+        "Andel inom ±0,1 av snabb": (d_flash.abs() <= 0.1 + 1e-9).mean(),
+    })
+    err = (flash - actual).reindex(m)
+    if flash_err is not None:
+        err = flash_err.reindex(m).fillna(err)
+    df.loc["snabb_kpi"] = [err.abs().mean(), 0.0, 0.0, 1.0]
+    meta = {"n": len(m), "first": str(m.min()), "last": str(m.max()), "flash_mean_err": float(err.mean()),
+            "flash_n_nonzero": int((err.abs() > 1e-9).sum()), "flash_max_abs": float(err.abs().max())}
+    return df, meta
+
+
+def flash_lines(df: pd.DataFrame, meta: dict) -> list[str]:
+    if not meta.get("n"):
+        return ["", "### Snabb-KPI som referens", "", "Ingen månad med både snabb-KPI, utfall och backtestprognos."]
+    shown = df.copy()
+    for c in ["MAE mot utfall", "MAE mot snabb-KPI", "Medel prognos − snabb"]:
+        shown[c] = shown[c].map(lambda v: f"{v:+.3f}" if c.startswith("Medel") else f"{v:.3f}")
+    shown["Andel inom ±0,1 av snabb"] = shown["Andel inom ±0,1 av snabb"].map(lambda v: f"{v:.0%}")
+    return [
+        "",
+        "### Snabb-KPI som referens",
+        "",
+        f"SCB:s snabb-KPI (KPIF årstakt, en decimal) mot backtestprognoserna, samma månader för alla "
+        f"({meta['first']}..{meta['last']}, n = {meta['n']}). Beskrivande, inga tester. Snabb-KPI:s eget fel mot "
+        f"först publicerat utfall: {meta['flash_n_nonzero']} av {meta['n']} månader ≠ 0, högst "
+        f"{meta['flash_max_abs']:.1f} pe, medel {meta['flash_mean_err']:+.3f} pe.",
+        "",
+        shown.reset_index(names="Modell").to_markdown(index=False),
+        "",
+        "- Perioden ingår i 2024–26, som redan är använd: urvalsevidens, väljs inte på. Prognoserna har två decimaler, "
+        "snabb-KPI en.",
+    ]
+
+
+def section(inp: Inputs | None = None, flash: tuple[pd.Series, pd.Series] | None = None) -> list[str]:
     if inp is None:
         from kpif_nowcast.data import load_components, load_kpif, load_riksbank_forecasts
         from kpif_nowcast.features import load_features
 
         inp = Inputs(load_kpif(), load_components(), load_features(), load_riksbank_forecasts())
-    df, m = table(inp)
+    hist = histories(inp)
+    df, m = table(inp, hist=hist)
     shown = df.copy()
     for c in ["MAE 2015–26 (urval)", "MAE 2024–26 (använd)", "MAE live"]:
         shown[c] = shown[c].map(lambda v: "–" if pd.isna(v) else f"{v:.3f}")
@@ -104,4 +173,13 @@ def section(inp: Inputs | None = None) -> list[str]:
         f"({m['first_used']}..{m['last']}, n = {m['n_used']}). Rapporteras, väljs inte på.",
         f"- **Live**: FINAL-skuggprognoser med publicerat utfall, samma månader för alla modeller: "
         f"**{m['n_live']} månader**." + (" Än så länge finns ingen riktig evidens." if m["n_live"] == 0 else ""),
-    ]
+    ] + _flash_part(hist, inp, flash)
+
+
+def _flash_part(hist: pd.DataFrame, inp: Inputs, flash: tuple[pd.Series, pd.Series] | None) -> list[str]:
+    try:  # the flash reference must never stop the champion table
+        fl, err = load_flash() if flash is None else flash
+        return flash_lines(*flash_reference(hist, inp.kpif["yy_official"], fl, err))
+    except Exception as exc:  # noqa: BLE001
+        print(f"WARNING: flash reference skipped: {type(exc).__name__}: {exc}")
+        return []

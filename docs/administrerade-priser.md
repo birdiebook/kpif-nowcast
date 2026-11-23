@@ -15,6 +15,16 @@ Kommandot skriver ut händelserna i prognosmånaden, summan i pe på KPIF m/m, o
 färdig rad `python -m kpif_nowcast.forecast --adjust <pe> --note "<händelser, källor>"`. Det är ett förslag.
 Användningen beslutar Johannes. `python -m kpif_nowcast.admin_calendar --table` skriver tabellen nedan.
 
+**I månadsjobbet (L9):** `python -m kpif_nowcast.pipeline monthly` kör kalendern som ett icke-fatalt steg före
+månadsbrevet och skriver förslaget för prognosmånaden till `outputs/admin_calendar/<månad>.json` och `.md` (committas
+inte; laddas upp som artefakt i GitHub Actions). Separat: `python -m kpif_nowcast.pipeline admin [--month YYYY-MM]`
+eller `python -m kpif_nowcast.admin_calendar <månad> --info-date YYYY-MM-DD --write`. Månadsbrevet har sektionen
+"Beslutade engångshändelser: förslag till manuell justering" (med `--adjust`-raden och källor) och en
+förhandsvisning av nästa månad. Där gäller läckageregeln även brevets **informationsdatum**: en händelse räknas bara
+om beslutet är fattat före deadline och senast informationsdatumet (`admin_calendar.known_at`). Realiserade KS-delar
+(K13:s slutmånader) och index för omräkningen till årstakt kapas till månaden före prognosmånaden, som i K3:s
+förklaring. Inget steg anropar `forecast.py`: justeringen körs bara om Johannes beslutar det.
+
 ## Metod
 
 - **En rad per händelse:** ikraftträdandemånad (första månaden SCB mäter det nya priset), SCB:s COICOP-post

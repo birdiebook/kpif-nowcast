@@ -25,16 +25,24 @@ t+1. Events without a decision (`decided=None`) are listed but never suggested.
 The live main model's forecast (`forecast.py --adjust`) is in y/y; the m/m sum is converted with
 index[t-1] / index[t-12] when KPIF data is available (else factor 1).
 
+Information date (L9): the monthly letter and `pipeline monthly` pass `info_date` (the letter's cutoff). An event
+is then used only if it is also decided on or before that date (`known_at`), so a letter written before the
+deadline never shows a decision that came later. `write_outputs` writes the suggestion to
+outputs/admin_calendar/<month>.json and .md (not committed); `pipeline monthly` runs it as a non-fatal step.
+
 Run: python -m kpif_nowcast.admin_calendar 2026-12          (suggestion for the monthly routine)
+     python -m kpif_nowcast.admin_calendar 2026-12 --write  (also outputs/admin_calendar/2026-12.json + .md)
      python -m kpif_nowcast.admin_calendar --table          (markdown table of all events, for the doc)
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import re
 from dataclasses import dataclass
 from datetime import date
+from pathlib import Path
 
 import pandas as pd
 
@@ -42,6 +50,8 @@ from kpif_nowcast.k13_tax import EVENTS as K13_EVENTS
 from kpif_nowcast.k13_tax import TaxEvent
 from kpif_nowcast.riksbank_benchmark import deadline
 
+ROOT = Path(__file__).resolve().parents[2]
+OUT_DIR = ROOT / "outputs" / "admin_calendar"
 CURATED = date(2026, 11, 23)  # last update of the calendar (no event can be decided after this)
 KINDS = ("one_off", "end", "recurring")
 METHODS = ("scb_ks", "weight_x_change", "observed", "assumption")
@@ -116,6 +126,26 @@ class AdminEvent:
 def known(ev: AdminEvent, t: pd.Period) -> bool:
     """Leakage rule: decided before the deadline of target month t (same rule as k13_tax.known)."""
     return ev.decided is not None and pd.Timestamp(ev.decided) < deadline(t)
+
+
+def known_at(ev: AdminEvent, t: pd.Period, info_date: pd.Timestamp | str | None = None) -> bool:
+    """`known` and, when an information date is given, decided on or before it (the decision date is an upper
+    bound, so this is conservative). Used by the monthly letter, whose cutoff can be before the deadline."""
+    if not known(ev, t):
+        return False
+    return info_date is None or pd.Timestamp(ev.decided) <= pd.Timestamp(info_date)
+
+
+def why_not_used(ev: AdminEvent, t: pd.Period, info_date: pd.Timestamp | str | None = None) -> str:
+    if ev.decided is None:
+        return "ej beslutad"
+    if not known(ev, t):
+        return "beslut efter deadline"
+    if not known_at(ev, t, info_date):
+        return "beslut efter informationsdatumet"
+    if ev.pe is None:
+        return "storlek okänd"
+    return "normal, finns i säsongen"
 
 
 ADMIN_EVENTS: list[AdminEvent] = [
@@ -307,6 +337,7 @@ class Suggestion:
     mm_pe: float
     yy_factor: float
     echo_pe: float
+    info_date: pd.Timestamp | None = None  # None: the deadline rule only
 
     @property
     def adjust(self) -> float:
@@ -323,18 +354,21 @@ def _short(text: str, n: int = 70) -> str:
 
 
 def suggest(target: str | pd.Period, events: list[AdminEvent] | None = None,
-            index: pd.Series | None = None) -> Suggestion:
+            index: pd.Series | None = None, info_date: pd.Timestamp | str | None = None) -> Suggestion:
+    """Suggested adjustment for target month t. `info_date`: also require the decision on or before it."""
     t = pd.Period(target, "M")
+    info = None if info_date is None else pd.Timestamp(info_date)
     events = all_events() if events is None else events
     month = [e for e in events if e.period == t]
-    used = [e for e in month if known(e, t) and e.suggest_pe != 0.0]
+    used = [e for e in month if known_at(e, t, info) and e.suggest_pe != 0.0]
     listed = [e for e in month if e not in used]
     factor = 1.0
     if index is not None and len(index):
         last = min(t - 1, index.index.max())  # before t-1 is published: latest 11-month ratio as proxy
         if (last - 11) in index.index:
             factor = float(index[last] / index[last - 11])
-    return Suggestion(t, used, listed, sum(e.suggest_pe for e in used), factor, echo(t, events))
+    past = events if info is None else [e for e in events if e.decided is None or pd.Timestamp(e.decided) <= info]
+    return Suggestion(t, used, listed, sum(e.suggest_pe for e in used), factor, echo(t, past), info)
 
 
 def _load_parts_and_index():
@@ -350,7 +384,9 @@ def _load_parts_and_index():
 
 def report(s: Suggestion) -> str:
     dl = deadline(s.target).date()
-    lines = [f"Administrerade priser för {s.target} (deadline {dl}, händelser beslutade före den)", ""]
+    head = f"Administrerade priser för {s.target} (deadline {dl}, händelser beslutade före den"
+    head += f" och senast {s.info_date.date()})" if s.info_date is not None else ")"
+    lines = [head, ""]
     for e in s.used:
         extra = f" (normal {e.normal_pe:+.3f})" if e.kind == "recurring" else ""
         lines.append(f"  {e.suggest_pe:+.3f} pe  {e.coicop:7s} {_short(e.label, 90)}{extra}  [{e.origin}, {e.method}]")
@@ -359,20 +395,103 @@ def report(s: Suggestion) -> str:
     lines.append("")
     lines.append(f"  Summa m/m: {s.mm_pe:+.3f} pe; i årstakt × {s.yy_factor:.3f} = {s.mm_pe * s.yy_factor:+.3f} pe")
     for e in s.listed:
-        why = ("ej beslutad" if e.decided is None else "beslut efter deadline" if not known(e, s.target)
-               else "storlek okänd" if e.pe is None else "normal, finns i säsongen")
+        why = why_not_used(e, s.target, s.info_date)
         size = "?" if e.pe is None else f"{e.pe:+.3f}"
         lines.append(f"  ej med ({why}): {size} pe  {e.coicop} {_short(e.label, 90)}")
     lines.append(f"  Info: eko av tidigare engångshändelser i huvudmodellens trend och säsong: {s.echo_pe:+.3f} pe m/m "
                  f"(ingår inte i förslaget)")
     lines.append("")
-    if s.used and s.adjust != 0:
-        note = s.note().replace('"', "'")
-        lines.append(f'Förslag: python -m kpif_nowcast.forecast --adjust {s.adjust:.2f} --note "{note}"')
-    else:
-        lines.append("Förslag: ingen justering")
+    cmd = command(s)
+    lines.append(f"Förslag: {cmd}" if cmd else "Förslag: ingen justering")
     lines.append("Källor och metod: docs/administrerade-priser.md. Användningen beslutar Johannes.")
     return "\n".join(lines)
+
+
+def command(s: Suggestion) -> str | None:
+    """The `forecast.py --adjust` line, or None when there is nothing to adjust."""
+    if not s.used or s.adjust == 0:
+        return None
+    note = s.note().replace('"', "'")
+    return f'python -m kpif_nowcast.forecast --adjust {s.adjust:.2f} --note "{note}"'
+
+
+def _event_dict(e: AdminEvent) -> dict:
+    return {"month": e.month, "coicop": e.coicop, "post": e.post, "kind": e.kind, "label": e.label,
+            "pe": e.pe, "suggest_pe": round(e.suggest_pe, 4), "normal_pe": e.normal_pe, "method": e.method,
+            "decided": None if e.decided is None else str(e.decided), "in_ks": e.in_ks, "origin": e.origin,
+            "sources": e.source.split()}
+
+
+def to_dict(s: Suggestion) -> dict:
+    """Machine-readable suggestion for outputs/ and the dashboard. A proposal: Johannes decides."""
+    return {
+        "target_month": str(s.target),
+        "deadline": str(deadline(s.target).date()),
+        "information_date": None if s.info_date is None else str(s.info_date.date()),
+        "calendar_curated": str(CURATED),
+        "status": "proposal",
+        "decision": "Förslag till manuell justering. Johannes beslutar om användningen.",
+        "mm_pe": round(s.mm_pe, 4),
+        "yy_factor": round(s.yy_factor, 4),
+        "adjust_yy_pe": s.adjust if s.used else 0.0,
+        "echo_mm_pe": round(s.echo_pe, 4),
+        "command": command(s),
+        "used": [_event_dict(e) for e in s.used],
+        "not_used": [{**_event_dict(e), "reason": why_not_used(e, s.target, s.info_date)} for e in s.listed],
+        "method": "docs/administrerade-priser.md",
+    }
+
+
+def _num(x: float, d: int = 3) -> str:
+    return f"{x:+.{d}f}".replace(".", ",").replace("-", "−")
+
+
+def markdown_section(s: Suggestion, heading: str = "##", docs: str = "../") -> list[str]:
+    """Markdown for the monthly letter and outputs/: events, the --adjust line, sources. Marked as a proposal.
+    `docs`: relative path from the markdown file to docs/ (links to the method and K13's tax calendar)."""
+    info = f", beslutade senast informationsdatumet {s.info_date.date()}" if s.info_date is not None else ""
+    lines = [f"{heading} Beslutade engångshändelser: förslag till manuell justering", "",
+             f"*Förslag från kalendern för administrerade priser (`admin_calendar`, senast uppdaterad {CURATED}). "
+             f"Johannes beslutar om justeringen används.* Målmånad {s.target}; med räknas händelser beslutade före "
+             f"deadline {deadline(s.target).date()}{info}.", ""]
+    if s.used:
+        lines += ["| Händelse | COICOP | Effekt m/m (pe) | Metod | Beslut senast | Källa |", "|---|---|---|---|---|---|"]
+        for e in s.used:
+            src = " ".join(f"[{i + 1}]({u})" for i, u in enumerate(e.source.split())) if e.source != DOC \
+                else f"[skattekalender]({docs}{DOC[5:]})"
+            lines.append(f"| {_short(e.label, 90)} | {e.coicop} | {_num(e.suggest_pe)} | {e.method} | {e.decided} | {src} |")
+        lines += ["", f"Summa {_num(s.mm_pe)} pe m/m; i årstakt × {s.yy_factor:.3f}".replace(".", ",")
+                  + f" = **{_num(s.adjust, 2)} pe**.", ""]
+    else:
+        lines += ["Inga beslutade engångshändelser med känd storlek för månaden.", ""]
+    for e in s.listed:
+        size = "?" if e.pe is None else _num(e.pe)
+        lines.append(f"- Ej med ({why_not_used(e, s.target, s.info_date)}): {size} pe, {e.coicop} {_short(e.label, 90)}.")
+    if s.listed:
+        lines.append("")
+    cmd = command(s)
+    lines += ["Förslag (körs bara om Johannes beslutar det):", "", "```", cmd or "ingen justering", "```", "",
+              f"Eko av tidigare engångshändelser i huvudmodellens trend och säsong: {_num(s.echo_pe)} pe m/m (information, "
+              "ingår inte i förslaget). Huvudmodellen ser Brent i SEK, inte pumppriset, så en skatteändring på drivmedel "
+              f"syns inte i modellen. Metod och källor: [administrerade priser]({docs}administrerade-priser.md).", ""]
+    return lines
+
+
+def write_outputs(target: str | pd.Period, info_date: pd.Timestamp | str | None = None,
+                  out_dir: Path | None = None, events: list[AdminEvent] | None = None,
+                  index: pd.Series | None = None) -> tuple[Path, Path]:
+    """outputs/admin_calendar/<month>.json and .md for the monthly routine (not committed)."""
+    if events is None or index is None:
+        parts, idx = _load_parts_and_index()
+        events = all_events(parts) if events is None else events
+        index = idx if index is None else index
+    s = suggest(target, events, index, info_date)
+    out_dir = OUT_DIR if out_dir is None else out_dir
+    out_dir.mkdir(parents=True, exist_ok=True)
+    j, m = out_dir / f"{s.target}.json", out_dir / f"{s.target}.md"
+    j.write_text(json.dumps(to_dict(s), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    m.write_text("\n".join(markdown_section(s, "#", "../../docs/")) + "\n", encoding="utf-8")
+    return j, m
 
 
 def markdown_table(events: list[AdminEvent]) -> str:
@@ -395,6 +514,8 @@ def main(argv: list[str] | None = None) -> None:
     p = argparse.ArgumentParser(description="Suggested manual adjustment from the administered-price calendar")
     p.add_argument("month", nargs="?", help="target month YYYY-MM")
     p.add_argument("--table", action="store_true", help="print the markdown table of all events")
+    p.add_argument("--info-date", help="also require decisions on or before this date (YYYY-MM-DD)")
+    p.add_argument("--write", action="store_true", help="also write outputs/admin_calendar/<month>.json and .md")
     a = p.parse_args(argv)
     parts, index = _load_parts_and_index()
     events = all_events(parts)
@@ -403,7 +524,10 @@ def main(argv: list[str] | None = None) -> None:
         return
     if not a.month:
         p.error("give a target month YYYY-MM or --table")
-    print(report(suggest(a.month, events, index)))
+    print(report(suggest(a.month, events, index, a.info_date)))
+    if a.write:
+        for path in write_outputs(a.month, a.info_date, events=events, index=index):
+            print(f"Wrote {path}")
 
 
 if __name__ == "__main__":

@@ -1,7 +1,8 @@
 """The steps the GitHub Actions workflows run, as one command per job so they run the same locally.
 
     python -m kpif_nowcast.pipeline weekly   [--offline]   # Sunday: fetch everything + data tests
-    python -m kpif_nowcast.pipeline monthly  [--offline]   # day 1-4: fetch forecast inputs (+ K2 series), shadows, scorecard, explain, letter
+    python -m kpif_nowcast.pipeline monthly  [--offline]   # day 1-4: fetch forecast inputs (+ K2 series), shadows, scorecard, explain, admin calendar, letter
+    python -m kpif_nowcast.pipeline admin    [--month YYYY-MM]  # L9: administered-price suggestion to outputs/admin_calendar/
     python -m kpif_nowcast.pipeline manadsbrev [--month YYYY-MM]  # K5: docs/manadsbrev/<month>.md
     python -m kpif_nowcast.pipeline explain  [--offline]   # K3: explanations to outputs/explain/ (not committed)
     python -m kpif_nowcast.pipeline fetch    [--offline] [--no-observations]
@@ -124,6 +125,29 @@ def manadsbrev(month: str | None = None, strict: bool = True) -> None:
         print(f"WARNING: monthly letter failed, shadows and scorecard unaffected: {exc!r}", flush=True)
 
 
+def admin_calendar(month: str | None = None, strict: bool = True, today: str | None = None) -> None:
+    """L9: the administered-price calendar's suggestion for the target month (default: the next unpublished
+    month) to outputs/admin_calendar/<month>.json and .md (not committed). Information date = today, capped at
+    the month's deadline, as in the monthly letter. A proposal only: forecast.py is never called.
+
+    In `monthly` it is not fatal: the shadow forecasts and the scorecard are committed regardless.
+    """
+    import pandas as pd
+
+    from kpif_nowcast import admin_calendar as ac
+    from kpif_nowcast import manadsbrev as mb
+
+    try:
+        target = month or str(mb.default_month())
+        info = mb.cutoff_for(pd.Period(target, "M"), today)
+        for path in ac.write_outputs(target, info):
+            print(f"Wrote {path}")
+    except Exception as exc:
+        if strict:
+            raise
+        print(f"WARNING: admin calendar failed, shadows and scorecard unaffected: {exc!r}", flush=True)
+
+
 def scorecard() -> None:
     from kpif_nowcast import scorecard as sc
 
@@ -132,12 +156,13 @@ def scorecard() -> None:
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("command", choices=["weekly", "monthly", "fetch", "shadow", "check", "scorecard", "explain", "manadsbrev", "prune", "site"])
+    parser.add_argument("command", choices=["weekly", "monthly", "fetch", "shadow", "check", "scorecard", "explain", "admin", "manadsbrev", "prune",
+                                                     "site"])
     parser.add_argument("--offline", action="store_true")
     parser.add_argument("--no-observations", action="store_true", help="fetch: skip the observation table")
     parser.add_argument("--as-of", help="shadow: date for FINAL/PRELIMINARY/LATE (default today)")
     parser.add_argument("--force", action="store_true", help="shadow: overwrite FINAL files")
-    parser.add_argument("--month", help="manadsbrev: target month YYYY-MM (default: next unpublished month)")
+    parser.add_argument("--month", help="manadsbrev/admin: target month YYYY-MM (default: next unpublished month)")
     parser.add_argument("--keep", type=int, default=4, help="prune: dated versions to keep per raw response")
     args = parser.parse_args(argv)
     if args.offline or os.environ.get("KPIF_OFFLINE", "") not in ("", "0"):
@@ -152,7 +177,10 @@ def main(argv: list[str] | None = None) -> None:
         shadow(args.as_of, args.force)
         scorecard()
         explain(strict=False)
+        admin_calendar(strict=False)
         manadsbrev(strict=False)
+    elif args.command == "admin":
+        admin_calendar(args.month)
     elif args.command == "manadsbrev":
         manadsbrev(args.month)
     elif args.command == "explain":
