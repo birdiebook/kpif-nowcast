@@ -14,6 +14,10 @@ modell, förregistrering, Holm-justering, ordvalet "klarade urvalsskärmen", sta
 förbjudna åtgärder. Statusfilen blir `docs/auto2/STATUS.md` och briefen `docs/auto2/BRIEF.md`.
 
 **Ändringar:**
+- **Merge till main (ändrat 2026-11-23, Johannes):** orkestreraren mergar ett klart spår till main och pushar,
+  när pytest är grönt på det sammanslagna resultatet. Förbudet mot commit, push och merge till main, och mot
+  checkout och pull i huvudcheckouten, gäller inte längre. Skyddat är fortfarande byte av huvudmodell och
+  omskrivning av skarpa `forecasts/<månad>.json`, och force-push är fortfarande förbjudet. Se CLAUDE.md "Agentiskt arbete".
 - **Ingen hård deadline.** Stopp när backloggen är tom, när Johannes skriver STOP i statusfilen
   eller när två väckningar i rad inte gett framsteg (STALLED).
 - **Varianttak för modeller:** 30 nya varianter i körningen (projektet har förbrukat 23).
@@ -64,7 +68,7 @@ aldrig sett. Det ska ske utan Johannes dator.
 skuggprognosen för 2026-11 är reproducerbar från ren checkout.
 
 ### K2. ML-spåret: kan en riktig ML-modell slå 50/50-snittet?
-**Varför:** lärandet. Johannes vill förstå modern prediktiv modellering, och det ärliga svaret
+**Varför:** om ML ger en bättre prognos ska den användas. Det ärliga svaret
 på "hjälper ML här?" är värt mycket även om det är nej.
 - Kandidater: ridge/lasso på komponentmodellens features plus katalogserierna, och gradient
   boosting (scikit-learn `HistGradientBoostingRegressor`) på samma features.

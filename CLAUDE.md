@@ -2,23 +2,26 @@
 
 ## Vad projektet är
 
-Ett **lärprojekt** där Johannes lär sig prediktiv modellering genom att bygga en
-nowcast av svensk KPIF-inflation (nästa månads siffra innan SCB publicerar den).
+Ett projekt som står på egna meriter. Det bygger **bästa möjliga nowcast och prognos av
+svensk KPIF-inflation** (nästa månads siffra innan SCB publicerar den, och längre horisonter),
+och genom KPIF-linsen **bästa möjliga bild av läget i Sverige**.
+
+**Målet är bästa möjliga lösning.** Varje val ska ge snabb och effektiv progress med kvalitet:
+högre träffsäkerhet, bättre data vid rätt tidpunkt, stabil drift och en tydligare bild av Sverige.
+Det är inte ett lärprojekt. Pedagogik är inget mål i sig.
 
 Arbetssättet är agentiskt: agenten skriver koden och gör räknejobbet, Johannes
-styr, granskar och fattar besluten. **Målet är lika mycket Johannes förståelse
-som modellens träffsäkerhet.** En snabb lösning som han inte förstår är ett
-misslyckande för projektet.
+styr, granskar och fattar besluten.
 
 Johannes bakgrund: BI och data engineering. Han kan SQL, pipelines och datakvalitet
-väl – förklara inte det. Förklara istället ML-, statistik- och prognoskoncept.
+väl – förklara inte det.
 
 ## Arbetsregler
 
-Håll det enkelt och fokusera på det som gör skillnad för resultatet. Inga
-quizfrågor eller pedagogiska övningar om Johannes inte ber om det.
+Håll det enkelt och fokusera på det som gör skillnad för resultatet. Välj den lösning som
+ger bäst resultat och snabbast progress, inte den som är lättast att lära sig av.
 
-1. **Förklara kort** de modelleringsval som spelar roll: vad och varför, i klartext.
+1. **Förklara kort** de modelleringsval som spelar roll: vad och varför, så att de går att granska.
 2. **Stanna bara vid verkliga beslutspunkter** (uppdelning i tränings-/testdata,
    utvärderingsmått, prognoshorisont). Ge en rekommendation, inte en meny.
 3. **Flagga läckagerisk direkt.** All data måste vara sådan som fanns tillgänglig vid
@@ -28,6 +31,22 @@ quizfrågor eller pedagogiska övningar om Johannes inte ber om det.
 5. **Var ärlig om osäkerhet.** Säg när en förbättring kan vara slump, och när något
    inte gick att verifiera.
 6. **Beslutsloggen** (`docs/beslutslogg.md`) uppdateras kort vid viktiga val.
+
+## Agentiskt arbete (AI-agentic first)
+
+Projektet ska tänja gränserna för vad AI-agenter kan leverera själva. Agenten levererar hela vägen
+till main. Den väntar inte på godkännande för det som går att verifiera med tester och regler.
+- **Agenten får committa, merga och pusha till `main`** när pytest är grönt på det sammanslagna
+  resultatet och reglerna ovan är uppfyllda. Parallella spår kör på egna grenar och worktrees
+  (`auto*/<spår>`) och mergas till main av orkestreraren när spåret är klart. Små ändringar
+  (dokumentation, fixar) får committas direkt på main.
+- Agenten får aktivera GitHub Actions-workflows (genom merge) när en lokal körning av stegen är grön.
+- **Skyddat, fortfarande Johannes beslut:** byte av huvudmodell (`MODEL_NAME` i `forecast.py`).
+  Skarpa prognoser i `forecasts/<månad>.json` skrivs bara av månadsrutinen och skrivs aldrig om
+  i efterhand, eftersom tidsstämpeln är beviset.
+- **Aldrig:** force-push, omskrivning av historik på main, radera andras grenar, data eller hemligheter i git.
+- Förregistrering, läckagetester, Holm-justering och ärlig rapportering gäller oförändrat. De är det
+  som gör att agentens resultat går att lita på utan manuell granskning.
 
 ## Faser
 

@@ -22,7 +22,8 @@ Minsta förbättring som går att upptäcka statistiskt på 2015–26 är ca 0,0
 
 ## Regler för autonoma jobb
 
-1. **Egen worktree och gren** (`auto/<jobb>`), aldrig direkt på `main`. Leveransen är en
+1. *(Ändrad 2026-11-23: agenten mergar nu själv till main när pytest är grönt, se CLAUDE.md
+   "Agentiskt arbete".)* **Egen worktree och gren** (`auto/<jobb>`) under arbetet. Leveransen var en
    pull request. Lärdom 22 nov: parallella sessioner i samma mapp ger konflikter.
 2. **Förregistrera:** hypotes, förväntat tecken och storlek skrivs i `docs/beslutslogg.md`
    ("Min gissning innan") och committas **innan** första körningen.
