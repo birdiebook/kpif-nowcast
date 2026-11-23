@@ -38,12 +38,20 @@ def _empty() -> pd.DataFrame:
     return pd.DataFrame(columns=COLUMNS)
 
 
-def load() -> pd.DataFrame:
+def load(raw: bool = False) -> pd.DataFrame:
+    """The table, with known_from moved to the documented publication calendar (publication.enforce).
+
+    raw=True returns the stored table unchanged (for audits and the K11 before/after comparison).
+    """
     if not PATH.exists():
         return _empty()
     df = pd.read_parquet(PATH)
     df["known_from"] = pd.to_datetime(df["known_from"])
-    return df
+    if raw:
+        return df
+    from kpif_nowcast.publication import enforce
+
+    return enforce(df)
 
 
 def save(df: pd.DataFrame) -> None:
@@ -52,15 +60,17 @@ def save(df: pd.DataFrame) -> None:
 
 
 def default_known_from(series: str, periods: pd.PeriodIndex) -> pd.DatetimeIndex:
-    lag = pd.Timedelta(days=lag_days(series))
-    return (periods + 1).to_timestamp() - pd.Timedelta(days=1) + lag
+    """Period end + catalog lag, or the documented release date when that is later (publication.py)."""
+    from kpif_nowcast.publication import known_from
+
+    return known_from(series, periods, lag_days(series))
 
 
 def upsert(series: str, values: pd.Series, fetched_at: date | None = None) -> int:
     """Add a fetched vintage of a monthly series (index: Period[M]). Returns rows added."""
     fetched = pd.Timestamp(fetched_at or date.today())
     values = values.dropna().sort_index()
-    table = load()
+    table = load(raw=True)  # write back the stored table, not the calendar-adjusted view
     existing = table[table["series"] == series]
     is_backfill = existing.empty
 

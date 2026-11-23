@@ -65,6 +65,7 @@ ALL_VARIANTS = {**VARIANTS, **POSTHOC}
 # Feature set L as frozen at 415ba6f: the 43 monthly catalog series that existed then. Later tracks
 # append series to catalog.CATALOG (K0 added 29), which must not silently change the frozen variant
 # (found by the K2b review: without this list k2_avg_ridge_l had 72 catalog features on main@25a6a6e).
+# K11 froze the same 43 series independently and calls the list L_KEYS (alias below).
 K2_CATALOG_KEYS = (
     "brent_sek", "aku_unemp_nsa", "aku_unemp_sa", "gdp_ind_yy", "kix", "policy_rate", "ki_services",
     "wage_private_nonmanual", "wage_private_manual_hourly", "wage_municipal_yy", "labour_cost_salaried_yy",
@@ -75,14 +76,22 @@ K2_CATALOG_KEYS = (
     "hh_lending_growth", "nfc_lending_growth", "nier_barometer", "nier_conf_services", "nier_conf_trade",
     "nier_conf_households", "bankruptcies", "ipi_yy", "service_prod_idx", "industry_orders_yy",
 )
+L_KEYS = K2_CATALOG_KEYS
 
 
-def catalog_keys() -> list[tuple[str, str, bool]]:
-    """(key, unit, revised) for the monthly catalog series in feature set L (frozen list, catalog order)."""
-    from kpif_nowcast.catalog import by_key
+def catalog_keys(frozen: bool = True) -> list[tuple[str, str, bool]]:
+    """(key, unit, revised) for the monthly catalog series in feature set L (frozen list, catalog order).
 
+    frozen=False gives every monthly catalog series (the unfrozen behaviour on main @ 51fa62f, used by k11_audit).
+    """
+    from kpif_nowcast.catalog import CATALOG, by_key
+
+    if not frozen:
+        return [(s.key, s.unit, s.revised) for s in CATALOG
+                if s.freq == "M" and s.key not in EXCLUDE_CATALOG and not s.key.startswith("af_")]
     specs = by_key()
     return [(k, specs[k].unit, specs[k].revised) for k in K2_CATALOG_KEYS]
+
 
 
 def build_design(kpif, comps, feats, contracts, se3, rb_fc, obs, with_catalog: bool = True) -> pd.DataFrame:

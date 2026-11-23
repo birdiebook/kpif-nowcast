@@ -467,3 +467,13 @@ Säsong och trend skattas på bidrag där identifierade skatteengångshändelser
 (`kpif-final-forecast-2026-11`, 2 dec) körs oförändrad. K13:s skatterensade bas finns kvar som analys, och
 december (CO2-skattesänkningen upphör, +0,40 pe enligt K13) bedöms i nästa månadsrutin.
 Mönstren från projektet dbt-lab (mutationstester, fixtures, revisionsmätning) lyfts inte in nu; repot finns på en annan dator.
+
+## 2026-11-23 – K11 Granskning av publiceringsfördröjningar
+**Dom: fel som påverkar.** Fyra serier hade för kort fördröjning (läckage): BNP-indikatorn 35 → 45 d (belagt
+38–41 d), hushållens konsumtionsindikator 15 → 45 d (gamla indikatorn ca 40 d), euroområdets decemberflash
+(belagt dag 4–7, nu exakta datum) och BLS frakt-PPI sep–dec 2025 (shutdown). **Val:** `publication.py` sätter
+`known_from = max(slut + lag, dokumenterat releasedatum)` och `observations.load()` tillämpar det, så rättningen
+gäller utan ombyggd parquet. Fördröjningar och revised-flaggor låses mot `docs/publiceringskalender.md` (pytest).
+K2:s L frystes till 43 serier (hade vuxit till 72 med K0). K2 omkörd: ridge_l 0,200 (Holm 0,018), ens_s 0,202
+(Holm 0,082), ridge_s 0,207 (Holm 0,132, klarar inte längre skärmen). 0 varianter.
+Detaljer: [docs/auto2/k11/granskning.md](auto2/k11/granskning.md).

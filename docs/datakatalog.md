@@ -40,7 +40,7 @@
 
 | Nyckel | Serie | Frekv. | Från–till | Fördröjning | Rev. | Källa | Koppling |
 |---|---|---|---|---|---|---|---|
-| `aku_unemp_nsa` | Arbetslöshet (AKU), ej säsongsrensad | M | 2001-01–2026-10 | 25 d | nej | SCB TAB6387 | Resursutnyttjande → löner → tjänstepriser. |
+| `aku_unemp_nsa` | Arbetslöshet (AKU), ej säsongsrensad | M | 2001-01–2026-10 | 25 d | ja | SCB TAB6387 | Resursutnyttjande → löner → tjänstepriser. |
 | `aku_unemp_sa` | Arbetslöshet (AKU), säsongsrensad | M | 2001-01–2026-10 | 25 d | ja | SCB TAB6387 | Som ovan, lättare att läsa men revideras. |
 | `wage_private_nonmanual` | Månadslön tjänstemän, privat sektor | M | 2008-01–2026-08 | 60 d | ja | SCB TAB2564 | Löner är den största kostnaden i tjänstesektorn. |
 | `wage_private_manual_hourly` | Timlön arbetare, privat sektor (exkl. övertid) | M | 2008-01–2026-08 | 60 d | ja | SCB TAB2550 | Som ovan. Stark säsong, använd årsförändring. |
@@ -48,7 +48,7 @@
 | `labour_cost_salaried_yy` | Arbetskostnadsindex tjänstemän, årstakt | M | 2009-01–2026-08 | 60 d | ja | SCB TAB3657 | Total arbetskostnad inkl. avgifter. |
 | `labour_cost_workers_yy` | Arbetskostnadsindex arbetare, årstakt | M | 2009-01–2026-08 | 60 d | ja | SCB TAB3657 | Som ovan. |
 | `vacancies` | Lediga jobb, hela ekonomin (ej säsongsrensat) | Q | 2009-03–2026-06 | 60 d | nej | SCB TAB6406 | Stramhet på arbetsmarknaden → lönetryck. |
-| `aku_employed` | Sysselsatta 15–74 år (AKU, ej säsongsrensat) | M | 2001-01–2026-10 | 25 d | nej | SCB TAB6389 | Sysselsättning och efterfrågan. |
+| `aku_employed` | Sysselsatta 15–74 år (AKU, ej säsongsrensat) | M | 2001-01–2026-10 | 25 d | ja | SCB TAB6389 | Sysselsättning och efterfrågan. |
 | `nier_labour_shortage` | Brist på arbetskraft, näringslivet | Q | 1996-06–2026-12 | 3 d | nej | KI | Lönetryck. |
 | `af_varsel` | Varsel om uppsägning (personer) | M | 1992-01–2026-10 | 15 d | ja | Arbetsförmedlingen, tidigare statistik (web-varsel-bransch) | Ledande indikator för arbetslöshet: varsel föregår uppsägningar med 2–6 månader. |
 | `af_inskrivna_arbetslosa` | Inskrivna arbetslösa, Arbetsförmedlingen | M | 1996-01–2026-10 | 15 d | nej | Arbetsförmedlingen, tidigare statistik (web-sok-riket) | Registerbaserad arbetslöshet, mindre brus än AKU. Svagare arbetsmarknad → lägre löne- och tjänsteinflation. |
@@ -58,7 +58,7 @@
 
 | Nyckel | Serie | Frekv. | Från–till | Fördröjning | Rev. | Källa | Koppling |
 |---|---|---|---|---|---|---|---|
-| `hh_consumption_yy` | Hushållens konsumtion (indikator), volym årstakt | M | 2020-01–2026-10 | 15 d | ja | SCB TAB6932 | Efterfrågetryck. Hur mycket företagen kan föra vidare kostnader. |
+| `hh_consumption_yy` | Hushållens konsumtion (indikator), volym årstakt | M | 2020-01–2026-10 | 45 d | ja | SCB TAB6932 | Efterfrågetryck. Hur mycket företagen kan föra vidare kostnader. |
 | `retail_volume_yy` | Detaljhandelns försäljningsvolym exkl. drivmedel, årstakt | M | 1992-01–2026-09 | 30 d | ja | SCB TAB3948 | Varuefterfrågan. |
 | `hh_infl_exp_median` | Hushållens förväntade inflation 12 mån, median | M | 2015-04–2026-10 | 3 d | nej | KI | Förväntningar påverkar lönekrav och acceptans för prishöjningar. |
 | `hh_infl_perceived_median` | Hushållens upplevda inflation, median | M | 2015-04–2026-10 | 3 d | nej | KI | Hur hushållen upplever prisutvecklingen nu. |
@@ -81,7 +81,7 @@
 
 | Nyckel | Serie | Frekv. | Från–till | Fördröjning | Rev. | Källa | Koppling |
 |---|---|---|---|---|---|---|---|
-| `gdp_ind_yy` | BNP-indikatorn, årstakt (kalenderjusterad) | M | 2001-01–2026-09 | 35 d | ja | SCB TAB443 | Efterfrågetryck i ekonomin. |
+| `gdp_ind_yy` | BNP-indikatorn, årstakt (kalenderjusterad) | M | 2001-01–2026-09 | 45 d | ja | SCB TAB443 | Efterfrågetryck i ekonomin. |
 | `ki_services` | Prisplaner tjänstesektorn (nettotal) | M | 2003-04–2026-10 | 3 d | nej | KI Konjunkturbarometern | Företagens planerade prishöjningar kommande 3 mån. |
 | `nier_barometer` | Barometerindikatorn (KI) | M | 1996-07–2026-10 | 3 d | ja | KI | Samlad bild av efterfrågeläget. |
 | `nier_conf_services` | Konfidensindikator tjänstesektorn | M | 1996-01–2026-10 | 3 d | ja | KI | Tjänsteefterfrågan → tjänstepriser. |
@@ -103,13 +103,13 @@
 | `ea_flash_food` | Euroområdet, inflation snabbestimat: livsmedel | M | 2017-08–2026-10 | 2 d | nej | Eurostat prc_hicp_fp/fpd (FLS) | Publiceras före vår deadline. Gemensamma rörelser i energi, mat, varor. |
 | `ea_flash_goods` | Euroområdet, inflation snabbestimat: industrivaror | M | 2017-08–2026-10 | 2 d | nej | Eurostat prc_hicp_fp/fpd (FLS) | Publiceras före vår deadline. Gemensamma rörelser i energi, mat, varor. |
 | `ea_flash_services` | Euroområdet, inflation snabbestimat: tjänster | M | 2017-08–2026-10 | 2 d | nej | Eurostat prc_hicp_fp/fpd (FLS) | Publiceras före vår deadline. Gemensamma rörelser i energi, mat, varor. |
-| `ea_hicp_total` | Euroområdet, inflation (HIKP), slutlig | M | 1997-01–2026-10 | 20 d | ja | Eurostat prc_hicp_minr | Lång historik (1997) för omvärldens inflation. |
-| `fao_food_idx` | FAO:s livsmedelsprisindex | M | 1990-01–2026-10 | 8 d | ja | FAO | Världsmarknadspriser på mat → svenska matpriser med 3–9 mån. |
-| `fao_cereals` | FAO spannmålsprisindex | M | 1990-01–2026-10 | 8 d | ja | FAO | Spannmål → bröd, foder, kött. |
-| `fao_dairy` | FAO mejeriprisindex | M | 1990-01–2026-10 | 8 d | ja | FAO | Mejeripriser. |
+| `ea_hicp_total` | Euroområdet, inflation (HIKP), slutlig | M | 1997-01–2026-10 | 26 d | ja | Eurostat prc_hicp_minr | Lång historik (1997) för omvärldens inflation. |
+| `fao_food_idx` | FAO:s livsmedelsprisindex | M | 1990-01–2026-10 | 10 d | ja | FAO | Världsmarknadspriser på mat → svenska matpriser med 3–9 mån. |
+| `fao_cereals` | FAO spannmålsprisindex | M | 1990-01–2026-10 | 10 d | ja | FAO | Spannmål → bröd, foder, kött. |
+| `fao_dairy` | FAO mejeriprisindex | M | 1990-01–2026-10 | 10 d | ja | FAO | Mejeripriser. |
 | `wheat_usd` | Vete, världsmarknadspris | M | 1992-01–2026-09 | 60 d | ja | IMF via FRED | Livsmedelskedjan. |
 | `gscpi` | Global Supply Chain Pressure Index | M | 1998-01–2026-10 | 22 d | ja | NY Fed | Flaskhalsar i globala leveranskedjor → varupriser (2021–22). |
-| `freight_ppi_deepsea` | Fraktpriser sjöfart (US PPI) | M | 1988-06–2026-10 | 15 d | ja | BLS via FRED | Fraktkostnader → importpriser. |
+| `freight_ppi_deepsea` | Fraktpriser sjöfart (US PPI) | M | 1988-06–2026-10 | 21 d | ja | BLS via FRED | Fraktkostnader → importpriser. |
 | `coffee_usd` | Kaffe (arabica, other mild), världsmarknadspris | M | 1992-01–2026-09 | 60 d | ja | IMF via FRED PCOFFOTMUSDM | Råvarupriser → svenska livsmedelspriser med fördröjning. |
 | `cocoa_usd` | Kakao, världsmarknadspris | M | 1992-01–2026-09 | 60 d | ja | IMF via FRED PCOCOUSDM | Råvarupriser → svenska livsmedelspriser med fördröjning. |
 | `sugar_usd` | Socker, världsmarknad, världsmarknadspris | M | 1992-01–2026-09 | 60 d | ja | IMF via FRED PSUGAISAUSDM | Råvarupriser → svenska livsmedelspriser med fördröjning. |
