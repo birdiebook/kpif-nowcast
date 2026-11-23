@@ -395,3 +395,12 @@ omräknad svensk HIKP är praktiskt taget identiska för 04.5 och 07.2 (korrelat
 energivinst är ingen revisionseffekt. Elmetoden på Finland (SE3 som ombud) ger −0,011 (Holm p = 0,58), på Danmark (SE4)
 +0,002 (0,86). Där slår spotpriset igenom i el-HIKP först månaden efter, medan svensk el-KPI följer samma månad (korrelation 0,9).
 Detaljer: [docs/auto2/k6/resultat.md](auto2/k6/resultat.md).
+
+## 2026-11-23 – K4 Regionala Sverige: en serie per mått och län
+**Val:** länsdata lagras i den befintliga observationstabellen som en serie per mått och län,
+`region_<mått>_<länskod>` (`00` = riket). Ingen ny kolumn behövs, och `as_of`, known_from och K1:s datatester
+fungerar som för andra serier. Serierna ligger i `catalog.REGIONAL`, inte i `CATALOG`. Därför ändras inte
+kandidatlistorna i J3/K2 och den nationella dashboarden. `by_key`, `refresh` och `warehouse` använder `catalog.ALL`.
+241 serier, 11 mått (AF-andel och antal, varsel, BAS, AKU, småhuspris, FPI, konkurser, folkmängd), bara deskriptivt.
+Inga modellvarianter. Länskarta BLOCKED (inget öppet länslager utan konto eller nytt GIS-paket), rutnätskarta i stället.
+Detaljer: [docs/auto2/k4/resultat.md](auto2/k4/resultat.md), [kvalitet](auto2/k4/kvalitet.md), [läget](auto2/k4/lage.md).

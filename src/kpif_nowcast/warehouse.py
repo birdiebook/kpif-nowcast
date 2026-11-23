@@ -26,6 +26,9 @@ KNOWN_GAPS: dict[str, str] = {
     "ai_use_firms_se": "Eurostat ICT survey did not ask about AI in 2022 (2021, 2023-2025 only)",
     "ai_use_firms_eu": "Eurostat ICT survey did not ask about AI in 2022 (2021, 2023-2025 only)",
 }
+KNOWN_GAP_PREFIXES: dict[str, str] = {
+    "region_aku_arbetsloshet_": "SCB suppresses LFS county cells with too few observations (TAB2923, '..')",
+}
 
 CHECKS = {
     # one value per vintage: (series, period, known_from) is the key of the versioned table
@@ -68,10 +71,10 @@ CHECKS = {
 
 
 def catalog_frame() -> pd.DataFrame:
-    from kpif_nowcast.catalog import CATALOG
+    from kpif_nowcast.catalog import ALL
 
     return pd.DataFrame(
-        [{"key": s.key, "freq": s.freq, "lag_days": s.lag_days, "revised": s.revised} for s in CATALOG]
+        [{"key": s.key, "freq": s.freq, "lag_days": s.lag_days, "revised": s.revised} for s in ALL]
     )
 
 
@@ -97,7 +100,7 @@ def run_checks(con: duckdb.DuckDBPyConnection | None = None) -> dict[str, pd.Dat
     for name, sql in CHECKS.items():
         df = con.execute(sql).df()
         if name == "no_gaps" and len(df):
-            df = df[~df["series"].isin(KNOWN_GAPS)]
+            df = df[~df["series"].isin(KNOWN_GAPS) & ~df["series"].str.startswith(tuple(KNOWN_GAP_PREFIXES))]
         out[name] = df
     return out
 

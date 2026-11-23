@@ -104,10 +104,10 @@ def as_of(series: str, when: pd.Timestamp | str, table: pd.DataFrame | None = No
 
 def refresh(keys: list[str] | None = None) -> dict[str, str]:
     """Fetch every catalog series (or `keys`) into the table. One failing source doesn't stop the rest."""
-    from kpif_nowcast.catalog import CATALOG
+    from kpif_nowcast.catalog import ALL
 
     status = {}
-    for spec in CATALOG:
+    for spec in ALL:
         if keys and spec.key not in keys:
             continue
         try:

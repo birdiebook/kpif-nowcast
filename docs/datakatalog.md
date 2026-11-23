@@ -1,6 +1,6 @@
 # Datakatalog
 
-96 serier. Genererad av `python -m kpif_nowcast.catalog`.
+337 serier: 96 nationella och 241 länsserier. Genererad av `python -m kpif_nowcast.catalog`.
 
 ## Inflation
 
@@ -147,4 +147,50 @@
 | `gvb_5y` | Statsobligationsränta 5 år | M | 1987-01–2026-10 | 1 d | nej | Riksbanken SWEA SEGVB5YC | Marknadens ränteförväntningar och finansiella villkor. |
 | `gvb_10y` | Statsobligationsränta 10 år | M | 1987-01–2026-10 | 1 d | nej | Riksbanken SWEA SEGVB10YC | Marknadens ränteförväntningar och finansiella villkor. |
 | `swestr` | SWESTR (dagslåneränta) | M | 2021-09–2026-10 | 1 d | nej | Riksbanken SWESTR API | Kortränta som styrräntan styr; från 2021-09. |
+
+## Regionalt: län
+
+En serie per mått och län: `region_<mått>_<länskod>` (01 Stockholm … 25 Norrbotten, 00 riket). Bara deskriptivt, ingår inte i de nationella kandidatlistorna. Kvalitet: `docs/auto2/k4/kvalitet.md`.
+
+| Mått | Serie | Frekv. | Från–till (riket) | Län | Fördröjning | Rev. | Källa | Anmärkning |
+|---|---|---|---|---|---|---|---|---|
+| `region_af_andel_*` | Inskrivna arbetslösa, andel av arbetskraften (AF) | M | 2023-01–2026-10 | 21 | 15 d | ja | Arbetsförmedlingen, tidigare statistik (web-Inskrivna-arbetslosa-andel-av-bas) | Från 2023-01. Arbetskraft från SCB:s BAS (16–65 år 2023–2025, 16–66 år från 2026). revised=True: nämnaren kan uppdateras när ny BAS-årgång kommer (inte verifierat). |
+| `region_af_andel_ak08_*` | Inskrivna arbetslösa, andel av registerbaserad arbetskraft (AF, äldre bas) | M | 2008-01–2023-12 | 21 | 15 d | nej | Arbetsförmedlingen, tidigare statistik (web-inskrivna-arbetslosa-andel-av-reg-ak2008-2023-12) | 2008-01–2023-12, avslutad. Annan nämnare än af_andel: brott 2023, se kvalitet.md. |
+| `region_af_inskrivna_*` | Inskrivna arbetslösa (AF) | M | 1996-01–2026-10 | 21 | 15 d | nej | Arbetsförmedlingen, tidigare statistik (web-sok-lan-kom) | Från 1996-01. Åldersbrott 16–64 / 16–65 (2023–2025) / 16–66 (2026–). Riket inkl. okänt län. |
+| `region_af_oppet_*` | Öppet arbetslösa (AF) | M | 1996-01–2026-10 | 21 | 15 d | nej | Arbetsförmedlingen, tidigare statistik (web-sok-lan-kom) | Som af_inskrivna. |
+| `region_af_varsel_*` | Varsel om uppsägning, personer (AF) | M | 1992-01–2026-03 | 21 | 15 d | ja | Arbetsförmedlingen, tidigare statistik (web-varsel-lan) | 1992-01–2026-03: AF uppdaterar inte filen efter 2026-03 (BLOCKED därefter). Län efter företagets organisationsnummer. Riket inkl. 'Inga uppgifter'. |
+| `region_bas_arbetsloshet_*` | Arbetslöshet 20–65 år (SCB BAS) | M | 2024-01–2026-08 | 21 | 60 d | ja | SCB TAB5663 | Från 2024-01, preliminär statistik. |
+| `region_aku_arbetsloshet_*` | Arbetslöshet 15–74 år (AKU) | Q | 2005-03–2026-09 | 21 | 30 d | ja | SCB TAB2923 | Från 2005K1. Beräknad som arbetslösa/(arbetslösa+sysselsatta) ur tusental; ej säsongsrensad. Stor osäkerhet i små län (SCB anger felmarginal). |
+| `region_smahus_pris_*` | Försålda småhus, köpeskilling medelvärde | Q | 1998-03–2026-09 | 21 | 30 d | ja | SCB TAB1167 | Från 1998K1. Medelpris, inte kvalitetsjusterat: påverkas av vilka hus som säljs. Senaste kvartalet preliminärt. |
+| `region_fpi_smahus_*` | Fastighetsprisindex permanenta småhus (1990=100) | A | 1990-12–2025-12 | 20 | 180 d | ja | SCB TAB1148 | 1990–2025. Kalmar och Gotland redovisas tillsammans (0809). |
+| `region_konkurser_*` | Konkurser, antal | M | 1996-01–2026-10 | 21 | 10 d | nej | Tillväxtanalys 11_konkurser_manad_lan | Från 1996-01. Riket = summan av länen. |
+| `region_befolkning_*` | Folkmängd | M | 2000-01–2026-09 | 21 | 45 d | nej | SCB TAB1625 + TAB6473 | Från 2000-01, vid månadens slut. |
+
+### Länsserier: täckning per län
+
+| Kod | Län | `af_andel` | `af_andel_ak08` | `af_inskrivna` | `af_oppet` | `af_varsel` | `bas_arbetsloshet` | `aku_arbetsloshet` | `smahus_pris` | `fpi_smahus` | `konkurser` | `befolkning` |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 00 | Riket | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-03–2026-09 | 1998-03–2026-09 | 1990-12–2025-12 | 1996-01–2026-10 | 2000-01–2026-09 |
+| 01 | Stockholm | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-03–2026-09 | 1998-03–2026-09 | 1990-12–2025-12 | 1996-01–2026-10 | 2000-01–2026-09 |
+| 03 | Uppsala | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-03–2026-09 | 1998-03–2026-09 | 1990-12–2025-12 | 1996-01–2026-10 | 2000-01–2026-09 |
+| 04 | Södermanland | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-03–2026-09 | 1998-03–2026-09 | 1990-12–2025-12 | 1996-01–2026-10 | 2000-01–2026-09 |
+| 05 | Östergötland | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-03–2026-09 | 1998-03–2026-09 | 1990-12–2025-12 | 1996-01–2026-10 | 2000-01–2026-09 |
+| 06 | Jönköping | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-03–2026-09 | 1998-03–2026-09 | 1990-12–2025-12 | 1996-01–2026-10 | 2000-01–2026-09 |
+| 07 | Kronoberg | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-06–2026-09 | 1998-03–2026-09 | 1990-12–2025-12 | 1996-01–2026-10 | 2000-01–2026-09 |
+| 08 | Kalmar | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-03–2026-06 | 1998-03–2026-09 |  | 1996-01–2026-10 | 2000-01–2026-09 |
+| 09 | Gotland | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-06–2016-06 | 1998-03–2026-09 |  | 1996-01–2026-10 | 2000-01–2026-09 |
+| 10 | Blekinge | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-03–2026-09 | 1998-03–2026-09 | 1990-12–2025-12 | 1996-01–2026-10 | 2000-01–2026-09 |
+| 12 | Skåne | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-03–2026-09 | 1998-03–2026-09 | 1990-12–2025-12 | 1996-01–2026-10 | 2000-01–2026-09 |
+| 13 | Halland | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-03–2026-09 | 1998-03–2026-09 | 1990-12–2025-12 | 1996-01–2026-10 | 2000-01–2026-09 |
+| 14 | Västra Götaland | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-03–2026-09 | 1998-03–2026-09 | 1990-12–2025-12 | 1996-01–2026-10 | 2000-01–2026-09 |
+| 17 | Värmland | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-03–2026-09 | 1998-03–2026-09 | 1990-12–2025-12 | 1996-01–2026-10 | 2000-01–2026-09 |
+| 18 | Örebro | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-03–2026-09 | 1998-03–2026-09 | 1990-12–2025-12 | 1996-01–2026-10 | 2000-01–2026-09 |
+| 19 | Västmanland | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-03–2026-09 | 1998-03–2026-09 | 1990-12–2025-12 | 1996-01–2026-10 | 2000-01–2026-09 |
+| 20 | Dalarna | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-03–2026-09 | 1998-03–2026-09 | 1990-12–2025-12 | 1996-01–2026-10 | 2000-01–2026-09 |
+| 21 | Gävleborg | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-03–2026-09 | 1998-03–2026-09 | 1990-12–2025-12 | 1996-01–2026-10 | 2000-01–2026-09 |
+| 22 | Västernorrland | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-03–2026-09 | 1998-03–2026-09 | 1990-12–2025-12 | 1996-01–2026-10 | 2000-01–2026-09 |
+| 23 | Jämtland | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-03–2026-09 | 1998-03–2026-09 | 1990-12–2025-12 | 1996-01–2026-10 | 2000-01–2026-09 |
+| 24 | Västerbotten | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-03–2026-09 | 1998-03–2026-09 | 1990-12–2025-12 | 1996-01–2026-10 | 2000-01–2026-09 |
+| 25 | Norrbotten | 2023-01–2026-10 | 2008-01–2023-12 | 1996-01–2026-10 | 1996-01–2026-10 | 1992-01–2026-03 | 2024-01–2026-08 | 2005-03–2026-06 | 1998-03–2026-09 | 1990-12–2025-12 | 1996-01–2026-10 | 2000-01–2026-09 |
+| 0809 | Kalmar och Gotland |  |  |  |  |  |  |  |  | 1990-12–2025-12 |  |  |
 
