@@ -4,7 +4,7 @@
   "description": "K2: 50/50 + ridge residual (14 + 43 catalog features)",
   "status": "PRELIMINARY",
   "deadline": "2026-12-04",
-  "forecast_yy": 1.63,
+  "forecast_yy": 1.62,
   "forecast_yy_rounded": 1.6,
   "forecast_mm_pp": null,
   "last_known": {
@@ -18,8 +18,8 @@
     "fuel_chg": -0.2702
   },
   "run": {
-    "made_at": "2026-11-23T10:05:10",
-    "code_commit": "635f1cb",
+    "made_at": "2026-11-23T12:09:48",
+    "code_commit": "1e68f7a",
     "as_of": "2026-11-23"
   }
 }

@@ -17,7 +17,7 @@ Skuggprognoser loggas i `forecasts/shadow/<modell>/<månad>.json` (genereras av 
 | j2_el_dev      | challenger            | 0.243                 |                  0.252 | –          | 2014-12                |
 | j1_comb_equal  | challenger            | 0.217                 |                  0.246 | –          | 2015-02                |
 | k2_avg_ens_s   | challenger            | 0.202                 |                  0.22  | –          | 2015-02                |
-| k2_avg_ridge_l | challenger            | 0.200                 |                  0.23  | –          | 2015-02                |
+| k2_avg_ridge_l | challenger            | 0.199                 |                  0.229 | –          | 2015-02                |
 | rb_updated     | benchmark             | 0.256                 |                  0.267 | –          | 2015-02                |
 | riksbank       | benchmark             | 0.320                 |                  0.326 | –          | 2015-02                |
 

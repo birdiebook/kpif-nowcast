@@ -17,6 +17,13 @@ efter varje körning. Tumreglerna överst justeras när siffrorna ändras.
   parallelliteten flaskhalsen och inte budgeten. Kör **5–6 spår parallellt** och dimensionera
   backloggen till ca 25 spår per fönster, med reserv för granskning.
 
+- **Granskningsspår** som kontrollerar mot externa källor (K2b, K11) tar 70–75 min, styrt av väntan på nät
+  och hastighetsbegränsningar, inte av arbete. De gav ändå körningens viktigaste fynd (två verkliga läckor).
+  Starta dem tidigt och parallellt med annat.
+- **Körning 2 totalt:** 17 spår på ca 3,5 h väggtid. Modellspåren var de snabbaste (10–22 min). Med 6
+  parallella spår blev orkestrerarens merge och pytest på main (2–15 min per merge, växer med sviten) en ny
+  flaskhals. Nästa gång: merga i omgångar och kör pytest en gång per omgång.
+
 ## Mätningar
 
 | Datum | Körning | Spår | Typ | Tid (min) | Verktygsanrop | Tokens (k) | Leverans |
@@ -28,3 +35,12 @@ efter varje körning. Tumreglerna överst justeras när siffrorna ändras.
 | 2026-11-23 | 2 | K3 Förklaring | analys | 13,1 | 42 | 180 | explain.py, 13 tester, 24 mån historik |
 | 2026-11-23 | 2 | K6 Om lätt (vintages, nordisk el) | data + test | 13,2 | 25 | 129 | 2 varianter, 1 BLOCKED-del ersatt med kontroll |
 | 2026-11-23 | 2 | K4 Regionalt | data (många källor) | 30,2 | 111 | 264 | 241 länsserier, xlsx-pivotläsare, kvalitetskontroll |
+| 2026-11-23 | 2 | K9 Horisont 3–12 | modell | 10,2 | 44 | 146 | 4 varianter (negativt) |
+| 2026-11-23 | 2 | K7 Tjänster | modell | 10,7 | 32 | 164 | 5 varianter (negativt) |
+| 2026-11-23 | 2 | K13 Skatterensad bas | modell + kalender | 17,6 | 57 | 207 | 2 varianter, skattekalender 2005–27 |
+| 2026-11-23 | 2 | K8 Livsmedel | modell | 21,7 | 41 | 197 | 4 varianter (negativt) |
+| 2026-11-23 | 2 | K12 Globalt test | utvärdering | 24,9 | 51 | 193 | SPA/StepM/MCS i numpy, omkörbart |
+| 2026-11-23 | 2 | K10 Pages | drift + frontend | 28,4 | 81 | 185 | shim, workflow, lokal webbläsarkontroll |
+| 2026-11-23 | 2 | K5 Sverigeläget v2 | frontend + text | 31,7 | 102 | 315 | 9 dataset, sida, månadsbrev |
+| 2026-11-23 | 2 | K2b Granskning + onlinerepro | granskning + drift | 74,2 | 132 | 262 | läckage hittat; ~50 min väntan på nätbaserad hämtning |
+| 2026-11-23 | 2 | K11 Publiceringskalender | granskning (många källor) | 74,4 | 170 | 309 | 4 läckor hittade; Eurostat 429 gjorde det långsamt |
