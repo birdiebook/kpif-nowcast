@@ -378,3 +378,12 @@ Nya serier i `catalog_prices.py`, screening enligt J3:s protokoll och variantern
 K0-C2 (samma på 50/50-snittet) MAE 0,226 mot 0,232, Holm p = 0,097: klarade urvalsskärmen formellt men
 obekräftad (revisionsläckage möjligt), bara aktiv 25 månader, alla i använda 2024–26. Inget håller; ingen
 frysning. Serierna behålls i katalogen. Detaljer: [docs/auto2/k0/resultat.md](auto2/k0/resultat.md).
+
+## 2026-11-23 – K3 Förklarade prognoser
+**Vad:** `explain.py` förklarar varje prognos exakt. Den ger bidrag per komponent (trend, säsong, el, drivmedel),
+förändringen i årstakt sedan förra utfallet, senaste miss och skuggornas skillnad mot den skarpa, med J5:s
+EWMA-band som osäkerhet (förslag). Efter utfall delas felet per komponent. Steget körs i `pipeline monthly`
+(inte fatalt) och skriver bara till `outputs/explain/`. 0 varianter.
+**Resultat:** tjänster står för 37 % av kvadratfelet 2015–2026 och energi för 21 % (energi dominerade bara
+2022–2023). Den skarpa modellens energifel 2024–2026 är 0,242 pe mot J2 V2:s 0,128 (använd period).
+Detaljer: [docs/auto2/k3/resultat.md](auto2/k3/resultat.md).
