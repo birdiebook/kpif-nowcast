@@ -1,0 +1,52 @@
+# Weekly data fetch (Sundays). Keeps the data cache warm and runs the data tests.
+# Runs only on schedule or by hand; scheduled runs only happen on the default branch (after merge).
+# Data lives in the Actions cache (and a 14-day artifact per run); nothing is committed. Needs no secret.
+name: Weekly data fetch
+
+on:
+  schedule:
+    - cron: "17 4 * * 0"  # Sundays 04:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kpif-data  # never two jobs writing the data cache at once
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90  # a cold cache refetches Energinet history (rate limited) and every elpris day
+    env:
+      PYTHONPATH: src
+      TZ: Europe/Stockholm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install pinned dependencies
+        run: python -m pip install -r ci/requirements.txt
+      - name: Restore data cache
+        uses: actions/cache/restore@v4
+        with:
+          path: data
+          key: kpif-data-${{ github.run_id }}
+          restore-keys: kpif-data-
+      - name: Fetch all data and run the data tests
+        run: python -m kpif_nowcast.pipeline weekly
+      - name: Prune old raw responses (keep the 4 newest per request)
+        run: python -m kpif_nowcast.pipeline prune --keep 4
+      - name: Save data cache
+        uses: actions/cache/save@v4
+        with:
+          path: data
+          key: kpif-data-${{ github.run_id }}
+      - name: Upload data snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: data-${{ github.run_id }}
+          path: data
+          retention-days: 14

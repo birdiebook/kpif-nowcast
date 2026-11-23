@@ -6,6 +6,7 @@
     python -m kpif_nowcast.pipeline shadow   [--offline] [--as-of YYYY-MM-DD] [--force]
     python -m kpif_nowcast.pipeline check                  # data tests (pytest, DuckDB)
     python -m kpif_nowcast.pipeline scorecard
+    python -m kpif_nowcast.pipeline prune --keep 4         # CI cache: drop older raw responses
 
 --offline (or KPIF_OFFLINE=1): every source reads its latest saved raw response in data/raw/ and any
 other network call fails. Used to rebuild everything from a raw cache and to run the workflow
@@ -45,8 +46,13 @@ def fetch(observations: bool = True) -> None:
     print("== features", flush=True)
     features.refresh()
     if observations:
-        print("== observation table (one failing series does not stop the rest)", flush=True)
         from kpif_nowcast import observations as obs
+
+        if rawcache.offline() and obs.PATH.exists():
+            # replaying old raw files into an existing vintage table would only add fake revisions
+            print("== observation table: offline, existing table kept as is", flush=True)
+            return
+        print("== observation table (one failing series does not stop the rest)", flush=True)
 
         status = obs.refresh()
         failed = [k for k, v in status.items() if v.startswith("FAILED")]
@@ -75,11 +81,12 @@ def scorecard() -> None:
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("command", choices=["weekly", "monthly", "fetch", "shadow", "check", "scorecard"])
+    parser.add_argument("command", choices=["weekly", "monthly", "fetch", "shadow", "check", "scorecard", "prune"])
     parser.add_argument("--offline", action="store_true")
     parser.add_argument("--no-observations", action="store_true", help="fetch: skip the observation table")
     parser.add_argument("--as-of", help="shadow: date for FINAL/PRELIMINARY/LATE (default today)")
     parser.add_argument("--force", action="store_true", help="shadow: overwrite FINAL files")
+    parser.add_argument("--keep", type=int, default=4, help="prune: dated versions to keep per raw response")
     args = parser.parse_args(argv)
     if args.offline or os.environ.get("KPIF_OFFLINE", "") not in ("", "0"):
         go_offline()
@@ -99,6 +106,12 @@ def main(argv: list[str] | None = None) -> None:
         check()
     elif args.command == "scorecard":
         scorecard()
+    elif args.command == "prune":
+        from kpif_nowcast.sources import rawcache
+        from kpif_nowcast.sources.scb import RAW_DIR
+
+        removed = rawcache.prune(RAW_DIR, max(args.keep, 1))
+        print(f"pruned {len(removed)} old raw files")
 
 
 if __name__ == "__main__":

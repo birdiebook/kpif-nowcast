@@ -42,6 +42,21 @@ def require(raw_dir: Path, *names: str, ext: str = ".json") -> Path:
     raise OfflineError(f"offline: no cached raw file for {names[0]}{ext} in {raw_dir}")
 
 
+def prune(raw_dir: Path, keep: int) -> list[Path]:
+    """Delete all but the `keep` newest dated versions of each raw response (top level of raw_dir only)."""
+    pattern = re.compile(r"^(.*)_(\d{8})(\.[A-Za-z0-9]+)?$")
+    groups: dict[tuple[str, str], list[tuple[str, Path]]] = {}
+    for p in raw_dir.glob("*"):
+        if p.is_file() and (m := pattern.match(p.name)):
+            groups.setdefault((m.group(1), m.group(3) or ""), []).append((m.group(2), p))
+    removed = []
+    for versions in groups.values():
+        for _, p in sorted(versions)[:-keep]:
+            p.unlink()
+            removed.append(p)
+    return removed
+
+
 _original_request = requests.Session.request
 
 
