@@ -18,9 +18,12 @@ Sources (open, no key):
 Publication lags (evidence in docs/publiceringskalender.md, section "Korning 3: L5"):
 - TAB3571: month m around the 22nd-24th of m+1 (Sep 2026 -> 2026-10-23, Oct 2026 scheduled 2026-11-24,
   Ei: "uppdateras runt den 22:a i varje manad med en manads fordrojning") -> 28 days, revised=True.
-- TAB3950 and Ei: year Y (tariffs per 1 January Y) out in May of Y (SCB 2026-05-22, Ei file 2026-05-12)
-  -> -180 days against the December the year is stored on (known from early July of Y). So the tariff
-  for January Y is NOT known at the January Y deadline (4 February); at that point only Y-1 is known.
+  The documented revisions (Jan-Mar 2022, May 2023-Jun 2024) are release dates in publication.LATE_RELEASES.
+- TAB3950 and Ei: year Y (tariffs per 1 January Y) came out in May-June 2026 for 2026 (SCB 2026-05-22,
+  Ei file 2026-05-12), but only that one year is documented and earlier years may have come later
+  (EN0301 quality declaration for 2023 dated 2024-09-25). So lag 0 against the December the year is stored
+  on: known from 31 December Y. That is still before the January Y+1 deadline, where only Y is needed;
+  the tariff for January Y is NOT known at the January Y deadline (4 February), only Y-1 is.
 
 Annual values sit on December (catalog convention). Raw responses are cached under
 data/raw/l5/<name>_<fetch date>.<ext> and reused for MAX_AGE_DAYS.
@@ -49,7 +52,7 @@ EI_PAGE = "https://ei.se/om-oss/statistik-och-oppna-data/natavgifter---elnat"
 # Archive file (all years) as linked from EI_PAGE on 2026-11-23; used only if the page cannot be parsed.
 EI_FALLBACK = "https://ei.se/download/18.6586000219eb48404e7ac7/1781185169892/Hush%C3%A5llskunder.xlsx"
 
-LAG_CONTRACTS, LAG_GRID = 28, -180
+LAG_CONTRACTS, LAG_GRID = 28, 0
 
 # ------------------------------------------------------------------ cache and HTTP
 
@@ -138,8 +141,9 @@ def contract_share(*types: str, zone: str = "00"):
         if missing:
             raise ValueError(f"TAB3571: contract types {sorted(missing)} not in table")
         wide = df.pivot_table(index="Tid", columns="Avtalstyp", values="value", aggfunc="first")
-        # Hourly contracts are reported separately only from 2023-02 (before that they sat mainly in
-        # 'rorligt'), so a later type that is missing counts as 0; the first type must be present.
+        # Hourly contracts are reported separately only from 2023-02 (where they sat before is not stated;
+        # in the Jan-Feb 2023 shift about 2/3 came out of 'rorligt'), so a later type that is missing counts
+        # as 0; the first type must be present.
         s = wide[types[0]] + wide[list(types[1:])].fillna(0).sum(axis=1)
         from kpif_nowcast.sources.scb import to_month_period
 
@@ -312,20 +316,27 @@ def specs() -> list:
                         LAG_CONTRACTS, revised=True,
                         link="Rörliga avtal för över spotpriset direkt till KPIF-el; fasta avtal prissätts om "
                              "när de löper ut (ofta i januari).",
-                        note="Reviderad 2022 och 2023–24. Timpris redovisas separat från 2023-02 (låg tidigare "
-                             "främst i rörligt). Från 2025-02 ingår kvartsprisavtal i timpris."))
+                        note="Reviderad jan–mar 2022 (april 2022) och maj 2023–jun 2024 (rättad 2024-09-27, "
+                             "känd först då). Brott 2023-02: timpris redovisas separat, ca 2/3 av det ur "
+                             "rörligt, resten ur fast pris, anvisat och övriga (alla andelar faller den "
+                             "månaden). Från 2025-02 ingår kvartsprisavtal i timpris."))
     for key, cat, weighting, label in GRID:
         out.append(Spec(key, "energi", label, "öre/kWh exkl. skatt", "A", "SCB TAB3950", grid_price(cat, weighting),
                         LAG_GRID,
                         link="Nätavgiften ändras oftast 1 januari och är en del av januarieffekten i KPIF-el.",
-                        note="År Y = tariff 1 januari Y, publiceras i maj Y: vid januari-deadline är bara Y-1 känt."
-                             + (" Viktat från 2015." if weighting == "viktat" else " Från 1996.")))
+                        note="År Y = tariff 1 januari Y, känd från 31 dec Y (2026 kom i maj): vid januari-"
+                             "deadline Y är bara Y-1 känt."
+                             + (" Viktat från 2015, men vikterna infördes senare och räknades bakåt "
+                                "(metodändring): 2015 till införandeåret är som-om-historik."
+                                if weighting == "viktat" else " Från 1996.")))
     for key, kind, code, label, unit in EI:
         out.append(Spec(key, "energi", label, unit, "A", f"Energimarknadsinspektionen nätavgifter {code}",
                         ei(kind, code), LAG_GRID, revised=True,
                         link="Nätbolagens egna tariffer: hur bred och hur stor januarihöjningen av nätavgiften är.",
-                        note="År Y = tariff 1 januari Y, Ei publicerar i maj Y. Oviktat (varje nätområde lika). "
-                             "Sena eller rättade inrapporteringar kan ändra värdet."))
+                        note="År Y = tariff 1 januari Y, känd från 31 dec Y (2026 kom i maj). Oviktat (varje "
+                             "nätområde lika). Antalet nätområden krymper (151 år 2019, 116 år 2026), så "
+                             "medianens förändring innehåller en sammansättningseffekt; använd parvis "
+                             "förändring för ändringar. Sena eller rättade inrapporteringar kan ändra värdet."))
     return out
 
 

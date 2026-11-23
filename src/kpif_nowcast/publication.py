@@ -41,9 +41,20 @@ BLS_PPI_LATE = {
     "2025-12": "2026-01-30",
 }
 
+# SCB TAB3571 (electricity contract shares), table note: Jan-Mar 2022 revised "in April 2022" (day not given:
+# last day of April, conservative); May 2023-Jun 2024 "corrected 2024-09-27" (first releases were wrong and
+# are not available, so the corrected values count as known only from the correction date).
+EL_CONTRACT_KEYS = ["el_contract_spot_share", "el_contract_hourly_share", "el_contract_fixed_share",
+                    "el_contract_default_share"]
+EL_CONTRACT_LATE = {
+    **{p: "2022-04-30" for p in ["2022-01", "2022-02", "2022-03"]},
+    **{str(p): "2024-09-27" for p in pd.period_range("2023-05", "2024-06", freq="M")},
+}
+
 LATE_RELEASES: dict[str, dict[str, str]] = {
     **{k: EA_FLASH_LATE for k in EA_FLASH_KEYS},
     "freight_ppi_deepsea": BLS_PPI_LATE,
+    **{k: EL_CONTRACT_LATE for k in EL_CONTRACT_KEYS},
 }
 
 

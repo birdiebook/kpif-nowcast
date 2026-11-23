@@ -113,6 +113,17 @@ def test_january_deadline_sees_last_year_grid_and_previous_month_contracts():
     assert grid[1] >= pd.Timestamp("2026-06-11")  # later than both documented 2026 releases
     c = known_from("el_contract_spot_share", pd.PeriodIndex(["2025-12", "2026-01"], freq="M"), el.LAG_CONTRACTS)
     assert c[0] <= deadline < c[1]
+    # Annual series: conservative lag 0, known from 31 December Y (only the 2026 release date is documented).
+    assert grid[0] == pd.Timestamp("2025-12-31")
+
+
+def test_contract_corrections_known_only_from_correction_date():
+    """TAB3571 May 2023-Jun 2024 was corrected 2024-09-27; the wrong first releases are not available."""
+    for k in [k for k in el.keys() if k.startswith("el_contract")]:
+        kf = known_from(k, pd.PeriodIndex(["2023-04", "2023-05", "2024-06", "2024-07", "2022-02"], freq="M"),
+                        el.LAG_CONTRACTS)
+        assert list(kf) == [pd.Timestamp("2023-05-28"), pd.Timestamp("2024-09-27"), pd.Timestamp("2024-09-27"),
+                            pd.Timestamp("2024-08-28"), pd.Timestamp("2022-04-30")]
 
 
 @pytest.mark.skipif(not OBS_PATH.exists(), reason="data/observations.parquet missing")
