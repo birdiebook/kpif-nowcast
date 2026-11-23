@@ -83,13 +83,12 @@ def test_incomplete_month_dropped():
 def test_stale_cache_does_not_publish_incomplete_month(tmp_path, monkeypatch):
     """A file fetched 27 Nov and reused on 2 Dec: November is incomplete in it, so it must not appear."""
     monkeypatch.setattr(fx, "RAW_DIR", tmp_path / "l6")
-    monkeypatch.setattr(fx, "MAIN_RAW", tmp_path)
     (tmp_path / "l6").mkdir()
     (tmp_path / "l6" / "riksbank_SEKEURPMI_20261127.json").write_text(
-        _payload(_daily("2026-10-01", "2026-11-27", 11.0)), encoding="utf-8")
+        _payload(_daily("1993-01-04", "2026-11-27", 11.0)), encoding="utf-8")
     daily, fetched = fx.raw_daily("SEKEURPMI", today=date(2026, 12, 2))
     assert fetched == date(2026, 11, 27)
-    assert list(fx.monthly_mean(daily, fetched).index.astype(str)) == ["2026-10"]
+    assert str(fx.monthly_mean(daily, fetched).index.max()) == "2026-10"
 
 
 def test_parse():
@@ -102,7 +101,6 @@ def test_parse():
 
 def test_fresh_cache(tmp_path, monkeypatch):
     monkeypatch.setattr(fx, "RAW_DIR", tmp_path / "l6")
-    monkeypatch.setattr(fx, "MAIN_RAW", tmp_path)
     (tmp_path / "l6").mkdir()
     (tmp_path / "l6" / "riksbank_SEKUSDPMI_20261101.json").write_text("[]")
     (tmp_path / "riksbank_SEKUSDPMI_20261120.json").write_text("[]")
@@ -112,6 +110,50 @@ def test_fresh_cache(tmp_path, monkeypatch):
     assert hit == tmp_path / "l6" / "riksbank_SEKUSDPMI_20261120.json"
     assert fx._fresh("SEKUSDPMI", today=date(2026, 12, 29)) is None
     assert fx._fresh("SEKEURPMI", today=date(2026, 11, 23)) is None
+
+
+def test_main_raw_cache_from_other_modules_ignored(tmp_path, monkeypatch):
+    """data/raw/riksbank_SEKEURPMI_<date>.json from fetch_swea(start='2011-01-01') must not be reused."""
+    monkeypatch.setattr(fx, "RAW_DIR", tmp_path / "l6")
+    (tmp_path / "riksbank_SEKEURPMI_20261123.json").write_text(
+        _payload(_daily("2011-01-03", "2026-11-20", 9.0)), encoding="utf-8")
+    assert fx._fresh("SEKEURPMI", today=date(2026, 11, 23)) is None
+    called = []
+
+    def fake_download(sid, start=fx.START, tries=6):
+        called.append((sid, start))
+        return _payload(_daily("1993-01-04", "2026-11-20", 10.0))
+
+    monkeypatch.setattr(fx, "_download", fake_download)
+    daily, _ = fx.raw_daily("SEKEURPMI", today=date(2026, 11, 23))
+    assert called == [("SEKEURPMI", "1993-01-01")]
+    assert daily.index.min() == pd.Timestamp("1993-01-04")
+
+
+def test_truncated_cache_rejected(tmp_path, monkeypatch):
+    monkeypatch.setattr(fx, "RAW_DIR", tmp_path / "l6")
+    (tmp_path / "l6").mkdir()
+    (tmp_path / "l6" / "riksbank_SEKUSDPMI_20261123.json").write_text(
+        _payload(_daily("2000-01-03", "2026-11-20", 9.0)), encoding="utf-8")
+    with pytest.raises(ValueError, match="starts 2000-01-03"):
+        fx.raw_daily("SEKUSDPMI", today=date(2026, 11, 23))
+
+
+def test_offline_replays_old_cache(tmp_path, monkeypatch):
+    """KPIF_OFFLINE: newest file in data/raw/l6 regardless of age; no file -> OfflineError, no download."""
+    from kpif_nowcast.sources import rawcache
+
+    monkeypatch.setattr(fx, "RAW_DIR", tmp_path / "l6")
+    monkeypatch.setenv(rawcache.ENV, "1")
+    monkeypatch.setattr(fx, "_download", lambda *a, **k: pytest.fail("network in offline mode"))
+    with pytest.raises(rawcache.OfflineError):
+        fx.raw_daily("SEKUSDPMI", today=date(2027, 3, 1))
+    (tmp_path / "l6").mkdir()
+    (tmp_path / "l6" / "riksbank_SEKUSDPMI_20261123.json").write_text(
+        _payload(_daily("1993-01-04", "2026-11-20", 9.0)), encoding="utf-8")
+    daily, fetched = fx.raw_daily("SEKUSDPMI", today=date(2027, 3, 1))  # 98 days old
+    assert fetched == date(2026, 11, 23)
+    assert str(fx.monthly_mean(daily, fetched).index.max()) == "2026-10"
 
 
 # ---------------------------------------------------------------- with data

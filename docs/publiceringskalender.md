@@ -128,6 +128,8 @@ Granskning, metod och dom: [auto2/k11/granskning.md](auto2/k11/granskning.md). L
 
 EUR/SEK och USD/SEK som månadsmedel av Riksbankens dagliga fixingkurser, bara hela månader (`catalog_fx.py`). KIX finns redan som `kix` ovan och dupliceras inte.
 
+Fördröjningen är kontrollerad vid en enda tidpunkt (2026-11-23), eftersom SWEA inte har historiska publiceringstidpunkter per period. revised=nej bygger på metoden (en fixing har inga vintagar), inte på en jämförelse mellan vintagar. Före 1999 är `sek_eur` ECU-kursen.
+
 | Nyckel | Fördröjning | Rev. | Belagd fördröjning (d) | Belägg | Dom |
 |---|---|---|---|---|---|
 | `sek_eur` | 1 | nej | 0 (fixingen publiceras kl. 16.15 samma bankdag; hämtning 2026-11-23 hade `observationMaxDate` 2026-11-20, sista bankdagen) | SWEA `/Groups` grupp 130 "Observations are published daily at 16.15 p.m."; `/Series` SEKEURPMI; riksbank.se "valutakurserna kl. 16.15 varje svensk bankdag". Rev.: fixing utan vintagar; eget månadsmedel = SWEA `ObservationAggregates` (M) på 5 decimaler för alla 406 månader 1993-01..2026-10 | OK (hela månaden före dag 4) |

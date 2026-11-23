@@ -11,7 +11,7 @@
 - KIX (`kix`, SEKKIX92) fanns redan i katalogen och dupliceras inte. TCW (SEKTCW92) är nedlagd i SWEA (2021-06)
   och läggs inte till. Katalogens konvention för marknadsserier är nivå (som `kix` och `brent_sek`), så serierna
   är nivåer. Årsförändring räknas fram i modellsteget.
-- `tests/test_l6_fx.py` (13 tester): månadsmedel, att ofullständig månad tas bort (också sista dagen i månaden,
+- `tests/test_l6_fx.py` (16 tester efter granskningen): månadsmedel, att ofullständig månad tas bort (också sista dagen i månaden,
   innan fixingen kl. 16.15), gammal cache, parsning med dubbletter och tomma värden, cacheval, placering i katalogen,
   known_from före deadline, plus datatester (inga hål, inga dubbletter, known_from ≥ periodslut + 1 d, rimliga nivåer,
   inget månadshopp över 15 %).
@@ -26,6 +26,9 @@
 |---|---|---|---|---|---|
 | `sek_eur` | EUR/SEK, SEKEURPMI | 1993-01 | 1 d | nej | SWEA grupp 130: "Observations are published daily at 16.15"; `observationMaxDate` 2026-11-20 vid hämtning måndag 2026-11-23 |
 | `sek_usd` | USD/SEK, SEKUSDPMI | 1993-01 | 1 d | nej | Som ovan |
+
+Före 1999 är `sek_eur` ECU-kursen, inte euron (Riksbankens SWEA-kedjning; första notering 1993-01-04,
+euron infördes 1999-01-01). Modeller som vill ha en ren eurokurs bör börja 1999-01.
 
 Revised=nej: en fixing är en enskild notering utan vintagar, och SWEA har inget versionsbegrepp för
 valutakurser. Det belägg som finns är att vår aggregering av dagens data stämmer exakt med Riksbankens
@@ -46,7 +49,7 @@ Inget. Allt går mot `api.riksbank.se` (tillåten), utan nyckel.
 | KIX | 114,1 | 122,0 | | +3,8 % | |
 
 Kronan har försvagats under hela 2026 efter toppen i februari: +5 % mot euron, +11 % mot dollarn och +7 % i
-KIX fram till oktober. Den har nu tillbaka det mesta av styrkan från vintern och ligger nära femårssnittet.
+KIX fram till oktober. Den har nu gett tillbaka det mesta av styrkan från vintern och ligger nära femårssnittet.
 Försvagningen mot dollarn är större än mot euron, så den slår först mot det som prissätts i dollar
 (drivmedel, råvaror). Novembers medel hittills ligger på oktobers nivå, men sista veckan har kronan försvagats
 igen (11,21 respektive 10,20 den 20 november). För KPIF betyder det att stödet från en stark krona, som
@@ -78,3 +81,30 @@ dämpade varupriserna under första halvåret, har vänt till ett svagt uppåttr
   för målmånad t utan läckage.
 - Risk för överlapp: `kix`, `brent_sek` och importpriserna bär delvis samma information. Det bör vägas in vid valet
   av högst tre serier.
+
+## Granskning
+
+En oberoende granskare lämnade fem fynd. Alla bedömdes mot källan och stämde. Fyra rättades, och det femte
+dokumenterades.
+
+1. **Fel, rättat: fel startmånad efter merge.** `_fresh()` letade också i `data/raw/` och kunde där plocka
+   `riksbank_SEKEURPMI_<datum>.json` och `riksbank_SEKUSDPMI_<datum>.json`, som `sources.riksbank.fetch_swea()`
+   skriver med start 2011-01 (energinet) eller 2000-01 (features). I main hade serierna då börjat 2011-01
+   respektive 2000-01. Det var inget läckage, men span och tester stämde inte. Kontrollerat: filerna i
+   huvudcheckouten börjar 2011-01-03 och 2000-01-03. Rättning: `data/raw/` söks inte längre (`MAIN_RAW` är
+   borttagen), och `raw_daily()` vägrar dessutom rådata som börjar senare än START + 10 dagar. Nya tester:
+   en fil i `data/raw/` från 2011 ignoreras och en nedladdning från 1993-01-01 görs, och en trunkerad cache
+   ger ValueError. Kontrollerat också med huvudcheckoutens filer kopierade in: båda serierna börjar 1993-01.
+2. **Mindre, rättat: offline-läge saknades.** Med `KPIF_OFFLINE` spelar `raw_daily()` nu upp den nyaste filen
+   i `data/raw/l6`, oavsett ålder, via `rawcache.require()`. Saknas fil blir det OfflineError och ingen
+   nedladdning. Det testas.
+3. **Mindre, rättat: ECU före 1999.** Det står nu i noten för `sek_eur` i `catalog_fx.specs()`, i
+   moduldokumentationen och ovan.
+4. **Mindre, rättat: formuleringen om "tillbaka styrkan".** Den lyder nu "gett tillbaka". Granskaren
+   kontrollerade övriga siffror i lägestabellen och fann att de stämmer.
+5. **Mindre, dokumenterat (ingen kodändring): fördröjningen är verifierad vid en enda tidpunkt.** SWEA har inga
+   historiska publiceringstidpunkter per period. Fördröjningen bygger på Riksbankens publiceringsregel (kl. 16.15
+   samma bankdag) och på kontroller 2026-11-23, egen och granskarens. Marginalen mot deadline dag 4 är 3 dagar.
+   revised=False bygger på metoden (en fixing har inga vintagar) och inte på en jämförelse mellan vintagar. Detta
+   står nu också i publiceringskalendern.
+

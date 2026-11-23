@@ -12,8 +12,13 @@ against the date the raw file was fetched, not today's date: a cached file fetch
 and reused on 2 December must not publish a November mean built on 19 of 21 fixings.
 
 Raw responses are cached under data/raw/l6/riksbank_<series>_<fetch date>.json. A cached file at
-most MAX_AGE_DAYS old is reused instead of downloading again (files in data/raw/ cached by
-sources.riksbank are reused the same way).
+most MAX_AGE_DAYS old is reused instead of downloading again. Files that sources.riksbank.fetch_swea() writes
+in data/raw/ share the name pattern but are fetched from later start dates (2000, 2011), so they are
+deliberately not reused; a cached file must also start within a few days of START. With KPIF_OFFLINE
+set, the newest file in data/raw/l6 is replayed regardless of age.
+
+SEKEURPMI before 1999-01 is the ECU rate (SWEA chains ECU to EUR); the series is labelled EUR/SEK
+throughout.
 
 Publication lag: SWEA group 130 ("Currencies against Swedish kronor") states "Observations are
 published daily at 16.15"; the fixing for the last bank day of a month is out the same afternoon,
@@ -33,13 +38,13 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
 RAW_DIR = ROOT / "data" / "raw" / "l6"
-MAIN_RAW = ROOT / "data" / "raw"
 MAX_AGE_DAYS = 7
 HEADERS = {"User-Agent": "kpif-nowcast research script"}
 
 SWEA_URL = "https://api.riksbank.se/swea/v1/Observations/{series}/{start}"
 START = "1993-01-01"  # SEKEURPMI and SEKUSDPMI both start 1993-01-04 (SWEA /Series metadata)
 LAG_FX = 1
+START_SLACK_DAYS = 10  # 1993-01-01 is a holiday; the first fixing is 1993-01-04
 
 FX = [  # key, SWEA id, label, unit, link
     ("sek_eur", "SEKEURPMI", "EUR/SEK (kronor per euro)", "SEK/EUR",
@@ -57,18 +62,22 @@ def _file_date(p: Path) -> date | None:
     return datetime.strptime(m.group(1), "%Y%m%d").date() if m else None
 
 
+def _covers_start(daily: pd.Series) -> bool:
+    """True if a payload starts within START_SLACK_DAYS of START (guards against truncated caches)."""
+    return not daily.empty and daily.index.min() <= pd.Timestamp(START) + pd.Timedelta(days=START_SLACK_DAYS)
+
+
 def _fresh(series_id: str, today: date | None = None) -> Path | None:
-    """Newest cached raw file for a series (data/raw/l6 or data/raw) no older than MAX_AGE_DAYS."""
+    """Newest cached raw file in data/raw/l6 no older than MAX_AGE_DAYS (data/raw/ is not searched)."""
     today = today or date.today()
     best = None
-    for d in (RAW_DIR, MAIN_RAW):
-        for p in d.glob(f"riksbank_{series_id}_*.json"):
-            got = _file_date(p)
-            if got is None or got > today:
-                continue
-            if (today - got).days <= MAX_AGE_DAYS and (best is None or (got, d == RAW_DIR) > best[:2]):
-                best = (got, d == RAW_DIR, p)
-    return best[2] if best else None
+    for p in RAW_DIR.glob(f"riksbank_{series_id}_*.json"):
+        got = _file_date(p)
+        if got is None or got > today:
+            continue
+        if (today - got).days <= MAX_AGE_DAYS and (best is None or got > best[0]):
+            best = (got, p)
+    return best[1] if best else None
 
 
 def _download(series_id: str, start: str = START, tries: int = 6) -> str:
@@ -93,14 +102,23 @@ def _download(series_id: str, start: str = START, tries: int = 6) -> str:
 
 def raw_daily(series_id: str, today: date | None = None) -> tuple[pd.Series, date]:
     """Daily fixings and the date they were fetched (from the cache file name, or today)."""
-    hit = _fresh(series_id, today)
+    from kpif_nowcast.sources import rawcache
+
+    if rawcache.offline():
+        hit = rawcache.require(RAW_DIR, f"riksbank_{series_id}")
+    else:
+        hit = _fresh(series_id, today)
     if hit is not None:
         text, fetched = hit.read_text(encoding="utf-8"), _file_date(hit)
     else:
         text, fetched = _download(series_id), date.today()
         RAW_DIR.mkdir(parents=True, exist_ok=True)
         (RAW_DIR / f"riksbank_{series_id}_{fetched:%Y%m%d}.json").write_text(text, encoding="utf-8")
-    return parse(json.loads(text)), fetched
+    daily = parse(json.loads(text))
+    if not _covers_start(daily):
+        start = daily.index.min().date() if not daily.empty else None
+        raise ValueError(f"{series_id}: raw data starts {start}, expected about {START}")
+    return daily, fetched
 
 
 def parse(payload: list[dict]) -> pd.Series:
@@ -145,7 +163,8 @@ def specs() -> list:
 
     return [
         Spec(key, "penningpolitik", label, unit, "M", f"Riksbanken SWEA {sid}", fx_monthly(sid), LAG_FX,
-             link=link, note="Månadsmedel av dagliga fixingkurser (kl. 16.15), bara hela månader.")
+             link=link, note="Månadsmedel av dagliga fixingkurser (kl. 16.15), bara hela månader."
+                  + (" Före 1999: ECU (Riksbankens SWEA-kedjning)." if sid == "SEKEURPMI" else ""))
         for key, sid, label, unit, link in FX
     ]
 
