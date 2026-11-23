@@ -47,7 +47,8 @@ jobs:
           key: kpif-data-${{ github.run_id }}
           restore-keys: kpif-data-
       - name: Check that the cache had data
-        run: test -f data/observations.parquet || { echo "no data in cache: run 'Weekly data fetch' first"; exit 1; }
+        run: |
+          test -f data/observations.parquet || { echo "no data in cache: run 'Weekly data fetch' first"; exit 1; }
       - name: Build site/
         run: python -m kpif_nowcast.pipeline site --offline
       - uses: actions/configure-pages@v5
