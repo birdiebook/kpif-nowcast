@@ -15,6 +15,8 @@ from pathlib import Path
 import pandas as pd
 import requests
 
+from kpif_nowcast.sources import rawcache
+
 BASE_URL = "https://statistikdatabasen.scb.se/api/v2"
 RAW_DIR = Path(__file__).resolve().parents[3] / "data" / "raw"
 
@@ -29,6 +31,11 @@ def fetch_table(
     so chunks of the same table don't overwrite each other).
     """
     value_codes = value_codes or {"ContentsCode": "*", "Tid": "*"}
+    tag = hashlib.md5(json.dumps(value_codes, sort_keys=True).encode()).hexdigest()[:6]
+    if rawcache.offline():
+        # older raw files have no selection tag; those come from the single selection data.py uses
+        path = rawcache.require(RAW_DIR, f"scb_{table_id}{raw_suffix}_{tag}", f"scb_{table_id}{raw_suffix}")
+        return _jsonstat_to_frame(json.loads(path.read_text(encoding="utf-8")))
     params = {"lang": lang, "outputFormat": "json-stat2"}
     params.update({f"valueCodes[{k}]": v for k, v in value_codes.items()})
 
@@ -37,7 +44,6 @@ def fetch_table(
     payload = resp.json()
 
     RAW_DIR.mkdir(parents=True, exist_ok=True)
-    tag = hashlib.md5(json.dumps(value_codes, sort_keys=True).encode()).hexdigest()[:6]
     (RAW_DIR / f"scb_{table_id}{raw_suffix}_{tag}_{date.today():%Y%m%d}.json").write_text(
         json.dumps(payload), encoding="utf-8"
     )

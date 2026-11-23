@@ -362,3 +362,11 @@ Ridge/lasso/boosting på residualen mot 50/50, rb_updated och J2 V2, nästlad ti
 ensemble ridge+boosting på S 0,201 (Holm 0,055), ridge på S 0,206 (Holm 0,083). Vinsten kommer 2020–2025,
 inte från reviderade serier; 2026 är något sämre. Gissningen innan (ingen klarar) var fel. Frysta vid 415ba6f;
 föreslagen K1-kandidat `k2_avg_ens_s`. Detaljer: [docs/auto2/k2/resultat.md](auto2/k2/resultat.md).
+
+## 2026-11-23 – K1 Drift: skuggprognoser i GitHub Actions (förslag, aktiveras vid merge)
+**Vad:** `pipeline.py` (veckohämtning och prognoskörning som kommandon), skuggprognoser i
+`forecasts/shadow/<modell>/<månad>.json` för den skarpa modellen (`comp_fuel_el`), J2 V2 och 50/50, offlineläge
+som bygger om allt från `data/raw/`, DuckDB-datatester och en champion/challenger-tabell i SCORECARD.md.
+**Val:** data i Actions-cachen (inget konto), låsta paketversioner, FINAL-skuggor skrivs aldrig över.
+Inga nya varianter. Reproducerbarhet från ren klon + råcache är verifierad, men en helt nätbaserad hämtning
+från noll är inte testad. Detaljer: [docs/auto2/k1/resultat.md](auto2/k1/resultat.md).

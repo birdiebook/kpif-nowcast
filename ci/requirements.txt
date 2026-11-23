@@ -1,0 +1,13 @@
+# Pinned to the versions in the local venv the shadow forecasts were made with (2026-11-23),
+# so that CI and local runs give identical numbers. Used by .github/workflows/*.yml.
+numpy==2.5.5
+pandas==3.1.1
+requests==2.34.2
+pyarrow==26.0.1
+tabulate==0.10.0
+matplotlib==3.11.2
+scikit-learn==1.9.1
+scipy==1.18.1
+xlrd==2.0.2
+duckdb==2.0.1
+pytest==9.2.0

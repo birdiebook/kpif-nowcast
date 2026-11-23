@@ -1,5 +1,7 @@
 """Compare logged live forecasts with SCB's outcomes -> forecasts/SCORECARD.md.
 
+Also appends the champion/challenger table for the shadow models (champion.py).
+
 Run after each SCB release: python -m kpif_nowcast.scorecard
 """
 
@@ -49,6 +51,12 @@ def main() -> None:
             f"**Genomsnittligt absolut fel:** modellen {done['Fel'].abs().mean():.2f} pe, "
             f"Riksbanken {done['Fel Riksbanken'].abs().mean():.2f} pe ({len(done)} månader).",
         ]
+    try:  # the shadow table must never stop the live scorecard from being written
+        from kpif_nowcast.champion import section
+
+        lines += section()
+    except Exception as exc:  # noqa: BLE001
+        print(f"WARNING: champion/challenger table skipped: {type(exc).__name__}: {exc}")
     (FORECAST_DIR / "SCORECARD.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))
 

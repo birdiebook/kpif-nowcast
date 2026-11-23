@@ -1,0 +1,25 @@
+{
+  "target_month": "2026-11",
+  "model": "j1_comb_equal",
+  "description": "J1 C1: 50/50 of rb_updated and J2 V2",
+  "status": "PRELIMINARY",
+  "deadline": "2026-12-04",
+  "forecast_yy": 1.52,
+  "forecast_yy_rounded": 1.5,
+  "forecast_mm_pp": null,
+  "last_known": {
+    "month": "2026-10",
+    "yy": 1.1
+  },
+  "inputs": {
+    "el_days": 22,
+    "fuel_last_day": "2026-11-17",
+    "el_chg": 0.9574,
+    "fuel_chg": -0.2702
+  },
+  "run": {
+    "made_at": "2026-11-23T09:39:51",
+    "code_commit": "b72bfac",
+    "as_of": "2026-11-23"
+  }
+}
