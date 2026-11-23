@@ -89,6 +89,13 @@ Riksbanksomgångar publicerade efter cutoff, sammansättning utan modelldata), `
 
 ## Status
 
-- Brevet för 2026-11: omgenereringen (`python -m kpif_nowcast.manadsbrev 2026-11 --today 2026-11-23 --no-k2`) körs
-  i den delade containern (champion-tabellen räknar K2-historiken, load ~38 på 4 kärnor). Se commit-loggen på
-  `auto3/l9`: committas bara om den blev klar och diffen bara gäller de nya sektionerna och nyare datavintage.
+- **Brevet `docs/manadsbrev/2026-11.md` är inte omgenererat.** Omgenereringen
+  (`python -m kpif_nowcast.manadsbrev 2026-11 --today 2026-11-23 --no-k2`) hann inte bli klar på 40 minuter i den
+  delade containern. Champion-tabellen räknar K2-historiken, och lasten var ~35 på 4 kärnor. Körningen stoppades vid
+  fönstrets slut. Sektionerna är testade utan modelldata (`test_letter_has_new_sections_without_model_data`), och
+  innehållet för november och december står ovan. Nästa månadsjobb (eller samma kommando på en ledig maskin)
+  skriver brevet med de nya sektionerna. Informationsdatumet blir oförändrat 2026-11-23.
+- **Hela pytest-sviten är inte körd** (> 40 min seriellt, containern överbelastad). Riktade sviter är gröna:
+  test_l9_routine, test_l1_admin_calendar, test_l7_flash, test_k13_tax, test_publication_calendar och delar av
+  test_shadow (41 + 12 passerade, 1 hoppad). test_k5:s brevtester (tunga) är inte körda. Orkestreraren kör hela sviten
+  på det sammanslagna resultatet.
