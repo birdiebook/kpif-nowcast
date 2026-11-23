@@ -12,6 +12,10 @@ efter varje körning. Tumreglerna överst justeras när siffrorna ändras.
 - Med 3 spår parallellt ger det cirka 10–12 spår per timme. Orkestrerarens merge och pytest på main
   tar 2–4 min per spår.
 - Körning 1 var dimensionerad i människotempo (7 jobb) och tog slut efter 30 minuter.
+- **Användningsfönster:** K0–K6 (sex spår plus orkestrering, 3 parallellt) använde ca **20 % av ett
+  5-timmarsfönster**. Ett fönster rymmer alltså ungefär **30 spår**. Med 3 parallella spår blev
+  parallelliteten flaskhalsen och inte budgeten. Kör **5–6 spår parallellt** och dimensionera
+  backloggen till ca 25 spår per fönster, med reserv för granskning.
 
 ## Mätningar
 

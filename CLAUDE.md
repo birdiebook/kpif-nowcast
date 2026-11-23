@@ -45,7 +45,7 @@ Projektet ska tänja gränserna för vad AI-agenter kan leverera själva.
 - **Enheten är ett agentspår:** en avgränsad leverans med tester, av en agent i egen worktree.
   Den aktuella kostnaden per spår (tid, verktygsanrop, tokens) står i
   [`docs/agentkalibrering.md`](docs/agentkalibrering.md). Läs den innan en körning planeras.
-- **Kapacitet = parallella spår × tid.** Dimensionera backloggen så att den fyller körningen
+- **Kapacitet = parallella spår × tid.** Utgå från användningsfönstret (5 h, se kalibreringen), inte från ett fast tak på antal spår. Dimensionera backloggen så att den fyller körningen
   (till exempel en natt), med reserv. Ett jobb bedöms som "1 spår", "3 spår parallellt",
   "1 spår + granskning", aldrig i timmar eller dagar.
 - **Taket sätts av de verkliga flaskhalsarna:**
