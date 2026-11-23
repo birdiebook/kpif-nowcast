@@ -16,3 +16,13 @@ J3:s screening räknas inte.
 | (resultat 18–23) | J5 | träff 50/80/90: U1 40/62/77 · U2 49/77/89 · U3 40/63/73 · U4 52/80/89 · U5 40/68/76 · U6 35/63/77 | se rad | pinball U4 0,085 | 142 | – | – | 20261122 j5_intervals |
 
 **Löpande total: 23/50**
+
+
+## Körning 2 (tak 30)
+| # | Spår | Varianter | SHA | Resultat |
+|---|---|---|---|---|
+| 24–31 | K2 | k2_avg_ridge_s, k2_avg_lasso_s, k2_avg_hgb_s, k2_avg_ens_s, k2_avg_ridge_l, k2_rb_ridge_s, k2_j2_ridge_s, k2_rb_hgb_s (förreg. 3964396) | 4ef395e | se docs/auto2/k2/resultat.md |
+| 32 | K2 | k2_avg_ridge_lnr (diagnostik, tillagd efter resultat, utanför Holm) | 4ef395e | 0,199 |
+| 33–34 | K0 | K0-C1 (på rb_updated), K0-C2 (på 50/50) | afa36e7 | 0,281 vs 0,281; 0,226 vs 0,232 (Holm 0,097) |
+
+**Löpande total: 34 (körning 2: 11/30)**
