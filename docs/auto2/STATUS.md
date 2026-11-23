@@ -1,8 +1,8 @@
 # Status: autonom körning 2 (Sverige på djupet)
 
-**Lås:** orkestrerare 2026-11-23T08:49Z · heartbeat 2026-11-23T08:49Z
+**Lås:** orkestrerare 2026-11-23T09:05Z · heartbeat 2026-11-23T09:05Z
 **Start:** 2026-11-23 · **Bas:** main @ 42b717b
-**Varianter i körningen:** 11/30 (projektet totalt 23 + 11 = 34) · **main:** 25a6a6e
+**Varianter i körningen:** 11/30 (projektet totalt 23 + 11 = 34) · **main:** 564c508
 **Merge:** klara spår mergas till main av orkestreraren (ändrat 2026-11-23) · **Brief:** [BRIEF.md](BRIEF.md) · regler: `docs/autonom-korning-2.md` på main
 
 ## Spår
@@ -13,15 +13,17 @@
 | K1 Drift | auto2/k1 | k1 | **KLAR, mergad** (a6fe532) | – | 3d376c1 | pipeline.py, shadow.py, 2 workflows (schedule/dispatch, nu aktiva på main), DuckDB + 12 datatester, champion/challenger i SCORECARD. Offline-repro identisk. Onlinerepro → K2b. |
 | K2 ML | auto2/k2 | k2 | **KLAR, mergad** (806e943) | 9/10 | 4ef395e | Urvalsevidens (34 varianter totalt): k2_avg_ridge_l 0,199 (Holm 0,014), k2_avg_ens_s 0,201 (0,055), k2_avg_ridge_s 0,206 (0,083) mot 50/50 0,217 → **klarade urvalsskärmen**. Granskas oberoende i K2b innan skugga. |
 | K2b Granskning + K2-skugga + onlinerepro | auto2/k2b | k2b | pågår | 0 | 25a6a6e | – |
-| K3 Förklaring | auto2/k3 | k3 | pågår | – | 25a6a6e | – |
+| K3 Förklaring | auto2/k3 | k3 | **KLAR, mergad** (52191e2) | 0 | 4f7a154 | explain.py: bidrag per komponent, nyhetsdekomposition, felet per komponent, EWMA-band. 2026-11: 2,05 % (el +0,91, drivmedel −0,32). Fel 2015–26: tjänster 37 % av kvadratfelet, energi 21, varor 20, livsmedel 20. Inkopplat i pipeline monthly. |
 | K4 Regionalt | auto2/k4 | k4 | pågår | – | 25a6a6e | – |
 | K5 Sverigeläget v2 | – | – | väntar (K3, K4) | – | – | – |
-| K6 Om lätt | – | – | väntar | ≤4 | – | – |
+| K6 Om lätt | auto2/k6 | k6 | pågår (vintages, nordisk el) | 0/4 | 564c508 | – |
 
 ## Källlås
-- SCB (regional), Arbetsförmedlingen: K4 (K2b får göra en liten onlinerepro mot SCB)
+- SCB (regional), Arbetsförmedlingen: K4
+- Riksbanken, KI, Eurostat: K6 (K2b får göra en liten onlinerepro mot SCB)
 
 ## Logg
+- 2026-11-23T09:05Z: K3 klar, mergad (87 passed på main). K6 startad. CLAUDE.md fick "Storleksbedömning" och docs/agentkalibrering.md (564c508).
 - 2026-11-23T08:49Z: K2, K1, K0 klara; pytest grönt på sammanslaget main (74 passed); mergade och pushade. K3, K4, K2b startade från 25a6a6e.
 - 2026-11-23 10:05: Johannes: agentic first. Orkestreraren mergar klara spår till main när pytest är grönt (CLAUDE.md "Agentiskt arbete", main 63a07c6). Syftesändringen ligger nu på main; grenen auto2/syfte är ersatt.
 - 2026-11-23 09:50: Johannes: nytt syfte (inte lärprojekt; bästa möjliga lösning och bild av Sverige via KPIF). CLAUDE.md, vision.md, beslutslogg och K2-texten uppdaterade på grenen auto2/syfte (d77c022), merge beslutar Johannes. Spåragenterna informerade.
