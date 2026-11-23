@@ -15,6 +15,7 @@ from kpif_nowcast.data import PROCESSED_DIR
 
 needs_data = pytest.mark.skipif(not obs.PATH.exists() or not (PROCESSED_DIR / "features.csv").exists(),
                                 reason="data/observations.parquet or data/processed missing")
+pytestmark = pytest.mark.usefixtures("memo_champion")  # conftest.py: champion history computed once per input
 NEW = ["region", "af", "ai_indicator", "prisled", "forecast", "champion", "explain_summary", "explain_text",
        "explain_components"]
 

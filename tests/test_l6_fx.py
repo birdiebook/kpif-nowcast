@@ -34,13 +34,16 @@ def test_specs():
         assert s.link and s.note and s.source.startswith("Riksbanken SWEA SEK")
 
 
-def test_registered_once_right_after_catalog_prices():
+def test_registered_once_after_catalog_prices():
+    """Registered once, as one contiguous block after K0's price chain (other run-3 modules may sit in between)."""
     from kpif_nowcast import catalog_prices
 
     keys = [s.key for s in CATALOG]
     assert len(keys) == len(set(keys))
     last_k0 = keys.index(catalog_prices.keys()[-1])
-    assert keys[last_k0 + 1:last_k0 + 3] == fx.keys()
+    first_fx = keys.index(fx.keys()[0])
+    assert first_fx > last_k0
+    assert keys[first_fx:first_fx + len(fx.keys())] == fx.keys()
 
 
 def test_kix_not_duplicated():
