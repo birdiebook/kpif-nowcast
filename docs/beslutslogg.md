@@ -486,3 +486,10 @@ liten shim (`templates/dash-shim.js`) ersätter de fyra delar av `dash`-API:t so
 varje lyckad veckohämtning och månadskörning, från samma Actions-cache. Varför: Claude Data kräver manuell uppladdning,
 Pages blir aktuell av sig själv. Bara aggregerad öppen data som redan finns i dashboarden. Pages måste slås på en gång
 (Settings → Pages → Source: GitHub Actions). Detaljer: [docs/auto2/k10/resultat.md](auto2/k10/resultat.md).
+
+## 2026-11-23 – Planering av AI-tracker som eget publikt repo
+
+Ett nytt, fristående projekt planeras för att följa AI-utrullningen i världen med samma metod (katalog,
+`known_from`/`as_of()`, förregistrering, scorecard). **Val:** eget publikt repo, neutral spårning av takt och
+förändring i takt i stället för larmnivåer, och ingen koppling till placeringar i det publika repot.
+Ramverket kopieras, det paketeras inte. Plan: [docs/ai-tracker/plan.md](ai-tracker/plan.md).
