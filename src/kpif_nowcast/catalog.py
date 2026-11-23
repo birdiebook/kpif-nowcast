@@ -381,6 +381,11 @@ CATALOG: list[Spec] = [
 ]
 
 
+# Series added by separate modules (one per job), appended here so every tool sees them.
+from kpif_nowcast import catalog_af  # noqa: E402
+
+CATALOG += catalog_af.specs()
+
 def by_key() -> dict[str, Spec]:
     return {s.key: s for s in CATALOG}
 

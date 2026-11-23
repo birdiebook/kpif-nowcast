@@ -314,3 +314,9 @@ pinball; rullande 36 mån (U2) klarade också ±5 pe. Expanderande metoder, som 
 Att skala med elprisets svängning hjälpte inte; det är felnivåns skift över tid som spelar roll. I oroliga
 månader är banden fortfarande för smala. Förslag till forecast.py finns men är inte aktiverat.
 Detaljer: [docs/auto/j5/resultat.md](auto/j5/resultat.md).
+
+## 2026-11-22 – J6 Arbetsförmedlingens varsel och inskrivna arbetslösa
+**Vad:** Tre nya katalogserier i egen modul (`catalog_af.py`): varsel (1992–), inskrivna och öppet arbetslösa
+(1996–), riket, månad, fördröjning 15 dagar. **Brott:** åldersgränsen höjs 2023 och 2026, men brottet syns inte
+i januariförändringarna; varsel tas bara som riket totalt, så SNI-byten spelar ingen roll. Varsel är reviderad
+(2025-06-30 från 2019-11). Ingen modellvariant. Detaljer: [docs/auto/j6/kvalitet.md](auto/j6/kvalitet.md).
