@@ -381,8 +381,10 @@ def headline(month: pd.Period, fc_facts: dict, sit: dict, e: dict | None) -> lis
 
 # Decisions on the calendar's suggestion (beslutslogg), shown when made by the cutoff: month -> (date, text)
 ADMIN_DECISIONS = {
-    "2026-11": ("2026-11-23", "Johannes beslutade 2026-11-23 att inte justera novemberprognosen; den schemalagda "
-                              "slutprognosen körs oförändrad (beslutsloggen)."),
+    "2026-11": ("2026-11-23", "K13:s förslag `--adjust 0.15` för 2026-11 används inte. Den schemalagda "
+                              "slutprognosen körs oförändrad (Johannes, beslutsloggen 2026-11-23). K13:s förslag "
+                              "inkluderade månadskorten; kalenderns +0,04 pe (månadskort) har inte beslutats "
+                              "separat och är därför Johannes att bekräfta."),
 }
 
 

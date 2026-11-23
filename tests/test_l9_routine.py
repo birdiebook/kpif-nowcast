@@ -104,6 +104,27 @@ def test_pipeline_admin_step_not_fatal_in_monthly(monkeypatch, capsys):
         pipeline.admin_calendar("2026-12")
 
 
+def test_pipeline_steps_not_fatal_on_import_error(monkeypatch, capsys):
+    import builtins
+
+    real_import = builtins.__import__
+
+    def failing(name, globals=None, locals=None, fromlist=(), level=0):
+        if fromlist and any(f in ("admin_calendar", "manadsbrev", "explain") for f in fromlist):
+            raise ImportError("simulated")
+        return real_import(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr(builtins, "__import__", failing)
+    pipeline.admin_calendar("2026-12", strict=False)
+    pipeline.manadsbrev("2026-12", strict=False)
+    pipeline.explain(strict=False)
+    out = capsys.readouterr().out
+    assert "WARNING: admin calendar failed" in out and "WARNING: monthly letter failed" in out
+    assert "WARNING: explanation failed" in out
+    with pytest.raises(ImportError):
+        pipeline.admin_calendar("2026-12")
+
+
 def test_monthly_runs_admin_before_letter(monkeypatch):
     calls = []
     for name in ["fetch", "fetch_shadow_observations", "shadow", "scorecard", "explain", "admin_calendar", "manadsbrev"]:
@@ -203,10 +224,15 @@ def test_flash_reference_same_months_and_flash_row():
     assert df.loc["b", "Andel inom ±0,1 av snabb"] == pytest.approx(2 / 3)
     assert df.loc["snabb_kpi", "MAE mot utfall"] == pytest.approx(0.1 / 3)
     assert meta["flash_n_nonzero"] == 1 and meta["flash_max_abs"] == pytest.approx(0.1)
-    # the flash's own error comes from the first-published error series when given
-    err = pd.Series([0.0, 0.0, 0.0, 0.0], index=flash.index)
+    # the flash row is always measured against the same outcome as the models; the error against the
+    # first-published outcome is reported separately, never mixed into the table
+    err = pd.Series([0.0, 0.2, 0.0, 0.0], index=flash.index)
     df2, meta2 = champion.flash_reference(pred, actual, flash, err)
-    assert df2.loc["snabb_kpi", "MAE mot utfall"] == 0.0 and meta2["flash_n_nonzero"] == 0
+    assert df2.loc["snabb_kpi", "MAE mot utfall"] == pytest.approx(0.1 / 3) and meta2["flash_n_nonzero"] == 1
+    assert meta2["first_pub_n"] == 3 and meta2["first_pub_n_nonzero"] == 1
+    assert meta2["first_pub_mae"] == pytest.approx(0.2 / 3)
+    assert "först publicerat utfall" in "\n".join(champion.flash_lines(df2, meta2))
+    assert "först publicerat utfall" not in "\n".join(champion.flash_lines(df, meta))
     text = "\n".join(champion.flash_lines(df, meta))
     assert "### Snabb-KPI som referens" in text and "n = 3" in text and "p-värde" not in text
     assert "Ingen månad" in "\n".join(champion.flash_lines(*champion.flash_reference(pred, actual, flash.iloc[:0])))

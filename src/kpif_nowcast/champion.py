@@ -99,7 +99,8 @@ def flash_reference(pred: pd.DataFrame, actual: pd.Series, flash: pd.Series,
                     flash_err: pd.Series | None = None) -> tuple[pd.DataFrame, dict]:
     """Per model (columns of `pred`): MAE against the outcome and against the flash, mean signed difference to
     the flash and share within 0.1 pp of it, on the months where the flash, the outcome and every model exist.
-    The row "snabb_kpi" is the flash itself (error from `flash_err`, first-published outcome; else flash - actual)."""
+    The row "snabb_kpi" is the flash itself, measured against the same `actual` as the models. Its error against
+    the first-published outcome (`flash_err`, if given) is reported separately in `meta` ("first_pub_*")."""
     flash, actual = flash.dropna(), actual.dropna()
     months = flash.index.intersection(actual.index)
     p = pred.reindex(months).dropna()
@@ -115,11 +116,15 @@ def flash_reference(pred: pd.DataFrame, actual: pd.Series, flash: pd.Series,
         "Andel inom ±0,1 av snabb": (d_flash.abs() <= 0.1 + 1e-9).mean(),
     })
     err = (flash - actual).reindex(m)
-    if flash_err is not None:
-        err = flash_err.reindex(m).fillna(err)
     df.loc["snabb_kpi"] = [err.abs().mean(), 0.0, 0.0, 1.0]
     meta = {"n": len(m), "first": str(m.min()), "last": str(m.max()), "flash_mean_err": float(err.mean()),
             "flash_n_nonzero": int((err.abs() > 1e-9).sum()), "flash_max_abs": float(err.abs().max())}
+    if flash_err is not None:
+        fe = flash_err.reindex(m).dropna()
+        if len(fe):
+            meta.update({"first_pub_n": len(fe), "first_pub_mae": float(fe.abs().mean()),
+                         "first_pub_n_nonzero": int((fe.abs() > 1e-9).sum()),
+                         "first_pub_max_abs": float(fe.abs().max())})
     return df, meta
 
 
@@ -135,9 +140,12 @@ def flash_lines(df: pd.DataFrame, meta: dict) -> list[str]:
         "### Snabb-KPI som referens",
         "",
         f"SCB:s snabb-KPI (KPIF årstakt, en decimal) mot backtestprognoserna, samma månader för alla "
-        f"({meta['first']}..{meta['last']}, n = {meta['n']}). Beskrivande, inga tester. Snabb-KPI:s eget fel mot "
-        f"först publicerat utfall: {meta['flash_n_nonzero']} av {meta['n']} månader ≠ 0, högst "
-        f"{meta['flash_max_abs']:.1f} pe, medel {meta['flash_mean_err']:+.3f} pe.",
+        f"({meta['first']}..{meta['last']}, n = {meta['n']}). Beskrivande, inga tester. Alla rader, snabb-KPI "
+        f"inräknad, mäts mot samma utfall (yy_official). Snabb-KPI:s fel mot det: {meta['flash_n_nonzero']} av "
+        f"{meta['n']} månader ≠ 0, högst {meta['flash_max_abs']:.1f} pe, medel {meta['flash_mean_err']:+.3f} pe."
+        + (f" Mot först publicerat utfall (1987=100 före 2026-01): {meta['first_pub_n_nonzero']} av "
+           f"{meta['first_pub_n']} månader ≠ 0, MAE {meta['first_pub_mae']:.3f}, högst "
+           f"{meta['first_pub_max_abs']:.1f} pe." if meta.get("first_pub_n") else ""),
         "",
         shown.reset_index(names="Modell").to_markdown(index=False),
         "",

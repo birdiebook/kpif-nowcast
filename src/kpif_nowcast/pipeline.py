@@ -100,9 +100,9 @@ def explain(strict: bool = True) -> None:
 
     In `monthly` it is not fatal: a failure here must not stop the shadow forecasts from being committed.
     """
-    from kpif_nowcast import explain as explain_mod
+    try:  # import inside: an ImportError must not stop `monthly` either
+        from kpif_nowcast import explain as explain_mod
 
-    try:
         explain_mod.run(months=24)
     except Exception as exc:
         if strict:
@@ -115,9 +115,9 @@ def manadsbrev(month: str | None = None, strict: bool = True) -> None:
 
     In `monthly` it is not fatal: the shadow forecasts and the scorecard are committed regardless.
     """
-    from kpif_nowcast import manadsbrev as mb
+    try:  # import inside: an ImportError must not stop `monthly` either
+        from kpif_nowcast import manadsbrev as mb
 
-    try:
         mb.write(month or str(mb.default_month()))
     except Exception as exc:
         if strict:
@@ -132,12 +132,12 @@ def admin_calendar(month: str | None = None, strict: bool = True, today: str | N
 
     In `monthly` it is not fatal: the shadow forecasts and the scorecard are committed regardless.
     """
-    import pandas as pd
+    try:  # imports inside: an ImportError must not stop `monthly` either
+        import pandas as pd
 
-    from kpif_nowcast import admin_calendar as ac
-    from kpif_nowcast import manadsbrev as mb
+        from kpif_nowcast import admin_calendar as ac
+        from kpif_nowcast import manadsbrev as mb
 
-    try:
         target = month or str(mb.default_month())
         info = mb.cutoff_for(pd.Period(target, "M"), today)
         for path in ac.write_outputs(target, info):
