@@ -32,14 +32,21 @@ Inga modellvarianter och inga prognostester.
 
 ## Kontroll
 
-- Bygge: `python -m kpif_nowcast.sverige_dashboard` och `pages.main` (= `pipeline site` utan hämtning) gav alla
-  dataset, inga fel, inga saknade.
-- Playwright (chromium, deviceScaleFactor 1, 1280 och 390 px): inga konsolfel, ingen horisontell scroll, alla
-  åtta nya sektioner har ritade diagram eller text med data. d3 från cdnjs var blockerat i containern; testet
+- Bygge: `sverige_dashboard.main` skrev alla dataset till `outputs/sverige/` med `MANIFEST.json` (23 filer), och
+  `pages.build_site` byggde sidan från dem. Champion-steget (K2-backtest, oförändrat) hoppades över i den lokala
+  körningen: i den delade containern tog det över 30 minuter och det fristående bygget stoppades av tidsgränsen.
+  `MANIFEST.json` saknar därför `champion.json` lokalt; våg 3 kör hela bygget. Alla körning 3-dataset byggdes
+  på några sekunder.
+- Playwright (chromium, deviceScaleFactor 1, 1280 och 390 px): inga konsolfel utom 404 för det medvetet
+  saknade `champion.json`, ingen horisontell scroll, alla åtta nya sektioner har ritade diagram eller text med data. d3 från cdnjs var blockerat i containern; testet
   serverade samma fil från npm (`d3@7.9.0`, SRI-hashen stämmer). Skärmbilder i `/tmp/claude-0/l10-shots/`
   (inte committade).
 
 ## Att veta inför våg 3
+
+- **Fel som fanns före L10 på `auto3/merge1`:** `tests/test_l6_fx.py::test_registered_once_right_after_catalog_prices`
+  faller, eftersom mergen lade `catalog_travel` före `catalog_fx` i `catalog.py`. Testet förväntar sig att `sek_eur`
+  kommer direkt efter `catalog_prices`. L10 rör inte katalogen; orkestreraren rättar testet eller ordningen.
 
 - Ladda upp de tio nya JSON-filerna och `index.html` enligt `outputs/sverige/MANIFEST.json`.
 - "Kända per idag" följer katalogens `known_from` strikt. Ei:s och SCB:s nätavgifter för år Y räknas som kända
@@ -47,4 +54,4 @@ Inga modellvarianter och inga prognostester.
   publicerades i maj.
 - Kalenderns årstaktsbidrag räknar m/m-effekten som effekt på årstakten (faktor ≈ 1); `admin_upcoming` använder
   `suggest` med indexfaktorn (1,014), därav +0,52 mot 0,513.
-- Champion-steget i `sverige_dashboard` tar flera minuter i den delade containern; det styr byggtiden.
+- Champion-steget i `sverige_dashboard` (K2-backtesten) styr byggtiden helt; L8 tittar på testsvitens hastighet.
