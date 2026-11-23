@@ -51,6 +51,8 @@ quizfrågor eller pedagogiska övningar om Johannes inte ber om det.
   Arbetsförmedlingen (varsel, inskrivna, kräver skrapning av xlsx). Vision: `docs/vision.md`.
 - Redigera filer med svenska tecken via Edit/Python, **aldrig PowerShell Get/Set-Content**
   (PS 5.1 läser som ANSI och förstör å/ä/ö).
+- **Fas 5c** – autonoma jobb J1–J7 (`docs/forbattringsplan.md`) ✅: J2 (`j2_el.py`) och J1
+  (`j1_hybrid.py`) mergade, körs som skuggprognoser från 2026-12. J3–J7 ligger på `auto/*`-grenar.
 - **Fas 6** – drift oberoende av egen dator (upplägg A, se beslutsloggen 2026-11-22):
   GitHub Actions + Parquet i objektlagring + DuckDB, dbt för transformationer/tester,
   MLflow, champion/challenger, Pages-dashboard

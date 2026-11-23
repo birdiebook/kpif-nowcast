@@ -287,3 +287,9 @@ Hypotes, gissning och exakt variantlista (C1–C4, H1–H4): [docs/auto/j1/hypot
 av rb_updated och J2:s V2: MAE 0,217 mot 0,256 på 2015–26, ensidigt p = 0,015, Holm p = 0,117 över 8
 varianter. Skattade vikter gav inget utöver 50/50. Gissningen innan stämde. Ingen frysning; förslag att
 följa 50/50-snittet live. Detaljer: [docs/auto/j1/resultat.md](auto/j1/resultat.md).
+
+## 2026-11-23 – J2 och J1 mergade till main
+**Beslut (Johannes):** J2 (elmodellen) och J1 (hybriden) mergas. Huvudmodellen i `forecast.py` byts inte.
+J2:s V2 och 50/50-snittet av rb_updated och V2 följs som skuggprognoser från 2026-12; byte av
+huvudmodell avgörs av live-utfallet. Övriga auto/*-grenar (J3–J7) ligger kvar omergade.
+**Inriktning framåt:** fokus på Sverige. Andra länder bara om datan går lätt att få fram.
