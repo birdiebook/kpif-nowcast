@@ -3,7 +3,7 @@
 **Lås:** orkestrerare 2026-11-23T08:26Z (lokal 2026-11-23 09:26) · heartbeat 2026-11-23T08:26Z
 **Start:** 2026-11-23 · **Bas:** main @ 42b717b
 **Varianter i körningen:** 0/30 (projektet totalt 23 + 0 = 23)
-**Brief:** [BRIEF.md](BRIEF.md) · regler: `docs/autonom-korning-2.md` på main
+**Merge:** klara spår mergas till main av orkestreraren (ändrat 2026-11-23) · **Brief:** [BRIEF.md](BRIEF.md) · regler: `docs/autonom-korning-2.md` på main
 
 ## Spår
 
@@ -21,6 +21,7 @@
 - SCB, KI, FRED, Riksbanken, Medlingsinstitutet, Swedavia: K0
 
 ## Logg
+- 2026-11-23 10:05: Johannes: agentic first. Orkestreraren mergar klara spår till main när pytest är grönt (CLAUDE.md "Agentiskt arbete", main 63a07c6). Syftesändringen ligger nu på main; grenen auto2/syfte är ersatt.
 - 2026-11-23 09:50: Johannes: nytt syfte (inte lärprojekt; bästa möjliga lösning och bild av Sverige via KPIF). CLAUDE.md, vision.md, beslutslogg och K2-texten uppdaterade på grenen auto2/syfte (d77c022), merge beslutar Johannes. Spåragenterna informerade.
 - 2026-11-23 09:35: K0, K1, K2 startade (agenter). Variantbudget: K2 10, K0 2, K6 ≤4, reserv 14.
 - 2026-11-23: kpif-auto2-restart skapad (varje timme :19). Sparades utan auto-läge; Johannes har slagit på Auto i appen.
