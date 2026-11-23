@@ -23,7 +23,7 @@ from kpif_nowcast.data import load_components, load_el_contracts, load_kpif, loa
 from kpif_nowcast.features import load_features
 from kpif_nowcast.j1_hybrid import build_panel
 from kpif_nowcast.j2_el import zone_monthly_spot
-from kpif_nowcast.k8_food import (FIXED_COLS, build_food_design, corrections, forecast_at, ridge_cols,
+from kpif_nowcast.k8_food import (FIXED_COLS, SOURCE, build_food_design, corrections, forecast_at, ridge_cols,
                                   sekusd_daily)
 from kpif_nowcast.observations import load as load_obs
 from kpif_nowcast.riksbank_benchmark import deadline
@@ -33,6 +33,10 @@ MONTHS = [pd.Period(m, "M") for m in ("2016-03", "2022-07", "2026-10")]
 
 @pytest.fixture(scope="module")
 def data():
+    obs = load_obs()
+    missing = sorted(set(SOURCE.values()) - set(obs["series"].unique()))
+    if missing:
+        pytest.skip(f"observations lack K0 price series {missing}; run python -m kpif_nowcast.observations")
     return (load_kpif(), load_components(), load_features(), load_el_contracts(), zone_monthly_spot("SE3"),
             load_riksbank_forecasts(), load_obs(), sekusd_daily())
 
