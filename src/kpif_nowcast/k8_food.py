@@ -302,7 +302,7 @@ def main() -> None:
         coef_rows[str(t)] = info[("k8_fixed", t)]
     lines.append(f"## k8_fixed OLS coefficients (window ending before t)\n\n{pd.DataFrame(coef_rows).round(4).to_markdown()}\n")
     for v in ("k8_ridge", "k8_ridge_nr"):
-        rp = pd.DataFrame({str(t): info[(v, t)] for t in coef_rows if (v, pd.Period(t, "M")) in info})
+        rp = pd.DataFrame({t: info[(v, pd.Period(t, "M"))] for t in coef_rows})
         rp.index = rp.index.astype(str)
         top = rp.drop(index=["alpha", "intercept"]).iloc[:, -1].abs().sort_values(ascending=False).index[:12]
         lines.append(f"## {v}: alpha and top-12 raw coefficients (standardised features)\n\n"
