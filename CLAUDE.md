@@ -34,7 +34,11 @@ ger bäst resultat och snabbast progress, inte den som är lättast att lära si
 
 ## Agentiskt arbete (AI-agentic first)
 
-Projektet ska tänja gränserna för vad AI-agenter kan leverera själva. Agenten levererar hela vägen
+Projektet ska tänja gränserna för vad AI-agenter kan leverera själva.
+- **Bedöm arbete i agentlinsen, inte människolinsen.** Omfattning, tidsåtgång, ambitionsnivå och
+  vad som är "för stort" bedöms utifrån vad agenter klarar: parallella spår, dygnet runt, minuter
+  per uppgift. Uppskatta inte i människotimmar, och skala inte ned planer för att de skulle vara
+  mycket för en människa. Flaskhalsen är kvalitetskontroll och tillgång till data, inte arbetstid. Agenten levererar hela vägen
 till main. Den väntar inte på godkännande för det som går att verifiera med tester och regler.
 - **Agenten får committa, merga och pusha till `main`** när pytest är grönt på det sammanslagna
   resultatet och reglerna ovan är uppfyllda. Parallella spår kör på egna grenar och worktrees

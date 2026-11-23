@@ -349,3 +349,7 @@ pusha till main när pytest är grönt och reglerna är uppfyllda. Parallella sp
 huvudmodell, och skarpa prognoser skrivs aldrig om (tidsstämpeln är beviset). Force-push och omskrivning av
 historik är förbjudna. Skälet: förregistrering och läckagetester gör resultaten granskningsbara i efterhand, så
 manuell merge är en flaskhals utan kvalitetsvinst.
+
+## 2026-11-23 – Bedömning i agentlinsen
+**Beslut (Johannes):** arbete bedöms i agentlinsen, inte människolinsen. Omfattning, tid och ambition dimensioneras
+efter vad agenter klarar (parallellt, dygnet runt). Flaskhalsen är kvalitetskontroll och datatillgång. Står i CLAUDE.md.
