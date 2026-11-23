@@ -55,6 +55,10 @@ Pytest: `tests/test_k10_pages.py` (5 tester):
 4. Shimmen exporterar varje `dash.*` som sidan använder.
 5. (kräver data) Hela bygget skriver varje dataset som sidan läser, med rader.
 
+`tests/test_shadow.py::test_workflows_exist_and_only_run_on_schedule_or_by_hand` tillåter nu också `workflow_run`, men bara
+när det följer "Weekly data fetch" eller "Monthly shadow forecasts". Det finns fortfarande ingen push- eller PR-trigger.
+Hela sviten är grön: 137 passed och 1 skipped i övriga filer, 20 i test_shadow efter ändringen, 11 i test_k10_pages + test_k5.
+
 ## BLOCKED
 Inget.
 
