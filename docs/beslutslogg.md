@@ -426,3 +426,14 @@ livsmedel): [docs/auto2/k8/hypotes.md](auto2/k8/hypotes.md).
 mot 0,201 (0,55). Livsmedelsbidragets eget fel sjunker 10 % med fasta laggar (0,076 → 0,069 pe), 35 % 2022–23, men
 i totalen blir det ≤ 0,002 pe. Ingen frysning. Nästa kandidat: skatterensad livsmedelsbas (momssänkningen 2026-04).
 Detaljer: [docs/auto2/k8/resultat.md](auto2/k8/resultat.md).
+
+## 2026-11-23 – K5 Sverigeläget v2 och månadsbrev
+**Val:** dashboardens sida versioneras nu i repot (`src/kpif_nowcast/templates/sverige_index.html`) och kopieras till
+`outputs/sverige/index.html`; `outputs/sverige/MANIFEST.json` listar alla filer som ska laddas upp. Nya dataset:
+länen (K4, rutnätskarta), Arbetsförmedlingen (J6), AI-indikatorn (J7:s metod räknad på observationstabellen, eftersom
+J7:s råcache inte finns och ingen ny hämtning gjordes), prisleden (K0), prognoserna med skuggor märkta "urvalsevidens",
+champion/challenger och K3:s förklaring. Månadsbrevet (`python -m kpif_nowcast.manadsbrev <månad>`) har
+informationsdatum = tidigast av i dag och månadens deadline och använder bara data kända då (observationstabellen
+klipps på known_from, prognosfiler på made_at, processad data som i `tests/test_explain.py`). Steg i
+`pipeline monthly` (inte fatalt), committas av månadsjobbet. Inga modellvarianter.
+Detaljer: [docs/auto2/k5/resultat.md](auto2/k5/resultat.md).

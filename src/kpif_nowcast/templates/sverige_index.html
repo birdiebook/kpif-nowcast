@@ -1,0 +1,1075 @@
+<meta name="dash-one-writer">
+<style>
+  .sv { --sv-gap: var(--cds-gap-lg); display: flex; flex-direction: column; gap: var(--cds-gap-xl); font-variant-numeric: tabular-nums; }
+  .sv h1 { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; }
+  .sv h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0 0 var(--cds-gap-xs); text-wrap: balance; }
+  .sv .sv-lede { color: var(--color-fg); font-size: var(--cds-font-size-body); max-width: 70ch; margin: var(--cds-gap-sm) 0 0; line-height: 1.5; }
+  .sv .sv-sub { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); margin: 0 0 var(--cds-gap-md); max-width: 75ch; line-height: 1.45; }
+  .sv .sv-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); min-width: 0; }
+  .sv .sv-chart { position: relative; min-height: 220px; width: 100%; }
+  .sv .sv-chart.tall { min-height: 300px; }
+  .sv .sv-chart.short { min-height: 150px; }
+  .sv .sv-areas { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--cds-gap-md); }
+  .sv .sv-area { display: flex; flex-direction: column; gap: var(--cds-gap-xs); }
+  .sv .sv-area .sv-area-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--cds-gap-sm); }
+  .sv .sv-area .sv-area-name { font-weight: var(--cds-font-weight-medium); }
+  .sv .sv-area .sv-big { font-family: var(--font-anthropic-serif); font-size: var(--cds-font-size-title); }
+  .sv .sv-chip { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: var(--cds-font-size-caption); border: 1px solid var(--color-border-line); }
+  .sv .sv-chip.hot { color: var(--color-bad); border-color: var(--color-bad); }
+  .sv .sv-chip.warm { color: var(--color-warn); border-color: var(--color-warn); }
+  .sv .sv-chip.cool { color: var(--color-ok); border-color: var(--color-ok); }
+  .sv .sv-area ul { margin: 0; padding: 0; list-style: none; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); display: grid; gap: 2px; }
+  .sv .sv-area li { display: flex; justify-content: space-between; gap: var(--cds-gap-sm); }
+  .sv .sv-area li span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+  .sv .sv-row { display: flex; flex-wrap: wrap; gap: var(--cds-gap-md); align-items: center; }
+  .sv .sv-grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--cds-gap-md); }
+  .sv .sv-note { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: var(--cds-gap-xs) 0 0; }
+  .sv .sv-table-wrap { overflow-x: auto; }
+  .sv table { border-collapse: collapse; width: 100%; font-size: var(--cds-font-size-caption); }
+  .sv th, .sv td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+  .sv th.num, .sv td.num { text-align: right; }
+  .sv td.lbl { white-space: normal; min-width: 220px; }
+  .sv .sv-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); box-shadow: var(--cds-shadow-popover); border-radius: var(--cds-radius); padding: 6px 9px; font-size: var(--cds-font-size-caption); color: var(--color-fg); white-space: nowrap; z-index: 5; }
+  .sv .sv-tip b { font-weight: var(--cds-font-weight-medium); }
+  .sv svg text { fill: var(--cds-text-secondary); font-size: var(--cds-font-size-caption); }
+  .sv svg .axis path, .sv svg .axis line { stroke: var(--cds-chart-axis); }
+  .sv svg .grid line { stroke: var(--cds-chart-grid); }
+  .sv svg .ref { stroke: var(--cds-chart-reference); stroke-dasharray: 3 3; }
+  .sv .sv-legend { display: flex; align-items: center; gap: var(--cds-gap-sm); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .sv .sv-legend .bar { width: 160px; height: 10px; border-radius: 3px; background: linear-gradient(90deg, #2166ac, #92c5de, #f7f7f7, #f4a582, #b2182b); }
+  .sv details summary { cursor: pointer; font-weight: var(--cds-font-weight-medium); }
+  .sv details p, .sv details li { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.5; max-width: 80ch; }
+  .sv h3 { font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); margin: 0 0 var(--cds-gap-xs); }
+  .sv .sv-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--cds-gap-md); margin: 0 0 var(--cds-gap-md); }
+  .sv .sv-kpi { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .sv .sv-kpi-label { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .sv .sv-block { margin-top: var(--cds-gap-lg); }
+  .sv .sv-text { margin: 0; padding-left: 1.1em; display: grid; gap: var(--cds-gap-xs); line-height: 1.5; max-width: 80ch; }
+  .sv .sv-tag { display: inline-block; padding: 0 6px; border-radius: 999px; font-size: var(--cds-font-size-caption); border: 1px solid var(--color-border-line); color: var(--color-fg-muted); white-space: nowrap; }
+  .sv .sv-tag.skarp { color: var(--color-fg); border-color: var(--color-fg); }
+  .sv .sv-tag.skugga, .sv .sv-tag.kandidat { color: var(--color-warn); border-color: var(--color-warn); }
+  .sv .sv-warn { font-size: var(--cds-font-size-caption); color: var(--color-warn); margin: var(--cds-gap-xs) 0 0; max-width: 80ch; }
+  .sv tr.sv-total td { font-weight: var(--cds-font-weight-medium); }
+  .sv .sv-map-wrap { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: var(--cds-gap-lg); align-items: start; }
+  @media (max-width: 640px) { .sv .sv-map-wrap { grid-template-columns: minmax(0, 1fr); } }
+  .sv .sv-map-legend { display: flex; align-items: center; gap: var(--cds-gap-sm); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-top: var(--cds-gap-xs); }
+  .sv .sv-map-legend .bar { width: 120px; height: 10px; border-radius: 3px; }
+</style>
+
+<div class="sv">
+  <header id="top">
+    <h1>Sverigeläget</h1>
+    <p class="sv-lede" data-read lang="sv">
+      Inflationstrycket är just nu högst inom <b data-draw="top-area">—</b>
+      (<span data-draw="top-pressure" data-source="area_now" data-field="pressure">—</span> standardavvikelser över normalt)
+      och lägst inom <b data-draw="low-area">—</b>. KPIF låg på
+      <span data-draw="kpif-now" data-source="area_now" data-field="pressure" data-where="area=kpif">—</span> %
+      i <span data-draw="kpif-period">—</span>.
+      Den skarpa prognosen för <span data-draw="lede-fc-month">—</span> är
+      <b data-draw="lede-fc" data-source="forecast" data-field="forecast_yy" data-where="model=skarp">—</b> %.
+    </p>
+  </header>
+
+  <section id="prognos" class="sv-card">
+    <h2>Prognosen för <span data-draw="fc-month">—</span></h2>
+    <p class="sv-sub">Den skarpa prognosen är prognosfilen som committas innan SCB publicerar. Skuggprognoserna körs varje månad bredvid den: deras träffsäkerhet bakåt är <b>urvalsevidens</b> (modellerna valdes på samma period) och de ändrar inte den skarpa prognosen.</p>
+    <div class="sv-kpis">
+      <div class="sv-kpi">
+        <span class="sv-kpi-label">Skarp prognos, KPIF årstakt</span>
+        <span class="sv-big"><span data-draw="fc-live" data-source="forecast" data-field="forecast_yy" data-where="model=skarp">—</span> %</span>
+        <span class="sv-note" data-draw="fc-live-band">—</span>
+      </div>
+      <div class="sv-kpi">
+        <span class="sv-kpi-label">Senaste utfall</span>
+        <span class="sv-big"><span data-draw="fc-last" data-source="explain_summary" data-field="last_known_yy" data-row="0">—</span> %</span>
+        <span class="sv-note" data-draw="fc-last-month">—</span>
+      </div>
+      <div class="sv-kpi">
+        <span class="sv-kpi-label">Riksbankens prognos för samma månad</span>
+        <span class="sv-big"><span data-draw="fc-rb" data-source="forecast" data-field="forecast_yy" data-where="model=riksbank">—</span> %</span>
+        <span class="sv-note" data-draw="fc-rb-round">—</span>
+      </div>
+    </div>
+    <div class="sv-chart" data-draw="fc-chart" data-source="pressure forecast" id="fc-chart"></div>
+    <p class="sv-note">KPIF:s årstakt de senaste två åren och prognoserna för målmånaden. Den skarpa prognosen visas med sitt 50- och 80-procentsintervall från prognosfilen.</p>
+
+    <div class="sv-block">
+      <h3>Alla prognoser för månaden</h3>
+      <div class="sv-table-wrap">
+        <table data-source="forecast" data-row-key="model" id="fc-table">
+          <thead><tr>
+            <th data-field="label">Modell</th>
+            <th data-field="evidence">Typ</th>
+            <th class="num" data-field="forecast_yy">Prognos, %</th>
+            <th data-field="status">Status</th>
+            <th data-field="made_at">Gjord</th>
+          </tr></thead>
+          <tbody data-draw="fc-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sv-block">
+      <h3>Förklaringen</h3>
+      <ul class="sv-text" data-draw="ex-text" data-source="explain_text" data-read lang="sv"></ul>
+      <p class="sv-note" data-draw="ex-info">—</p>
+    </div>
+
+    <div class="sv-block">
+      <h3>Bidrag till förändringen i årstakt, procentenheter</h3>
+      <div class="sv-chart short" data-draw="ex-bars" data-source="explain_components" id="ex-bars"></div>
+      <div class="sv-table-wrap">
+        <table data-source="explain_components" data-row-key="component" id="ex-table">
+          <thead><tr>
+            <th data-field="name">Komponent</th>
+            <th class="num" data-field="mm_pp">Prognos m/m</th>
+            <th class="num" data-field="trend_pp">Trend</th>
+            <th class="num" data-field="season_pp">Säsong</th>
+            <th class="num" data-field="el_pp">El</th>
+            <th class="num" data-field="fuel_pp">Drivmedel</th>
+            <th class="num" data-field="same_month_last_year_pp">Samma månad i fjol</th>
+            <th class="num" data-field="change_yy">Bidrag till ändrad årstakt</th>
+          </tr></thead>
+          <tbody data-draw="ex-table-body"></tbody>
+        </table>
+      </div>
+      <p class="sv-note">Bidrag i procentenheter av KPIF:s månadsförändring (SCB TAB6628). Sista kolumnen summerar till förändringen från förra utfallet; avrundning är SCB:s avrundning av bidragen och årstakten.</p>
+      <p class="sv-note" data-draw="ex-band">—</p>
+    </div>
+
+    <div class="sv-block">
+      <h3>Champion/challenger</h3>
+      <div class="sv-table-wrap">
+        <table data-source="champion" data-row-key="model" id="champ-table">
+          <thead><tr>
+            <th data-field="model">Modell</th>
+            <th data-field="role">Roll</th>
+            <th class="num" data-field="mae_2015_26">MAE 2015–26 (urval)</th>
+            <th class="num" data-field="mae_2024_26">MAE 2024–26 (använd)</th>
+            <th class="num" data-field="mae_live">MAE live</th>
+            <th data-field="first_month">Första backtestmånad</th>
+          </tr></thead>
+          <tbody data-draw="champ-body"></tbody>
+        </table>
+      </div>
+      <p class="sv-note" data-draw="champ-note">—</p>
+      <p class="sv-warn">MAE 2015–26 är urvalsevidens: modellerna valdes på den perioden, så felen är troligen för låga. Först live-felen (skuggprognoser med publicerat utfall) är riktig evidens.</p>
+    </div>
+  </section>
+
+  <section id="tryck" class="sv-card">
+    <h2>Inflationstryck per område</h2>
+    <p class="sv-sub">Varje ruta är ett områdes genomsnittliga avvikelse från det normala (2005–idag), mätt i standardavvikelser och vänd så att rött betyder mer inflationstryck. Till exempel räknas stigande arbetslöshet som blått och stigande löner som rött. Ovanför: KPIF, årstakt.</p>
+    <div class="sv-legend"><span>Mindre tryck</span><span class="bar"></span><span>Mer tryck</span></div>
+    <div class="sv-chart tall" data-draw="heatmap" data-source="pressure" id="heatmap"></div>
+  </section>
+
+  <section id="omraden">
+    <h2>Områdena just nu</h2>
+    <p class="sv-sub">Senaste trycket per område och de tre serier som drar mest åt varje håll.</p>
+    <div class="sv-areas" data-draw="area-cards" data-source="area_now overview"></div>
+  </section>
+
+  <section id="prisled" class="sv-card">
+    <h2>Prisleden</h2>
+    <p class="sv-sub">Från världsmarknad och producent till konsument. Producent- och importpriser och företagens prisplaner brukar ligga några månader före KPIF:s varor och livsmedel; tjänster drivs mer av löner och hyror. Senaste månad per serie: producentpriser och råvaror publiceras senare än KPIF.</p>
+    <div class="sv-grid2">
+      <div>
+        <h3>KPIF och delar, årstakt</h3>
+        <div class="sv-chart short" data-draw="pl-kpi" data-source="prisled" id="pl-kpi"></div>
+        <p class="sv-note">KPIF-XE är KPIF utan energi (SCB).</p>
+      </div>
+      <div>
+        <h3>Producent- och importpriser, konsumtionsvaror</h3>
+        <div class="sv-chart short" data-draw="pl-ppi" data-source="prisled" id="pl-ppi"></div>
+        <p class="sv-note">Årsförändring, % (SCB, prisindex i producent- och importled).</p>
+      </div>
+      <div>
+        <h3>Producent- och importpriser, livsmedel</h3>
+        <div class="sv-chart short" data-draw="pl-food" data-source="prisled" id="pl-food"></div>
+        <p class="sv-note">Årsförändring, % (SCB, SPIN 10).</p>
+      </div>
+      <div>
+        <h3>Företagens prisplaner</h3>
+        <div class="sv-chart short" data-draw="pl-ki" data-source="prisled" id="pl-ki"></div>
+        <p class="sv-note">Nettotal: andel som planerar att höja minus andel som planerar att sänka, kommande 3 mån (KI, ej säsongsrensat).</p>
+      </div>
+      <div>
+        <h3>Råvarupriser</h3>
+        <div class="sv-chart short" data-draw="pl-raw" data-source="prisled" id="pl-raw"></div>
+        <p class="sv-note">Årsförändring i USD, % (FAO, IMF via FRED). Kronkursen påverkar vad det blir i kronor.</p>
+      </div>
+      <div>
+        <h3>Räntor</h3>
+        <div class="sv-chart short" data-draw="pl-rates" data-source="prisled" id="pl-rates"></div>
+        <p class="sv-note">Månadsmedel, % (Riksbanken). SWESTR finns från 2021-09.</p>
+      </div>
+    </div>
+    <div class="sv-table-wrap sv-block">
+      <table data-source="prisled_now" data-row-key="key" id="pl-table">
+        <thead><tr>
+          <th data-field="group_label">Grupp</th>
+          <th data-field="label">Serie</th>
+          <th data-field="period">Period</th>
+          <th class="num" data-field="value">Senaste</th>
+          <th class="num" data-field="value_3m_ago">3 mån tidigare</th>
+          <th class="num" data-field="value_12m_ago">12 mån tidigare</th>
+        </tr></thead>
+        <tbody data-draw="pl-table-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="arbetsformedlingen" class="sv-card">
+    <h2>Arbetsförmedlingen</h2>
+    <p class="sv-sub">Registerdata för hela riket, per månad. Varsel brukar föregå uppsägningar med några månader och är brusiga, därför visas också ett tremånadersmedel. Åldersgränsen för inskrivna ändrades 2023 och 2026, vilket ger små brott i nivån.</p>
+    <div class="sv-kpis">
+      <div class="sv-kpi">
+        <span class="sv-kpi-label">Inskrivna arbetslösa</span>
+        <span class="sv-big" data-draw="af-insk" data-source="af_now" data-field="value" data-where="key=af_inskrivna_arbetslosa">—</span>
+        <span class="sv-note" data-draw="af-insk-chg">—</span>
+      </div>
+      <div class="sv-kpi">
+        <span class="sv-kpi-label">Öppet arbetslösa</span>
+        <span class="sv-big" data-draw="af-oppet" data-source="af_now" data-field="value" data-where="key=af_oppet_arbetslosa">—</span>
+        <span class="sv-note" data-draw="af-oppet-chg">—</span>
+      </div>
+      <div class="sv-kpi">
+        <span class="sv-kpi-label">Varsel, tremånadersmedel</span>
+        <span class="sv-big" data-draw="af-varsel" data-source="af_now" data-field="value_3m" data-where="key=af_varsel">—</span>
+        <span class="sv-note" data-draw="af-varsel-chg">—</span>
+      </div>
+    </div>
+    <div class="sv-grid2">
+      <div>
+        <h3>Arbetslösa, tusental</h3>
+        <div class="sv-chart short" data-draw="af-levels" data-source="af" id="af-levels"></div>
+      </div>
+      <div>
+        <h3>Varsel om uppsägning, personer per månad</h3>
+        <div class="sv-chart short" data-draw="af-varsel-chart" data-source="af" id="af-varsel-chart"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="lan" class="sv-card">
+    <h2>Länen</h2>
+    <p class="sv-sub">Varje ruta är ett län, placerat ungefär där det ligger (norr överst). Färgen jämför länen med varandra; riket står i tabellen. Län där senaste kvartalet saknas i AKU (SCB redovisar inte alla små län) är borttagna i stället för att visas med äldre siffror.</p>
+    <div class="sv-row">
+      <select class="dash-select" id="lan-measure" aria-label="Mått">
+        <option value="af_andel">Arbetslöshet, inskrivna på AF</option>
+        <option value="aku_arbetsloshet">Arbetslöshet, AKU (kvartal)</option>
+        <option value="smahus_pris">Småhuspriser, medelpris (kvartal)</option>
+        <option value="konkurser_per_10k">Konkurser per 10 000 invånare</option>
+        <option value="af_varsel">Varsel (bara t.o.m. 2026-03)</option>
+      </select>
+      <select class="dash-select" id="lan-view" aria-label="Visa">
+        <option value="value">Nivå</option>
+        <option value="change">Förändring på ett år</option>
+      </select>
+    </div>
+    <p class="sv-note" data-draw="lan-note">—</p>
+    <div class="sv-map-wrap sv-block">
+      <div>
+        <div class="sv-chart tall" data-draw="lan-map" data-source="region" id="lan-map"></div>
+        <div class="sv-map-legend" data-draw="lan-legend"></div>
+      </div>
+      <div class="sv-table-wrap">
+        <table data-source="region" data-row-key="measure,code" id="lan-table">
+          <thead><tr>
+            <th data-field="county">Län</th>
+            <th class="num" data-field="value">Senaste</th>
+            <th class="num" data-field="change">Förändring på ett år</th>
+            <th data-field="period">Period</th>
+          </tr></thead>
+          <tbody data-draw="lan-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="utforska" class="sv-card">
+    <h2>Utforska en serie mot KPIF</h2>
+    <p class="sv-sub">Välj en serie. Övre diagrammet visar serien, det undre KPIF. Sambandet är korrelationen när serien förskjuts 0–12 månader före KPIF, 2005–idag. Ett samband är ingen prognos: det testas separat.</p>
+    <div class="sv-row">
+      <select class="dash-select" id="series-select" aria-label="Serie" data-draw="series-select" data-source="overview"></select>
+      <span class="sv-note" data-draw="series-corr">—</span>
+    </div>
+    <div class="sv-chart" data-draw="explorer" data-source="series pressure" id="explorer"></div>
+  </section>
+
+  <section id="ai" class="sv-card">
+    <h2>AI-linsen</h2>
+    <p class="sv-sub">Kedjan vi följer: AI-spridning → investeringar och kompetens → produktivitet → enhetsarbetskostnad → inflation. Inget facit ännu, men här syns de första länkarna. Allt här är beskrivande; inget av det används i prognosen.</p>
+    <div class="sv-grid2">
+      <div>
+        <h3>AI-indikatorn</h3>
+        <div class="sv-chart short" data-draw="ai-ind" data-source="ai_indicator" id="ai-ind"></div>
+        <p class="sv-note">Snitt av två z-värden per år (från 2017): andel platsannonser som nämner maskininlärning och andel företag som använder AI. 0 = genomsnittet för perioden. Metod: docs/ai-indikator.md (J7).</p>
+      </div>
+      <div>
+        <h3>Maskininlärning i platsannonser, per år</h3>
+        <div class="sv-chart short" data-draw="ai-ind-ads" data-source="ai_indicator" id="ai-ind-ads"></div>
+        <p class="sv-note" data-draw="ai-ind-note">—</p>
+      </div>
+      <div>
+        <h2>Arbetsproduktivitet per timme, årstakt</h2>
+        <div class="sv-chart short" data-draw="ai-lp" data-source="ai" id="ai-lp"></div>
+        <p class="sv-note">Sverige mot euroområdet, säsongsrensat (Eurostat).</p>
+      </div>
+      <div>
+        <h2>Företag som använder AI</h2>
+        <div class="sv-chart short" data-draw="ai-use" data-source="ai" id="ai-use"></div>
+        <p class="sv-note">Andel företag med minst 10 anställda, Sverige mot EU27 (Eurostat).</p>
+      </div>
+      <div>
+        <h2>AI i platsannonser, per 10 000 annonser</h2>
+        <div class="sv-chart short" data-draw="ai-ads" data-source="ai" id="ai-ads"></div>
+        <p class="sv-note">Fritextsökning i Platsbanken (JobTech). "AI" är brusigt, "maskininlärning" smalare.</p>
+      </div>
+      <div>
+        <h2>Investeringar i programvara, årstakt</h2>
+        <div class="sv-chart short" data-draw="ai-sw" data-source="ai" id="ai-sw"></div>
+        <p class="sv-note">Programvara och databaser, fasta priser (SCB).</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="alla" class="sv-card">
+    <h2>Alla serier</h2>
+    <p class="sv-sub">Senaste värde, värdet för ett år sedan, tryck (standardavvikelser, + = mer inflationstryck) och starkaste samband med KPIF.</p>
+    <div class="sv-table-wrap">
+      <table data-source="overview" data-row-key="key" id="series-table">
+        <thead>
+          <tr>
+            <th data-field="area_label">Område</th>
+            <th data-field="label">Serie</th>
+            <th data-field="period">Period</th>
+            <th class="num" data-field="value">Senaste</th>
+            <th class="num" data-field="value_12m_ago">För ett år sedan</th>
+            <th data-field="display">Visas som</th>
+            <th class="num" data-field="pressure">Tryck</th>
+            <th class="num" data-field="corr_kpif">Samband med KPIF</th>
+            <th class="num" data-field="corr_lead_months">Före KPIF, mån</th>
+          </tr>
+        </thead>
+        <tbody data-draw="table-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <details id="om">
+    <summary>Så är siffrorna framtagna</summary>
+    <ul>
+      <li>All data kommer från öppna källor (SCB, Riksbanken, Konjunkturinstitutet, Tillväxtanalys, Eurostat, FAO, FRED, NY Fed, JobTech) och hämtas med skript i projektet kpif-nowcast. Siffrorna är senaste publicerade version.</li>
+      <li>Priser, index, löner och antal visas som förändring mot samma månad året innan. Räntor, andelar och enkätindikatorer visas som de publiceras.</li>
+      <li>Tryck: seriens avvikelse från sitt snitt 2005–idag i standardavvikelser, med tecken efter hur serien brukar påverka inflationen. Områdets tryck är snittet av dess serier. Det är en beskrivning, inte en modell.</li>
+      <li>Kvartalsserier ligger på kvartalets sista månad. Säsongsrensade serier (t.ex. Konjunkturinstitutets indikatorer, sparkvoten) revideras i efterhand.</li>
+      <li>Prognoser: den skarpa prognosen är filen forecasts/&lt;månad&gt;.json. Skuggprognoserna (forecasts/shadow/) och K2-kandidaten körs bredvid och är valda på 2015–2026, så deras fel bakåt är urvalsevidens. Förklaringen är en exakt bokföring av den skarpa modellens prognos körd med dagens data, så den kan skilja några hundradelar från filen.</li>
+      <li>Länen: Arbetsförmedlingen (inskrivna, varsel), SCB (AKU, småhuspriser, folkmängd) och Tillväxtanalys (konkurser). Det finns inga öppna länsgränser i projektet, därför en rutnätskarta. Varsel per län uppdateras inte efter 2026-03.</li>
+      <li>AI-indikatorn räknas med J7:s metod på projektets observationstabell; uppdelningen per yrkesområde och produktivitet per bransch finns i docs/ai-indikator.md.</li>
+      <li>Saknas än: bostadsrättspriser per månad, varsel per län efter 2026-03.</li>
+    </ul>
+  </details>
+</div>
+
+<script>
+(function () {
+  const sv = d3.formatLocale({ decimal: ",", thousands: " ", grouping: [3], currency: ["", " kr"] });
+  const f1 = sv.format(",.1f"), f2 = sv.format(",.2f"), fs1 = sv.format("+,.1f"), f0 = sv.format(",.0f");
+  const parseM = d3.utcParse("%Y-%m");
+  const SV_MON = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
+  const monthName = (t) => SV_MON[t.getUTCMonth()] + " " + t.getUTCFullYear();
+  const AREA_ORDER = ["omvarld", "energi", "prisled", "foretag", "hushall", "arbetsmarknad", "bostad_kredit", "penningpolitik"];
+  window.svFmt = { f1, f2, fs1, f0, parseM, monthName, AREA_ORDER };
+
+  dash.calc("area_now", {
+    title: "Senaste tryck per område",
+    description: "Senaste månaden med värde för varje område (och KPIF), sorterat efter tryck.",
+    inputs: ["pressure"],
+    fn: (pressure) => {
+      const by = d3.group(pressure.filter((r) => r.pressure !== null && r.pressure !== undefined), (r) => r.area);
+      const rows = [];
+      for (const [area, rs] of by) {
+        const last = rs.reduce((a, b) => (a.period > b.period ? a : b));
+        rows.push({ area, area_label: last.area_label, period: last.period, pressure: Math.round(last.pressure * 100) / 100 });
+      }
+      return rows.sort((a, b) => (a.area === "kpif") - (b.area === "kpif") || b.pressure - a.pressure);
+    },
+  });
+})();
+</script>
+
+<script>
+(function () {
+  const { f1, f2, fs1, f0, parseM, monthName, AREA_ORDER } = window.svFmt;
+
+  function areas() {
+    const d = dash.data("area_now");
+    return d.status === "ok" ? d.data : null;
+  }
+
+  dash.draw("top-area", (el) => { const a = areas(); el.textContent = a ? a.filter((r) => r.area !== "kpif")[0].area_label.toLowerCase() : "—"; });
+  dash.draw("low-area", (el) => { const a = areas(); const o = a && a.filter((r) => r.area !== "kpif"); el.textContent = o ? o[o.length - 1].area_label.toLowerCase() : "—"; });
+  dash.draw("top-pressure", (el) => {
+    const a = areas(); if (!a) { el.textContent = "—"; return; }
+    const top = a.filter((r) => r.area !== "kpif")[0];
+    el.setAttribute("data-where", "area=" + top.area);
+    el.textContent = f1(top.pressure);
+  });
+  dash.draw("kpif-now", (el) => { const a = areas(); const k = a && a.find((r) => r.area === "kpif"); el.textContent = k ? f1(k.pressure) : "—"; });
+  dash.draw("kpif-period", (el) => { const a = areas(); const k = a && a.find((r) => r.area === "kpif"); el.textContent = k ? monthName(parseM(k.period)) : "—"; });
+
+  // ---------- tooltip helper (inside each drawing)
+  function tipFor(el) {
+    const t = document.createElement("div");
+    t.className = "sv-tip"; t.hidden = true; el.appendChild(t); return t;
+  }
+  function showTip(el, tip, evt, lines) {
+    tip.replaceChildren(...lines.map((l, i) => { const d = document.createElement("div"); if (i === 0) { const b = document.createElement("b"); b.textContent = l; d.appendChild(b); } else d.textContent = l; return d; }));
+    tip.hidden = false;
+    const box = el.getBoundingClientRect();
+    let x = evt.clientX - box.left + 12, y = evt.clientY - box.top + 12;
+    if (x + tip.offsetWidth > box.width) x = Math.max(0, evt.clientX - box.left - tip.offsetWidth - 12);
+    tip.style.left = x + "px"; tip.style.top = y + "px";
+  }
+
+  const heat = d3.scaleDiverging([-2, 0, 2], (t) => d3.interpolateRdBu(1 - t)).clamp(true);
+
+  // ---------- heatmap
+  dash.draw("heatmap", (el) => {
+    const d = dash.data("pressure");
+    el.replaceChildren();
+    if (d.status === "error") { el.textContent = "Trycket kunde inte laddas."; return; }
+    if (d.status !== "ok") { el.textContent = "—"; return; }
+    const from = "2016-01";
+    const rows = d.data.filter((r) => r.period >= from);
+    const months = Array.from(new Set(rows.map((r) => r.period))).sort();
+    const kp = rows.filter((r) => r.area === "kpif").map((r) => ({ t: parseM(r.period), v: r.pressure, p: r.period }));
+    const areaRows = AREA_ORDER.filter((a) => rows.some((r) => r.area === a));
+    const labelOf = Object.fromEntries(rows.map((r) => [r.area, r.area_label]));
+
+    const W = el.clientWidth || 600;
+    const tmp = d3.select(el).append("svg").attr("width", 10).attr("height", 10);
+    const wl = d3.max(areaRows, (a) => { const t = tmp.append("text").text(labelOf[a]); const w = t.node().getComputedTextLength(); t.remove(); return w; }) || 120;
+    tmp.remove();
+    const m = { l: Math.ceil(wl) + 10, r: 8, t: 6, b: 22 };
+    const lineH = 90, cellH = 22;
+    const H = m.t + lineH + 10 + areaRows.length * cellH + m.b;
+    const x = d3.scaleBand(months, [m.l, W - m.r]).paddingInner(0.04);
+    const xt = d3.scaleUtc([parseM(months[0]), parseM(months[months.length - 1])], [m.l + x.bandwidth() / 2, W - m.r - x.bandwidth() / 2]);
+    const svg = d3.select(el).append("svg").attr("width", "100%").attr("height", H).attr("viewBox", `0 0 ${W} ${H}`)
+      .attr("role", "img").attr("aria-label", "Värmekarta över inflationstryck per område sedan 2016, med KPIF:s årstakt ovanför");
+    const y = d3.scaleLinear([Math.min(0, d3.min(kp, (r) => r.v)), d3.max(kp, (r) => r.v)], [m.t + lineH, m.t]).nice();
+    svg.append("g").attr("class", "grid").selectAll("line").data(y.ticks(3)).join("line")
+      .attr("x1", m.l).attr("x2", W - m.r).attr("y1", y).attr("y2", y);
+    svg.append("g").selectAll("text").data(y.ticks(3)).join("text").attr("x", m.l - 6).attr("y", (v) => y(v) + 4).attr("text-anchor", "end").text((v) => v + " %");
+    svg.append("path").datum(kp).attr("fill", "none").style("stroke", dash.colors[0]).attr("stroke-width", 2)
+      .attr("d", d3.line().x((r) => xt(r.t)).y((r) => y(r.v)));
+    svg.append("text").attr("x", m.l + 4).attr("y", m.t + 10).text("KPIF, årstakt");
+    const top = m.t + lineH + 10;
+    const byKey = new Map(rows.map((r) => [r.area + "|" + r.period, r]));
+    areaRows.forEach((a, i) => {
+      svg.append("text").attr("x", m.l - 6).attr("y", top + i * cellH + cellH / 2 + 4).attr("text-anchor", "end").text(labelOf[a]);
+    });
+    const cells = [];
+    for (const a of areaRows) for (const p of months) { const r = byKey.get(a + "|" + p); if (r) cells.push(r); }
+    svg.append("g").selectAll("rect").data(cells).join("rect")
+      .attr("x", (r) => x(r.period)).attr("y", (r) => top + areaRows.indexOf(r.area) * cellH + 1)
+      .attr("width", x.bandwidth()).attr("height", cellH - 2).attr("fill", (r) => heat(r.pressure));
+    const years = months.filter((p) => p.endsWith("-01"));
+    const step = Math.ceil(years.length / Math.max(1, Math.floor((W - m.l) / 60)));
+    svg.append("g").selectAll("text").data(years.filter((_, i) => i % step === 0)).join("text")
+      .attr("x", (p) => x(p)).attr("y", H - 6).text((p) => p.slice(0, 4));
+    const tip = tipFor(el);
+    const hit = svg.append("rect").attr("x", m.l).attr("y", m.t).attr("width", W - m.l - m.r).attr("height", H - m.t - m.b).attr("fill", "transparent");
+    hit.on("mousemove", (evt) => {
+      const [px] = d3.pointer(evt);
+      const idx = Math.max(0, Math.min(months.length - 1, Math.floor((px - m.l) / (x.step()))));
+      const p = months[idx];
+      const k = byKey.get("kpif|" + p);
+      const lines = [monthName(parseM(p)), "KPIF: " + (k ? f1(k.pressure) + " %" : "–")];
+      for (const a of areaRows) { const r = byKey.get(a + "|" + p); lines.push(labelOf[a] + ": " + (r ? fs1(r.pressure) : "–")); }
+      showTip(el, tip, evt, lines);
+    }).on("mouseleave", () => { tip.hidden = true; });
+  });
+
+  // ---------- area cards
+  dash.draw("area-cards", (el) => {
+    const a = dash.data("area_now"), o = dash.data("overview");
+    el.replaceChildren();
+    if (a.status === "error" || o.status === "error") { el.textContent = "Områdena kunde inte laddas."; return; }
+    if (a.status !== "ok" || o.status !== "ok") { el.textContent = "—"; return; }
+    for (const r of a.data.filter((r) => r.area !== "kpif")) {
+      const card = document.createElement("div"); card.className = "sv-card sv-area"; card.id = "omrade-" + r.area;
+      const head = document.createElement("div"); head.className = "sv-area-head";
+      const name = document.createElement("span"); name.className = "sv-area-name"; name.textContent = r.area_label;
+      const chip = document.createElement("span");
+      chip.className = "sv-chip " + (r.pressure > 0.75 ? "hot" : r.pressure > 0.25 ? "warm" : r.pressure < -0.25 ? "cool" : "");
+      chip.textContent = r.pressure > 0.75 ? "Högt tryck" : r.pressure > 0.25 ? "Förhöjt" : r.pressure < -0.25 ? "Lågt tryck" : "Normalt";
+      head.append(name, chip);
+      const big = document.createElement("div"); big.className = "sv-big";
+      big.setAttribute("data-source", "area_now"); big.setAttribute("data-field", "pressure"); big.setAttribute("data-where", "area=" + r.area);
+      big.textContent = fs1(r.pressure);
+      const sub = document.createElement("div"); sub.className = "sv-note"; sub.textContent = "standardavvikelser, " + monthName(parseM(r.period));
+      const ul = document.createElement("ul");
+      const ser = o.data.filter((s) => s.area === r.area && s.pressure !== null).sort((x, y) => Math.abs(y.pressure) - Math.abs(x.pressure)).slice(0, 3);
+      for (const s of ser) {
+        const li = document.createElement("li");
+        const l = document.createElement("span"); l.textContent = s.label;
+        const v = document.createElement("span");
+        v.setAttribute("data-source", "overview"); v.setAttribute("data-field", "pressure"); v.setAttribute("data-where", "key=" + s.key);
+        v.textContent = fs1(s.pressure);
+        li.append(l, v); ul.appendChild(li);
+      }
+      card.append(head, big, sub, ul);
+      el.appendChild(card);
+    }
+  });
+
+  // ---------- explorer
+  window.svSel = window.svSel || null;
+  function chosen(o) {
+    if (window.svSel && o.some((r) => r.key === window.svSel)) return window.svSel;
+    const best = o.filter((r) => r.corr_kpif !== null).sort((a, b) => Math.abs(b.corr_kpif) - Math.abs(a.corr_kpif))[0];
+    return best ? best.key : o[0].key;
+  }
+  dash.draw("series-select", (sel) => {
+    const o = dash.data("overview");
+    if (o.status !== "ok") { sel.replaceChildren(); return; }
+    const groups = d3.group(o.data, (r) => r.area_label);
+    const opts = [];
+    for (const [g, rs] of groups) {
+      const og = document.createElement("optgroup"); og.label = g;
+      for (const r of rs) og.appendChild(new Option(r.label, r.key));
+      opts.push(og);
+    }
+    sel.replaceChildren(...opts);
+    sel.value = chosen(o.data);
+    sel.onchange = () => { window.svSel = sel.value; dash.draw("explorer"); dash.draw("series-corr"); };
+  });
+  dash.draw("series-corr", (el) => {
+    const o = dash.data("overview");
+    if (o.status !== "ok") { el.textContent = "—"; return; }
+    const r = o.data.find((x) => x.key === chosen(o.data));
+    el.replaceChildren();
+    if (!r || r.corr_kpif === null) { el.textContent = "Inget beräknat samband (för få observationer)."; return; }
+    const a = document.createElement("span"); a.textContent = "Starkast samband när serien ligger ";
+    const lead = document.createElement("b"); lead.setAttribute("data-source", "overview"); lead.setAttribute("data-field", "corr_lead_months"); lead.setAttribute("data-where", "key=" + r.key); lead.textContent = r.corr_lead_months;
+    const b = document.createElement("span"); b.textContent = " mån före KPIF, korrelation ";
+    const c = document.createElement("b"); c.setAttribute("data-source", "overview"); c.setAttribute("data-field", "corr_kpif"); c.setAttribute("data-where", "key=" + r.key); c.textContent = f2(r.corr_kpif);
+    const e = document.createElement("span"); e.textContent = ".";
+    el.append(a, lead, b, c, e);
+  });
+  dash.draw("explorer", (el) => {
+    const s = dash.data("series"), p = dash.data("pressure"), o = dash.data("overview");
+    el.replaceChildren();
+    if (s.status === "error") { el.textContent = "Serierna kunde inte laddas."; return; }
+    if (s.status !== "ok" || p.status !== "ok" || o.status !== "ok") { el.textContent = "—"; return; }
+    const key = chosen(o.data);
+    const meta = o.data.find((r) => r.key === key);
+    const pts = s.data.filter((r) => r.key === key).map((r) => ({ t: parseM(r.period), v: r.value }));
+    const kp = p.data.filter((r) => r.area === "kpif").map((r) => ({ t: parseM(r.period), v: r.pressure }));
+    const W = el.clientWidth || 600, h1 = 150, h2 = 110, gap = 26, m = { l: 48, r: 10, t: 16, b: 22 };
+    const H = m.t + h1 + gap + h2 + m.b;
+    const x = d3.scaleUtc(d3.extent([...pts, ...kp], (r) => r.t), [m.l, W - m.r]);
+    const svg = d3.select(el).append("svg").attr("width", "100%").attr("height", H).attr("viewBox", `0 0 ${W} ${H}`)
+      .attr("role", "img").attr("aria-label", (meta ? meta.label : key) + " jämfört med KPIF:s årstakt");
+    function panel(data, top, h, color, label) {
+      const y = d3.scaleLinear(d3.extent(data, (r) => r.v), [top + h, top]).nice();
+      svg.append("g").attr("class", "grid").selectAll("line").data(y.ticks(3)).join("line").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y).attr("y2", y);
+      svg.append("g").selectAll("text").data(y.ticks(3)).join("text").attr("x", m.l - 6).attr("y", (v) => y(v) + 4).attr("text-anchor", "end").text((v) => f1(v));
+      if (y.domain()[0] < 0 && y.domain()[1] > 0) svg.append("line").attr("class", "ref").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y(0)).attr("y2", y(0));
+      svg.append("path").datum(data).attr("fill", "none").style("stroke", color).attr("stroke-width", 1.8).attr("d", d3.line().x((r) => x(r.t)).y((r) => y(r.v)));
+      svg.append("text").attr("x", m.l + 4).attr("y", top - 4).text(label);
+      return y;
+    }
+    const y1 = panel(pts, m.t, h1, dash.colors[0], meta ? meta.label + " (" + meta.display + ")" : key);
+    const y2 = panel(kp, m.t + h1 + gap, h2, dash.colors[1] || dash.colors[0], "KPIF, årstakt %");
+    const nt = Math.max(2, Math.floor((W - m.l) / 70));
+    svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(nt).tickSizeOuter(0));
+    const tip = tipFor(el);
+    const bis = d3.bisector((r) => r.t).center;
+    svg.append("rect").attr("x", m.l).attr("y", m.t).attr("width", W - m.l - m.r).attr("height", H - m.t - m.b).attr("fill", "transparent")
+      .on("mousemove", (evt) => {
+        const t = x.invert(d3.pointer(evt)[0]);
+        const a = pts[bis(pts, t)], b = kp[bis(kp, t)];
+        showTip(el, tip, evt, [monthName(a.t), (meta ? meta.label : key) + ": " + f1(a.v), "KPIF (" + monthName(b.t) + "): " + f1(b.v) + " %"]);
+      }).on("mouseleave", () => { tip.hidden = true; });
+  });
+
+  // ---------- AI small multiples
+  function mini(el, series, opts) {
+    const d = dash.data(opts.src || "ai");
+    el.replaceChildren();
+    if (d.status === "error") { el.textContent = "Kunde inte laddas."; return; }
+    if (d.status !== "ok") { el.textContent = "—"; return; }
+    const div = opts.div || 1;
+    const data = series.map((s, i) => ({ ...s, color: dash.colors[s.color ?? i] || dash.colors[0], pts: d.data.filter((r) => r.key === s.key && r.period >= (opts.from || "2010-01") && r[s.field || "value"] !== null && r[s.field || "value"] !== undefined).map((r) => ({ t: parseM(r.period), v: r[s.field || "value"] / div })) }))
+      .filter((s) => s.pts.length);
+    const all = data.flatMap((s) => s.pts);
+    if (!all.length) { el.textContent = "Ingen data."; return; }
+    const W = el.clientWidth || 300, H = 150, m = { l: 40, r: Math.min(opts.r || 64, Math.round(W * 0.38)), t: 8, b: 20 };
+    const x = d3.scaleUtc(d3.extent(all, (r) => r.t), [m.l, W - m.r]);
+    const y = d3.scaleLinear([Math.min(0, d3.min(all, (r) => r.v)), d3.max(all, (r) => r.v)], [H - m.b, m.t]).nice();
+    const svg = d3.select(el).append("svg").attr("width", "100%").attr("height", H).attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", opts.aria);
+    svg.append("g").attr("class", "grid").selectAll("line").data(y.ticks(3)).join("line").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y).attr("y2", y);
+    svg.append("g").selectAll("text").data(y.ticks(3)).join("text").attr("x", m.l - 6).attr("y", (v) => y(v) + 4).attr("text-anchor", "end").text((v) => f1(v) + (opts.unit || ""));
+    if (y.domain()[0] < 0) svg.append("line").attr("class", "ref").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y(0)).attr("y2", y(0));
+    svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(Math.max(2, Math.floor((W - m.l - m.r) / 70))).tickSizeOuter(0));
+    const labels = [];
+    for (const s of data) {
+      svg.append("path").datum(s.pts).attr("fill", "none").style("stroke", s.color).attr("stroke-width", 1.8).attr("d", d3.line().x((r) => x(r.t)).y((r) => y(r.v)));
+      if (opts.dots) svg.append("g").selectAll("circle").data(s.pts).join("circle").attr("cx", (r) => x(r.t)).attr("cy", (r) => y(r.v)).attr("r", 3).style("fill", s.color);
+      const last = s.pts[s.pts.length - 1];
+      labels.push({ y: y(last.v), x: x(last.t), s, last });
+    }
+    labels.sort((a, b) => a.y - b.y);
+    for (let i = 1; i < labels.length; i++) if (labels[i].y - labels[i - 1].y < 13) labels[i].y = labels[i - 1].y + 13;
+    for (const l of labels) svg.append("text").attr("x", l.x + 5).attr("y", l.y + 4).style("fill", l.s.color).text(l.s.name + " " + f1(l.last.v));
+    const tip = tipFor(el);
+    const bis = d3.bisector((r) => r.t).center;
+    svg.append("rect").attr("x", m.l).attr("y", m.t).attr("width", W - m.l - m.r).attr("height", H - m.t - m.b).attr("fill", "transparent")
+      .on("mousemove", (evt) => {
+        const t = x.invert(d3.pointer(evt)[0]);
+        const lines = [];
+        for (const s of data) { const r = s.pts[bis(s.pts, t)]; if (!lines.length) lines.push(opts.fmt ? opts.fmt(r.t) : monthName(r.t)); lines.push(s.name + ": " + f1(r.v) + (opts.unit || "")); }
+        showTip(el, tip, evt, lines);
+      }).on("mouseleave", () => { tip.hidden = true; });
+  }
+  const quarter = (t) => t.getUTCFullYear() + " K" + (Math.floor(t.getUTCMonth() / 3) + 1);
+  window.svKit = { mini, tipFor, showTip, heat };
+  dash.draw("ai-lp", (el) => mini(el, [{ key: "lp_hour_yy_se", name: "Sverige" }, { key: "lp_hour_yy_ea", name: "Euroområdet" }], { unit: " %", aria: "Arbetsproduktivitet per timme, årstakt, Sverige och euroområdet", fmt: quarter }));
+  dash.draw("ai-use", (el) => mini(el, [{ key: "ai_use_firms_se", name: "Sverige" }, { key: "ai_use_firms_eu", name: "EU27" }], { unit: " %", dots: true, from: "2000-01", aria: "Andel företag som använder AI, Sverige och EU", fmt: (t) => String(t.getUTCFullYear()) }));
+  dash.draw("ai-ads", (el) => mini(el, [{ key: "jobads_ai", name: "AI" }, { key: "jobads_ml", name: "Maskininlärning" }], { aria: "Platsannonser som nämner AI per 10 000 annonser", from: "2016-01" }));
+  dash.draw("ai-sw", (el) => mini(el, [{ key: "software_investment_q", name: "Programvara" }], { unit: " %", aria: "Investeringar i programvara, årsförändring", fmt: quarter }));
+
+  // ---------- table
+  dash.draw("table-body", (tb) => {
+    const o = dash.data("overview");
+    tb.replaceChildren();
+    if (o.status !== "ok") return;
+    const order = Object.fromEntries(["inflation", ...AREA_ORDER, "ai_produktivitet"].map((a, i) => [a, i]));
+    const rows = [...o.data].sort((a, b) => (order[a.area] ?? 99) - (order[b.area] ?? 99) || (Math.abs(b.pressure ?? 0) - Math.abs(a.pressure ?? 0)));
+    const fmtVal = (v) => (v === null || v === undefined ? "–" : Math.abs(v) >= 1000 ? f0(v) : f1(v));
+    for (const r of rows) {
+      const tr = document.createElement("tr");
+      tr.setAttribute("data-key", encodeURIComponent(r.key));
+      const cells = [
+        [r.area_label, ""], [r.label, "lbl"], [r.period, ""], [fmtVal(r.value), "num"], [fmtVal(r.value_12m_ago), "num"],
+        [r.display, ""], [r.pressure === null ? "–" : fs1(r.pressure), "num"], [r.corr_kpif === null ? "–" : f2(r.corr_kpif), "num"],
+        [r.corr_kpif === null ? "–" : String(r.corr_lead_months), "num"],
+      ];
+      for (const [txt, cls] of cells) { const td = document.createElement("td"); if (cls) td.className = cls; td.textContent = txt; tr.appendChild(td); }
+      tb.appendChild(tr);
+    }
+  });
+})();
+</script>
+
+<script>
+(function () {
+  // ---------- v2 calcs
+  const addMonths = (p, k) => { const [y, m] = p.split("-").map(Number); return new Date(Date.UTC(y, m - 1 + k, 1)).toISOString().slice(0, 7); };
+  window.svAddMonths = addMonths;
+  const r2 = (v) => (v === null || v === undefined ? null : Math.round(v * 100) / 100);
+
+  dash.calc("prisled_now", {
+    title: "Prisleden: senaste läget",
+    description: "Senaste värdet per serie i prisleden och värdet 3 och 12 månader tidigare (samma visningssätt: årsförändring eller nivå).",
+    inputs: ["prisled"],
+    fn: (prisled) => {
+      const out = [];
+      for (const [key, rs] of d3.group(prisled, (r) => r.key)) {
+        const byP = new Map(rs.map((r) => [r.period, r.value]));
+        const last = rs.reduce((a, b) => (a.period > b.period ? a : b));
+        out.push({
+          key, group: last.group, group_label: last.group_label, label: last.label, display: last.display, period: last.period,
+          value: r2(last.value), value_3m_ago: r2(byP.get(addMonths(last.period, -3))), value_12m_ago: r2(byP.get(addMonths(last.period, -12))),
+        });
+      }
+      return out;
+    },
+  });
+
+  dash.calc("af_now", {
+    title: "Arbetsförmedlingen: senaste månaden",
+    description: "Senaste månaden per serie: antal, tremånadersmedel och förändring mot samma månad ett år tidigare (%).",
+    inputs: ["af"],
+    fn: (af) => {
+      const out = [];
+      for (const [key, rs] of d3.group(af, (r) => r.key)) {
+        const byP = new Map(rs.map((r) => [r.period, r]));
+        const last = rs.reduce((a, b) => (a.period > b.period ? a : b));
+        const prev = byP.get(addMonths(last.period, -12));
+        const m3yoy = prev && prev.value_3m ? (last.value_3m / prev.value_3m - 1) * 100 : null;
+        out.push({ key, label: last.label, period: last.period, value: last.value, value_3m: last.value_3m === null ? null : Math.round(last.value_3m),
+                   yoy_pct: r2(last.yoy_pct), value_3m_yoy_pct: r2(m3yoy) });
+      }
+      return out;
+    },
+  });
+})();
+</script>
+
+<script>
+(function () {
+  const { f1, f2, fs1, f0, parseM, monthName } = window.svFmt;
+  const { mini, tipFor, showTip } = window.svKit;
+  const sv = d3.formatLocale({ decimal: ",", thousands: " ", grouping: [3], currency: ["", " kr"] });
+  const f3 = sv.format(",.3f"), fs2 = sv.format("+,.2f");
+  const MONTHS = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"];
+  const monthLong = (p) => (p ? MONTHS[Number(p.slice(5, 7)) - 1] + " " + p.slice(0, 4) : "—");
+  const fmtNull = (fmt) => (v) => (v === null || v === undefined ? "–" : fmt(v));
+
+  function mark(tag, text, src, field, where) {
+    const e = document.createElement(tag);
+    e.textContent = text;
+    if (src) e.setAttribute("data-source", src);
+    if (field) e.setAttribute("data-field", field);
+    if (where) e.setAttribute("data-where", where);
+    return e;
+  }
+  const txt = (t) => document.createTextNode(t);
+  function rows(id) { const d = dash.data(id); return d.status === "ok" ? d.data : null; }
+  function failed(el, ids, msg) {
+    if (ids.some((id) => dash.data(id).status === "error")) { el.textContent = msg; return true; }
+    if (ids.some((id) => dash.data(id).status !== "ok")) { el.textContent = "—"; return true; }
+    return false;
+  }
+
+  // ---------- forecast headline
+  const fc = () => rows("forecast");
+  const fcRow = (m) => { const f = fc(); return f ? f.find((r) => r.model === m) : null; };
+  const target = () => { const f = fc(); return f && f.length ? f[0].target_month : null; };
+  dash.draw("lede-fc-month", (el) => { el.textContent = monthLong(target()); });
+  dash.draw("fc-month", (el) => { el.textContent = monthLong(target()); });
+  dash.draw("lede-fc", (el) => { const r = fcRow("skarp"); el.textContent = r ? f1(r.forecast_yy) : "—"; });
+  dash.draw("fc-live", (el) => { const r = fcRow("skarp"); el.textContent = r ? f2(r.forecast_yy) : "—"; });
+  dash.draw("fc-live-band", (el) => {
+    const r = fcRow("skarp");
+    el.replaceChildren();
+    if (!r) { el.textContent = fc() ? "Ingen skarp prognosfil för månaden ännu." : "—"; return; }
+    const w = "model=skarp";
+    el.append(txt("50 %: "), mark("span", f1(r.lo50), "forecast", "lo50", w), txt("–"), mark("span", f1(r.hi50), "forecast", "hi50", w),
+      txt(", 80 %: "), mark("span", f1(r.lo80), "forecast", "lo80", w), txt("–"), mark("span", f1(r.hi80), "forecast", "hi80", w),
+      txt(". Status " + r.status + "."));
+  });
+  dash.draw("fc-last", (el) => { const s = rows("explain_summary"); el.textContent = s && s.length ? f1(s[0].last_known_yy) : "—"; });
+  dash.draw("fc-last-month", (el) => { const s = rows("explain_summary"); el.textContent = s && s.length ? "KPIF, " + monthLong(s[0].last_known_month) : "—"; });
+  dash.draw("fc-rb", (el) => { const r = fcRow("riksbank"); el.textContent = r ? f2(r.forecast_yy) : "—"; });
+  dash.draw("fc-rb-round", (el) => { const r = fcRow("riksbank"); el.textContent = r ? r.label : "—"; });
+
+  const SHORT = { skarp: "Skarp", comp_fuel_el: "Skarp idag", j2_el_dev: "J2 V2", j1_comb_equal: "J1 50/50", k2_avg_ens_s: "K2-kandidat", rb_updated: "RB uppd.", riksbank: "Riksbanken" };
+  const kindColor = (k) => (k === "skarp" ? dash.colors[0] : k === "skugga" ? (dash.colors[1] || dash.colors[0]) : k === "kandidat" ? (dash.colors[2] || dash.colors[0]) : "var(--cds-chart-muted)");
+
+  dash.draw("fc-chart", (el) => {
+    el.replaceChildren();
+    if (failed(el, ["pressure", "forecast"], "Prognoserna kunde inte laddas.")) return;
+    const f = fc(); const t = target();
+    if (!t) { el.textContent = "Ingen prognos för månaden."; return; }
+    const from = window.svAddMonths(t, -25);
+    const kp = rows("pressure").filter((r) => r.area === "kpif" && r.period >= from).map((r) => ({ t: parseM(r.period), v: r.pressure, p: r.period }));
+    const tt = parseM(t);
+    const W = el.clientWidth || 600, H = 230, m = { l: 40, r: Math.min(150, Math.round(W * 0.42)), t: 10, b: 22 };
+    const vals = [...kp.map((r) => r.v), ...f.map((r) => r.forecast_yy), ...f.flatMap((r) => [r.lo80, r.hi80]).filter((v) => v !== null && v !== undefined)];
+    const x = d3.scaleUtc([kp.length ? kp[0].t : tt, tt], [m.l, W - m.r - 10]);
+    const y = d3.scaleLinear([Math.min(0, d3.min(vals)), d3.max(vals)], [H - m.b, m.t]).nice();
+    const svg = d3.select(el).append("svg").attr("width", "100%").attr("height", H).attr("viewBox", `0 0 ${W} ${H}`)
+      .attr("role", "img").attr("aria-label", "KPIF:s årstakt de senaste två åren och prognoserna för " + monthLong(t));
+    svg.append("g").attr("class", "grid").selectAll("line").data(y.ticks(4)).join("line").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y).attr("y2", y);
+    svg.append("g").selectAll("text").data(y.ticks(4)).join("text").attr("x", m.l - 6).attr("y", (v) => y(v) + 4).attr("text-anchor", "end").text((v) => f1(v) + " %");
+    svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(Math.max(2, Math.floor((W - m.l - m.r) / 80))).tickSizeOuter(0));
+    svg.append("path").datum(kp).attr("fill", "none").style("stroke", "var(--color-fg-muted)").attr("stroke-width", 1.8).attr("d", d3.line().x((r) => x(r.t)).y((r) => y(r.v)));
+    const live = f.find((r) => r.model === "skarp");
+    const cx = x(tt);
+    if (live && live.lo80 !== null) {
+      svg.append("line").attr("x1", cx).attr("x2", cx).attr("y1", y(live.lo80)).attr("y2", y(live.hi80)).style("stroke", dash.colors[0]).attr("stroke-width", 2).attr("opacity", 0.5);
+      svg.append("line").attr("x1", cx).attr("x2", cx).attr("y1", y(live.lo50)).attr("y2", y(live.hi50)).style("stroke", dash.colors[0]).attr("stroke-width", 6).attr("opacity", 0.5);
+    }
+    if (kp.length) {
+      const last = kp[kp.length - 1];
+      svg.append("line").attr("class", "ref").attr("x1", x(last.t)).attr("x2", cx).attr("y1", y(last.v)).attr("y2", y(live ? live.forecast_yy : last.v));
+    }
+    const pts = f.map((r) => ({ r, y: y(r.forecast_yy) }));
+    for (const p of pts) svg.append("circle").attr("cx", cx).attr("cy", p.y).attr("r", p.r.kind === "skarp" ? 5 : 3.5).style("fill", kindColor(p.r.kind));
+    const labels = [...pts].sort((a, b) => a.y - b.y);
+    for (let i = 1; i < labels.length; i++) if (labels[i].y - labels[i - 1].y < 13) labels[i].y = labels[i - 1].y + 13;
+    for (const l of labels) svg.append("text").attr("x", cx + 10).attr("y", l.y + 4).style("fill", l.r.kind === "jämförelse" ? "var(--cds-text-secondary)" : kindColor(l.r.kind))
+      .text((SHORT[l.r.model] || l.r.model) + " " + f1(l.r.forecast_yy));
+    const tip = tipFor(el);
+    const bis = d3.bisector((r) => r.t).center;
+    svg.append("rect").attr("x", m.l).attr("y", m.t).attr("width", Math.max(0, cx - m.l)).attr("height", H - m.t - m.b).attr("fill", "transparent")
+      .on("mousemove", (evt) => { if (!kp.length) return; const r = kp[bis(kp, x.invert(d3.pointer(evt)[0]))]; showTip(el, tip, evt, [monthName(r.t), "KPIF: " + f1(r.v) + " %"]); })
+      .on("mouseleave", () => { tip.hidden = true; });
+  });
+
+  dash.draw("fc-table-body", (tb) => {
+    tb.replaceChildren();
+    const f = fc(); if (!f) return;
+    for (const r of f) {
+      const tr = document.createElement("tr"); tr.setAttribute("data-key", encodeURIComponent(r.model));
+      const td = (t, cls) => { const c = document.createElement("td"); if (cls) c.className = cls; if (t instanceof Node) c.appendChild(t); else c.textContent = t; tr.appendChild(c); };
+      const tag = document.createElement("span"); tag.className = "sv-tag " + r.kind; tag.textContent = r.evidence;
+      td(r.label, "lbl"); td(tag); td(f2(r.forecast_yy), "num"); td(r.status || "–"); td(r.made_at ? r.made_at.slice(0, 16).replace("T", " ") : "–");
+      tb.appendChild(tr);
+    }
+  });
+
+  // ---------- explanation
+  dash.draw("ex-text", (ul) => {
+    ul.replaceChildren();
+    const t = rows("explain_text");
+    if (!t) { if (dash.data("explain_text").status === "error") { const li = document.createElement("li"); li.textContent = "Förklaringen kunde inte laddas."; ul.appendChild(li); } return; }
+    for (const r of [...t].sort((a, b) => a.i - b.i)) {
+      const li = document.createElement("li");
+      String(r.text).split("**").forEach((part, i) => { if (!part) return; if (i % 2) { const b = document.createElement("b"); b.textContent = part; li.appendChild(b); } else li.appendChild(txt(part)); });
+      ul.appendChild(li);
+    }
+  });
+  dash.draw("ex-info", (el) => {
+    const s = rows("explain_summary"); el.replaceChildren();
+    if (!s || !s.length) { el.textContent = "—"; return; }
+    const r = s[0], live = fcRow("skarp");
+    el.append(txt("Informationsmängd: KPIF t.o.m. " + r.kpif_through + ", energipriser för " + r.energy_prices_for + " (el " + r.el_days + " dagar, drivmedel till " + r.fuel_last_day + "), Riksbankens bana " + r.riksbank_vintage + "; deadline " + r.deadline + ". Förklaringen är den skarpa modellen körd med dagens data: "),
+      mark("span", f2(r.forecast_yy), "explain_summary", "forecast_yy", null), txt(" %"));
+    el.querySelectorAll('[data-field="forecast_yy"][data-source="explain_summary"]').forEach((e) => e.setAttribute("data-row", "0"));
+    if (live) el.append(txt(" (prognosfilen: "), mark("span", f2(live.forecast_yy), "forecast", "forecast_yy", "model=skarp"), txt(" %)."));
+    else el.append(txt("."));
+  });
+  dash.draw("ex-bars", (el) => {
+    el.replaceChildren();
+    if (failed(el, ["explain_components"], "Bidragen kunde inte laddas.")) return;
+    const data = rows("explain_components").filter((r) => r.change_yy !== null);
+    const W = el.clientWidth || 500, rowH = 24, m = { l: 96, r: 56, t: 4, b: 20 };
+    const H = m.t + data.length * rowH + m.b;
+    const ext = d3.extent([0, ...data.map((r) => r.change_yy)]);
+    const x = d3.scaleLinear(ext, [m.l, W - m.r]).nice();
+    const svg = d3.select(el).append("svg").attr("width", "100%").attr("height", H).attr("viewBox", `0 0 ${W} ${H}`)
+      .attr("role", "img").attr("aria-label", "Bidrag per komponent till förändringen i KPIF:s årstakt, procentenheter");
+    svg.append("g").attr("class", "grid").selectAll("line").data(x.ticks(4)).join("line").attr("x1", x).attr("x2", x).attr("y1", m.t).attr("y2", H - m.b);
+    svg.append("g").selectAll("text").data(x.ticks(4)).join("text").attr("x", x).attr("y", H - 6).attr("text-anchor", "middle").text((v) => f1(v));
+    data.forEach((r, i) => {
+      const yy = m.t + i * rowH;
+      svg.append("text").attr("x", m.l - 6).attr("y", yy + rowH / 2 + 4).attr("text-anchor", "end").text(r.name);
+      svg.append("rect").attr("x", Math.min(x(0), x(r.change_yy))).attr("y", yy + 4).attr("width", Math.abs(x(r.change_yy) - x(0))).attr("height", rowH - 8)
+        .style("fill", r.component === "rest" ? "var(--cds-chart-muted)" : dash.colors[0]);
+      svg.append("text").attr("x", r.change_yy >= 0 ? x(r.change_yy) + 4 : x(0) + 4).attr("y", yy + rowH / 2 + 4).text(fs2(r.change_yy));
+    });
+    svg.append("line").attr("class", "ref").attr("x1", x(0)).attr("x2", x(0)).attr("y1", m.t).attr("y2", H - m.b);
+  });
+  dash.draw("ex-table-body", (tb) => {
+    tb.replaceChildren();
+    const d = rows("explain_components"); if (!d) return;
+    const g = fmtNull(fs2);
+    for (const r of d) {
+      const tr = document.createElement("tr"); tr.setAttribute("data-key", encodeURIComponent(r.component));
+      for (const [v, cls] of [[r.name, ""], [g(r.mm_pp), "num"], [g(r.trend_pp), "num"], [g(r.season_pp), "num"], [g(r.el_pp), "num"], [g(r.fuel_pp), "num"], [g(r.same_month_last_year_pp), "num"], [g(r.change_yy), "num"]]) {
+        const td = document.createElement("td"); if (cls) td.className = cls; td.textContent = v; tr.appendChild(td);
+      }
+      tb.appendChild(tr);
+    }
+  });
+  dash.draw("ex-band", (el) => {
+    const s = rows("explain_summary"); el.replaceChildren();
+    if (!s || !s.length) { el.textContent = "—"; return; }
+    const r = s[0], m = (f, v) => { const e = mark("span", f1(v), "explain_summary", f, null); e.setAttribute("data-row", "0"); return e; };
+    const ch = mark("span", fs2(r.change_yy), "explain_summary", "change_yy", null); ch.setAttribute("data-row", "0");
+    el.append(txt("Summa: "), ch, txt(" pe, från " + f1(r.last_known_yy) + " % till " + f2(r.forecast_yy) + " %. Osäkerhet (J5:s EWMA-band, förslag, " + r.band_n + " tidigare fel): 50 % "),
+      m("lo50", r.lo50), txt("–"), m("hi50", r.hi50), txt(", 80 % "), m("lo80", r.lo80), txt("–"), m("hi80", r.hi80), txt(", 90 % "), m("lo90", r.lo90), txt("–"), m("hi90", r.hi90), txt(" %."));
+  });
+
+  // ---------- champion/challenger
+  dash.draw("champ-body", (tb) => {
+    tb.replaceChildren();
+    const d = rows("champion"); if (!d) return;
+    const g = fmtNull(f3);
+    for (const r of d) {
+      const tr = document.createElement("tr"); tr.setAttribute("data-key", encodeURIComponent(r.model));
+      for (const [v, cls] of [[r.model, ""], [r.role, ""], [g(r.mae_2015_26), "num"], [g(r.mae_2024_26), "num"], [g(r.mae_live), "num"], [r.first_month, ""]]) {
+        const td = document.createElement("td"); if (cls) td.className = cls; td.textContent = v; tr.appendChild(td);
+      }
+      tb.appendChild(tr);
+    }
+  });
+  dash.draw("champ-note", (el) => {
+    const d = rows("champion");
+    if (!d || !d.length) { el.textContent = dash.data("champion").status === "error" ? "Tabellen kunde inte laddas." : "—"; return; }
+    const r = d[0];
+    el.textContent = "Absolut fel i årstakt, procentenheter. 2015–26: gemensamt urval " + r.first_long + "–" + r.last + ", n = " + r.n_long +
+      " (modeller som finns från 2015). 2024–26: n = " + r.n_used + ", redan använd period. Live: " + r.n_live + " månader med FINAL-skuggprognos och publicerat utfall.";
+  });
+
+  // ---------- price chain
+  const pl = (keys, opts) => (el) => mini(el, keys, { src: "prisled", from: "2018-01", r: 120, ...opts });
+  dash.draw("pl-kpi", pl([{ key: "kpif_yy", name: "KPIF" }, { key: "kpif_xe_index", name: "KPIF-XE" }, { key: "kpif_goods_index", name: "Varor" }, { key: "kpif_services_index", name: "Tjänster" }], { unit: " %", aria: "KPIF, KPIF-XE, varor och tjänster, årstakt" }));
+  dash.draw("pl-ppi", pl([{ key: "ppi_itpi_consumer", name: "Inhemsk tillgång" }, { key: "ppi_hmpi_consumer", name: "Hemmamarknad" }, { key: "ppi_impi_consumer", name: "Import" }], { unit: " %", aria: "Producent- och importpriser för konsumtionsvaror, årsförändring" }));
+  dash.draw("pl-food", pl([{ key: "ppi_hmpi_food", name: "Hemmamarknad" }, { key: "ppi_impi_food", name: "Import" }], { unit: " %", aria: "Producent- och importpriser för livsmedel, årsförändring" }));
+  dash.draw("pl-ki", pl([{ key: "ki_prices_grocery", name: "Dagligvaror" }, { key: "ki_prices_food_industry", name: "Livsmedelsind." }, { key: "ki_prices_durables", name: "Sällanköp" }, { key: "ki_services", name: "Tjänster" }], { aria: "Företagens prisplaner, nettotal" }));
+  dash.draw("pl-raw", pl([{ key: "fao_food_idx", name: "FAO livsmedel" }, { key: "coffee_usd", name: "Kaffe" }, { key: "cocoa_usd", name: "Kakao" }, { key: "beef_usd", name: "Nötkött" }], { unit: " %", aria: "Råvarupriser i USD, årsförändring" }));
+  dash.draw("pl-rates", pl([{ key: "policy_rate", name: "Styrränta" }, { key: "swestr", name: "SWESTR" }, { key: "gvb_2y", name: "Stat 2 år" }, { key: "gvb_10y", name: "Stat 10 år" }, { key: "mortgage_rate_new", name: "Bolån" }], { unit: " %", aria: "Räntor, procent" }));
+  dash.draw("pl-table-body", (tb) => {
+    tb.replaceChildren();
+    const d = rows("prisled_now"); if (!d) return;
+    const g = fmtNull(f1);
+    for (const r of d) {
+      const tr = document.createElement("tr"); tr.setAttribute("data-key", encodeURIComponent(r.key));
+      for (const [v, cls] of [[r.group_label, "lbl"], [r.label, ""], [r.period, ""], [g(r.value), "num"], [g(r.value_3m_ago), "num"], [g(r.value_12m_ago), "num"]]) {
+        const td = document.createElement("td"); if (cls) td.className = cls; td.textContent = v; tr.appendChild(td);
+      }
+      tb.appendChild(tr);
+    }
+  });
+
+  // ---------- Arbetsförmedlingen
+  const afRow = (k) => { const d = rows("af_now"); return d ? d.find((r) => r.key === k) : null; };
+  for (const [name, key, field] of [["af-insk", "af_inskrivna_arbetslosa", "value"], ["af-oppet", "af_oppet_arbetslosa", "value"], ["af-varsel", "af_varsel", "value_3m"]]) {
+    dash.draw(name, (el) => { const r = afRow(key); el.textContent = r && r[field] !== null ? f0(r[field]) : "—"; });
+    dash.draw(name + "-chg", (el) => {
+      const r = afRow(key); el.replaceChildren();
+      if (!r) { el.textContent = "—"; return; }
+      const yf = field === "value_3m" ? "value_3m_yoy_pct" : "yoy_pct";
+      el.append(txt((field === "value_3m" ? "Tre månader t.o.m. " : "") + monthLong(r.period) + ", "),
+        mark("span", r[yf] === null ? "–" : fs1(r[yf]), "af_now", yf, "key=" + key), txt(" % mot ett år tidigare."));
+    });
+  }
+  dash.draw("af-levels", (el) => mini(el, [{ key: "af_inskrivna_arbetslosa", name: "Inskrivna" }, { key: "af_oppet_arbetslosa", name: "Öppet" }], { src: "af", div: 1000, aria: "Inskrivna och öppet arbetslösa, tusental", r: 96 }));
+  dash.draw("af-varsel-chart", (el) => mini(el, [{ key: "af_varsel", name: "Månad", field: "value", color: 1 }, { key: "af_varsel", name: "3 mån", field: "value_3m", color: 0 }], { src: "af", from: "2015-01", aria: "Varsel om uppsägning per månad och tremånadersmedel", r: 84 }));
+
+  // ---------- counties
+  const ABBR = { "01": "Sthlm", "03": "Upps", "04": "Södm", "05": "Östg", "06": "Jönk", "07": "Kron", "08": "Kalm", "09": "Gotl", "10": "Blek", "12": "Skåne", "13": "Hall", "14": "VGöt", "17": "Värm", "18": "Öreb", "19": "Västm", "20": "Dala", "21": "Gävl", "22": "Västn", "23": "Jämt", "24": "Västb", "25": "Norrb" };
+  const TILES = { "25": [3, 0], "24": [2, 1], "23": [1, 2], "22": [2, 2], "20": [1, 3], "21": [2, 3], "17": [0, 4], "19": [1, 4], "03": [2, 4], "01": [3, 4], "18": [1, 5], "04": [2, 5], "14": [0, 6], "05": [1, 6], "09": [3, 6], "13": [0, 7], "06": [1, 7], "08": [2, 7], "07": [1, 8], "10": [2, 8], "12": [1, 9] };
+  function lanState() {
+    let measure = "af_andel", view = "value";
+    document.querySelectorAll("#lan-measure").forEach((s) => { measure = s.value || measure; });
+    document.querySelectorAll("#lan-view").forEach((s) => { view = s.value || view; });
+    return { measure, view };
+  }
+  const redrawLan = () => { for (const n of ["lan-map", "lan-legend", "lan-table-body", "lan-note"]) dash.draw(n); };
+  document.querySelectorAll("#lan-measure, #lan-view").forEach((s) => s.addEventListener("change", redrawLan));
+  const lanVal = (r) => (r.unit === "antal" ? f0(r.value) : r.unit === "tkr" ? f0(r.value) : f1(r.value));
+  const lanChg = (r) => (r.change === null || r.change === undefined ? "–" : fs1(r.change) + (r.change_kind === "pp" ? (r.unit === "%" ? " pe" : "") : " %"));
+  function lanRows() {
+    const d = rows("region"); if (!d) return null;
+    const { measure } = lanState();
+    return d.filter((r) => r.measure === measure);
+  }
+  function lanScale(rs, view) {
+    const vals = rs.filter((r) => r.code !== "00").map((r) => (view === "change" ? r.change : r.value)).filter((v) => v !== null && v !== undefined);
+    if (!vals.length) return null;
+    if (view === "change") { const a = d3.max(vals, Math.abs) || 1; return { f: d3.scaleDiverging([-a, 0, a], (t) => d3.interpolateRdBu(1 - t)), lo: -a, hi: a }; }
+    const [lo, hi] = d3.extent(vals);
+    return { f: d3.scaleSequential([lo, hi === lo ? lo + 1 : hi], (t) => d3.interpolateBlues(0.12 + 0.78 * t)), lo, hi };
+  }
+  dash.draw("lan-note", (el) => {
+    el.replaceChildren();
+    if (dash.data("region").status === "error") { el.textContent = "Länsdatan kunde inte laddas."; return; }
+    const rs = lanRows(); if (!rs || !rs.length) { el.textContent = "—"; return; }
+    const nat = rs.find((r) => r.code === "00");
+    const { measure } = lanState();
+    if (nat) {
+      el.append(txt(nat.label + ". Riket: "), mark("span", lanVal(nat), "region", "value", "measure=" + measure + "&code=00"),
+        txt(" " + nat.unit + " (" + nat.period + "), förändring på ett år "), mark("span", lanChg(nat), "region", "change", "measure=" + measure + "&code=00"), txt("."));
+    }
+    const missing = Object.keys(TILES).filter((c) => !rs.some((r) => r.code === c));
+    if (missing.length) el.append(txt(" Saknas för senaste perioden: " + missing.map((c) => ABBR[c]).join(", ") + "."));
+    if (measure === "af_varsel") el.append(txt(" Arbetsförmedlingen uppdaterar inte varsel per län efter 2026-03; senaste månad här är " + (nat ? nat.period : "–") + "."));
+  });
+  dash.draw("lan-map", (el) => {
+    el.replaceChildren();
+    if (failed(el, ["region"], "Länsdatan kunde inte laddas.")) return;
+    const rs = lanRows(); const { view, measure } = lanState();
+    const sc = lanScale(rs, view);
+    if (!sc) { el.textContent = "Ingen data för måttet."; return; }
+    const byCode = new Map(rs.map((r) => [r.code, r]));
+    const W = Math.min(el.clientWidth || 300, 300), s = Math.floor((W - 2) / 4), H = s * 10 + 2;
+    const svg = d3.select(el).append("svg").attr("width", W).attr("height", H).attr("viewBox", `0 0 ${W} ${H}`).style("max-width", "100%")
+      .attr("role", "img").attr("aria-label", "Rutnätskarta över länen: " + (rs[0] ? rs[0].label : measure));
+    const tip = tipFor(el);
+    for (const [code, [c, r]] of Object.entries(TILES)) {
+      const row = byCode.get(code);
+      const v = row ? (view === "change" ? row.change : row.value) : null;
+      const fill = v === null || v === undefined ? null : sc.f(v);
+      const g = svg.append("g").attr("transform", `translate(${c * s + 1},${r * s + 1})`);
+      g.append("rect").attr("width", s - 3).attr("height", s - 3).attr("rx", 4)
+        .style("fill", fill || "transparent").style("stroke", "var(--color-border-line)");
+      const dark = fill ? d3.hsl(d3.color(fill)).l < 0.55 : false;
+      const col = fill ? (dark ? "#ffffff" : "#111111") : "var(--cds-text-secondary)";
+      g.append("text").attr("x", (s - 3) / 2).attr("y", (s - 3) / 2 - 3).attr("text-anchor", "middle").style("fill", col).text(ABBR[code]);
+      g.append("text").attr("x", (s - 3) / 2).attr("y", (s - 3) / 2 + 12).attr("text-anchor", "middle").style("fill", col)
+        .text(row ? (view === "change" ? lanChg(row) : lanVal(row)) : "–");
+      g.on("mousemove", (evt) => showTip(el, tip, evt, row ? [row.county, "Senaste: " + lanVal(row) + " " + row.unit + " (" + row.period + ")", "På ett år: " + lanChg(row), "Plats " + row.rank + " av " + (rs.length - 1)] : [ABBR[code], "Saknas för senaste perioden"]))
+        .on("mouseleave", () => { tip.hidden = true; });
+    }
+  });
+  dash.draw("lan-legend", (el) => {
+    el.replaceChildren();
+    const rs = lanRows(); if (!rs) return;
+    const { view } = lanState(); const sc = lanScale(rs, view); if (!sc) return;
+    const bar = document.createElement("span"); bar.className = "bar";
+    bar.style.background = "linear-gradient(90deg," + d3.range(0, 1.01, 0.25).map((t) => sc.f(sc.lo + t * (sc.hi - sc.lo))).join(",") + ")";
+    const unit = rs[0] ? rs[0] : null;
+    const fmt = (v) => (view === "change" ? fs1(v) : unit && (unit.unit === "antal" || unit.unit === "tkr") ? f0(v) : f1(v));
+    const a = document.createElement("span"); a.textContent = fmt(sc.lo);
+    const b = document.createElement("span"); b.textContent = fmt(sc.hi);
+    el.append(a, bar, b);
+  });
+  dash.draw("lan-table-body", (tb) => {
+    tb.replaceChildren();
+    const rs = lanRows(); if (!rs) return;
+    const { view } = lanState();
+    const key = (r) => (view === "change" ? (r.change ?? -Infinity) : r.value);
+    const sorted = [...rs].sort((a, b) => (b.code === "00") - (a.code === "00") || key(b) - key(a));
+    for (const r of sorted) {
+      const tr = document.createElement("tr"); tr.setAttribute("data-key", encodeURIComponent(r.measure) + "," + encodeURIComponent(r.code));
+      if (r.code === "00") tr.className = "sv-total";
+      for (const [v, cls] of [[r.county, ""], [lanVal(r), "num"], [lanChg(r), "num"], [r.period, ""]]) {
+        const td = document.createElement("td"); if (cls) td.className = cls; td.textContent = v; tr.appendChild(td);
+      }
+      tb.appendChild(tr);
+    }
+  });
+
+  // ---------- AI indicator (J7)
+  function yearBars(el, pts, opts) {
+    const W = el.clientWidth || 300, H = 150, m = { l: 36, r: 8, t: 14, b: 20 };
+    const x = d3.scaleBand(pts.map((p) => p.year), [m.l, W - m.r]).padding(0.2);
+    const y = d3.scaleLinear([Math.min(0, d3.min(pts, (p) => p.v)), Math.max(0, d3.max(pts, (p) => p.v))], [H - m.b, m.t]).nice();
+    const svg = d3.select(el).append("svg").attr("width", "100%").attr("height", H).attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", opts.aria);
+    svg.append("g").attr("class", "grid").selectAll("line").data(y.ticks(3)).join("line").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y).attr("y2", y);
+    svg.append("g").selectAll("text").data(y.ticks(3)).join("text").attr("x", m.l - 6).attr("y", (v) => y(v) + 4).attr("text-anchor", "end").text((v) => f1(v));
+    svg.append("g").selectAll("rect").data(pts).join("rect").attr("x", (p) => x(p.year)).attr("width", x.bandwidth())
+      .attr("y", (p) => Math.min(y(0), y(p.v))).attr("height", (p) => Math.abs(y(p.v) - y(0))).style("fill", dash.colors[0]).attr("opacity", (p) => (p.partial ? 0.4 : 1));
+    svg.append("line").attr("class", "ref").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y(0)).attr("y2", y(0));
+    const every = Math.ceil(pts.length / Math.max(1, Math.floor((W - m.l) / 40)));
+    svg.append("g").selectAll("text").data(pts.filter((_, i) => i % every === 0 || i === pts.length - 1)).join("text")
+      .attr("x", (p) => x(p.year) + x.bandwidth() / 2).attr("y", H - 6).attr("text-anchor", "middle").text((p) => "’" + String(p.year).slice(2) + (p.partial ? "*" : ""));
+    const lastP = pts[pts.length - 1];
+    if (lastP) svg.append("text").attr("x", x(lastP.year) + x.bandwidth() / 2).attr("y", Math.min(y(0), y(lastP.v)) - 3).attr("text-anchor", "middle").text(f1(lastP.v));
+    const tip = tipFor(el);
+    svg.append("rect").attr("x", m.l).attr("y", m.t).attr("width", W - m.l - m.r).attr("height", H - m.t - m.b).attr("fill", "transparent")
+      .on("mousemove", (evt) => { const px = d3.pointer(evt)[0]; const p = pts.find((q) => px >= x(q.year) - x.step() * x.padding() / 2 && px <= x(q.year) + x.bandwidth() + x.step() * x.padding() / 2) || lastP; showTip(el, tip, evt, [String(p.year) + (p.partial ? " (" + p.months + " mån)" : ""), f1(p.v)]); })
+      .on("mouseleave", () => { tip.hidden = true; });
+  }
+  dash.draw("ai-ind", (el) => {
+    el.replaceChildren();
+    if (failed(el, ["ai_indicator"], "Indikatorn kunde inte laddas.")) return;
+    const pts = rows("ai_indicator").filter((r) => r.series === "ai_diffusion_indicator_z").map((r) => ({ year: r.year, v: r.value })).sort((a, b) => a.year - b.year);
+    if (!pts.length) { el.textContent = "Ingen data."; return; }
+    yearBars(el, pts, { aria: "AI-indikatorn per år, z-värde" });
+  });
+  dash.draw("ai-ind-ads", (el) => {
+    el.replaceChildren();
+    if (failed(el, ["ai_indicator"], "Kunde inte laddas.")) return;
+    const pts = rows("ai_indicator").filter((r) => r.series === "ad_share_per_10k" && r.group === "maskininlärning").map((r) => ({ year: r.year, v: r.value, partial: r.partial, months: r.months })).sort((a, b) => a.year - b.year);
+    if (!pts.length) { el.textContent = "Ingen data."; return; }
+    yearBars(el, pts, { aria: "Platsannonser som nämner maskininlärning per 10 000 annonser, per år" });
+  });
+  dash.draw("ai-ind-note", (el) => {
+    const d = rows("ai_indicator"); if (!d) { el.textContent = "—"; return; }
+    const part = d.find((r) => r.series === "ad_share_per_10k" && r.partial);
+    el.textContent = "Per 10 000 publicerade annonser (JobTech, Platsbanken)." + (part ? " " + part.year + "* bygger på " + part.months + " månader och visas ljusare; det ingår inte i indikatorn." : "") +
+      " Sökordet ”AI” har ett mätbrott 2025 (ändrad matchning hos JobTech) och används därför inte i indikatorn.";
+  });
+})();
+</script>
