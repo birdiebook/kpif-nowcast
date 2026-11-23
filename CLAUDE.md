@@ -95,10 +95,12 @@ till main. Den väntar inte på godkännande för det som går att verifiera med
   (PS 5.1 läser som ANSI och förstör å/ä/ö).
 - **Fas 5c** – autonoma jobb J1–J7 (`docs/forbattringsplan.md`) ✅: J2 (`j2_el.py`) och J1
   (`j1_hybrid.py`) mergade, körs som skuggprognoser från 2026-12. J3–J7 också mergade.
-- **Körning 2** – Sverige på djupet, spår K0–K6: `docs/autonom-korning-2.md`
-- **Fas 6** – drift oberoende av egen dator (upplägg A, se beslutsloggen 2026-11-22):
-  GitHub Actions + Parquet i objektlagring + DuckDB, dbt för transformationer/tester,
-  MLflow, champion/challenger, Pages-dashboard
+- **Körning 2** – Sverige på djupet ✅ (17 spår K0–K13, slutrapport i `docs/auto2/STATUS.md` på `auto/status`):
+  prisled, regional data, ML på residualen (`k2_avg_ridge_l`/`k2_avg_ens_s` som skuggor), förklaringar,
+  publiceringskalender (`publication.py`), skattekalender (`docs/skattekalender.md`), månadsbrev.
+- **Fas 6** – drift oberoende av egen dator, delvis ✅: GitHub Actions (veckohämtning, skuggprognoser,
+  Pages), DuckDB-datatester, champion/challenger i SCORECARD. Kvar: objektlagring, MLflow,
+  revisionsversioner (vintages) i observationstabellen.
 
 Uppdatera listan när en fas är klar.
 
