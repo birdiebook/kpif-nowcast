@@ -123,3 +123,12 @@ Granskning, metod och dom: [auto2/k11/granskning.md](auto2/k11/granskning.md). L
 | `freight_ppi_deepsea` | 2025-10 | 2026-01-14 | BLS, historical release dates for the PPI |
 | `freight_ppi_deepsea` | 2025-11 | 2026-01-14 | BLS, historical release dates for the PPI |
 | `freight_ppi_deepsea` | 2025-12 | 2026-01-30 | BLS, historical release dates for the PPI |
+
+## Körning 3: L6 Kronan
+
+EUR/SEK och USD/SEK som månadsmedel av Riksbankens dagliga fixingkurser, bara hela månader (`catalog_fx.py`). KIX finns redan som `kix` ovan och dupliceras inte.
+
+| Nyckel | Fördröjning | Rev. | Belagd fördröjning (d) | Belägg | Dom |
+|---|---|---|---|---|---|
+| `sek_eur` | 1 | nej | 0 (fixingen publiceras kl. 16.15 samma bankdag; hämtning 2026-11-23 hade `observationMaxDate` 2026-11-20, sista bankdagen) | SWEA `/Groups` grupp 130 "Observations are published daily at 16.15 p.m."; `/Series` SEKEURPMI; riksbank.se "valutakurserna kl. 16.15 varje svensk bankdag". Rev.: fixing utan vintagar; eget månadsmedel = SWEA `ObservationAggregates` (M) på 5 decimaler för alla 406 månader 1993-01..2026-10 | OK (hela månaden före dag 4) |
+| `sek_usd` | 1 | nej | 0 (som `sek_eur`) | SWEA `/Groups` grupp 130; `/Series` SEKUSDPMI; jämförelse mot `ObservationAggregates` (M), 406 månader, max avvikelse 5e-6 | OK (hela månaden före dag 4) |

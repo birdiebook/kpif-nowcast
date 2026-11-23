@@ -1,6 +1,6 @@
 # Datakatalog
 
-337 serier: 96 nationella och 241 länsserier. Genererad av `python -m kpif_nowcast.catalog`.
+339 serier: 98 nationella och 241 länsserier. Genererad av `python -m kpif_nowcast.catalog`.
 
 ## Inflation
 
@@ -147,6 +147,8 @@
 | `gvb_5y` | Statsobligationsränta 5 år | M | 1987-01–2026-10 | 1 d | nej | Riksbanken SWEA SEGVB5YC | Marknadens ränteförväntningar och finansiella villkor. |
 | `gvb_10y` | Statsobligationsränta 10 år | M | 1987-01–2026-10 | 1 d | nej | Riksbanken SWEA SEGVB10YC | Marknadens ränteförväntningar och finansiella villkor. |
 | `swestr` | SWESTR (dagslåneränta) | M | 2021-09–2026-10 | 1 d | nej | Riksbanken SWESTR API | Kortränta som styrräntan styr; från 2021-09. |
+| `sek_eur` | EUR/SEK (kronor per euro) | M | 1993-01–2026-10 | 1 d | nej | Riksbanken SWEA SEKEURPMI | Euroområdet är största importkällan: svagare krona mot euron → dyrare importvaror och livsmedel. |
+| `sek_usd` | USD/SEK (kronor per dollar) | M | 1993-01–2026-10 | 1 d | nej | Riksbanken SWEA SEKUSDPMI | Olja, drivmedel och de flesta råvaror prissätts i dollar: snabbt genomslag på energi. |
 
 ## Regionalt: län
 
