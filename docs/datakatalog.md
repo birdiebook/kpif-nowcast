@@ -1,6 +1,6 @@
 # Datakatalog
 
-337 serier: 96 nationella och 241 länsserier. Genererad av `python -m kpif_nowcast.catalog`.
+344 serier: 103 nationella och 241 länsserier. Genererad av `python -m kpif_nowcast.catalog`.
 
 ## Inflation
 
@@ -11,6 +11,13 @@
 | `kpif_xe_index` | KPIF exkl. energi (KPIF-XE), index | M | 1987-01–2026-10 | 15 d | nej | SCB TAB6593 | Underliggande inflation utan energipriser. |
 | `kpif_goods_index` | KPIF varor, index | M | 1987-01–2026-10 | 15 d | ja | SCB TAB6627 | Varudelen av KPIF, påverkas av import- och producentpriser. |
 | `kpif_services_index` | KPIF tjänster, index | M | 1987-01–2026-10 | 15 d | ja | SCB TAB6627 | Tjänstedelen av KPIF, driven av löner och hyror. |
+| `kpif_flash_yy` | Snabb-KPI: KPIF, årstakt | M | 2024-09–2026-10 | 8 d | nej | SCB TAB6445 (Snabb-KPI) | SCB:s snabbestimat, en vecka före utfallet: referens för nowcasten. |
+| `kpif_flash_mm` | Snabb-KPI: KPIF, månadsförändring | M | 2024-09–2026-10 | 8 d | nej | SCB TAB6445 (Snabb-KPI) | SCB:s snabbestimat, en vecka före utfallet: referens för nowcasten. |
+| `kpif_xe_flash_yy` | Snabb-KPI: KPIF-XE, årstakt | M | 2024-09–2026-10 | 8 d | nej | SCB TAB6445 (Snabb-KPI) | SCB:s snabbestimat, en vecka före utfallet: referens för nowcasten. |
+| `kpif_xe_flash_mm` | Snabb-KPI: KPIF-XE, månadsförändring | M | 2024-09–2026-10 | 8 d | nej | SCB TAB6445 (Snabb-KPI) | SCB:s snabbestimat, en vecka före utfallet: referens för nowcasten. |
+| `kpif_flash_err_yy` | Snabb-KPI minus utfall: KPIF, årstakt | M | 2024-09–2026-10 | 20 d | nej | SCB TAB6445 minus TAB6590 | Hur mycket snabbestimatet missar det slutliga utfallet. |
+| `kpif_flash_err_mm` | Snabb-KPI minus utfall: KPIF, månadsförändring | M | 2024-09–2026-10 | 20 d | nej | SCB TAB6445 minus TAB6590 | Hur mycket snabbestimatet missar det slutliga utfallet. |
+| `kpif_xe_flash_err_yy` | Snabb-KPI minus utfall: KPIF-XE, årstakt | M | 2024-09–2026-10 | 20 d | nej | SCB TAB6445 minus TAB6593 | Hur mycket snabbestimatet missar det slutliga utfallet. |
 
 ## Prisleden: producent-, import- och planerade priser
 
