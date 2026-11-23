@@ -2,7 +2,7 @@
 
 Skriven 2026-11-23. Körning 1 (J1–J7) var klar på 30 minuter, eftersom jobben var skrivna i
 människotempo och tog slut när variant-taket nåddes. Körning 2 är dimensionerad för att fylla
-tiden: sex spår och en prioriterad backlog som körs tills den är tom eller Johannes skriver STOP.
+tiden: sju spår och en prioriterad backlog som körs tills den är tom eller Johannes skriver STOP.
 
 **Fokus är Sverige.** Andra länder ingår bara om datan går att få utan krångel (se K6).
 
@@ -33,6 +33,21 @@ förbjudna åtgärder. Statusfilen blir `docs/auto2/STATUS.md` och briefen `docs
 3. Keep-awake, nätström, inget viloläge (som körning 1).
 
 ## Spåren
+
+### K0. Prisleden: från producent till butikshylla
+**Varför:** katalogen saknar nästan helt de priser som ligger närmast KPIF. Hoppa över en källa
+som blir omständlig (konto, skrapning, oklara villkor) och ta nästa.
+- SCB: import- och hemmamarknadspriser för konsumtionsvaror och livsmedel (PPI), M3.
+- KI: prisplaner per bransch, särskilt livsmedels- och detaljhandeln.
+- KPIF exkl. energi samt varor och tjänster som egna katalogserier.
+- FRED: kaffe, kakao, socker, kött, vegetabiliska oljor.
+- Riksbanken: statsobligationsräntor 2/5/10 år och SWESTR. Prospera om Excel-filen är stabil.
+- Medlingsinstitutet: avtalsmässiga löneökningar, om de finns som tabell.
+- SCB/Swedavia: hotellnätter och flygpassagerare, om det går lätt.
+- Egen katalogmodul `catalog_prices.py`. Sedan en förregistrerad screening som J3:s (BH-kontroll,
+  räknas inte mot varianttaket), och högst tre serier testas tillsammans en gång.
+**Klart:** serierna i observationstabellen med publiceringsfördröjning, screeningtabell och
+"inget håller" redovisat ärligt om så blir fallet.
 
 ### K1. Drift: skuggprognoserna går själva (fas 6, del 1)
 **Varför:** urvalsevidens blir riktig evidens först när modellerna prognostiserar månader de
@@ -92,8 +107,8 @@ Var och en tidsboxas till ett försök. Fungerar det inte: en rad i STATUS och v
 
 ## Backlog (körs i ordning när ett spår blir ledigt)
 
-1. K1, K2, K3 startar direkt.
-2. K4 när en plats blir ledig, sedan K5 (behöver K1, K3, K4).
+1. K0, K1, K2 startar direkt.
+2. K3, sedan K4, sedan K5 (behöver K1, K3, K4).
 3. K6.
 4. Veckohämtningen (`observations`, `features`, `sverige_dashboard`) som sista steg, så att
    dashboarden är färsk när Johannes läser.
