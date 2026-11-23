@@ -1,0 +1,67 @@
+utc,git_sha,variant,period,n,MAE,dm_p_vs_rb_updated
+2026-11-23T14:34:21Z,8e0ad8e,v2_r_corr,primary 2017-02..2026-10,117,0.2072,0.0019
+2026-11-23T14:34:21Z,8e0ad8e,v2_r_corr,2015-01..2026-10,141,0.1959,0.0032
+2026-11-23T14:34:21Z,8e0ad8e,v2_r_corr,"2024-01..2026-10 (used, report only)",34,0.2245,0.0871
+2026-11-23T14:34:21Z,8e0ad8e,v2_a_corr,primary 2017-02..2026-10,117,0.2241,0.0045
+2026-11-23T14:34:21Z,8e0ad8e,v2_a_corr,2015-01..2026-10,141,0.21,0.0073
+2026-11-23T14:34:21Z,8e0ad8e,v2_a_corr,"2024-01..2026-10 (used, report only)",34,0.244,0.1548
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_kpif_air_transport_index,primary 2017-02..2026-10,117,0.2072,0.1425
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_easter_window_days,primary 2017-02..2026-10,117,0.2121,0.557
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_guest_nights_domestic,primary 2017-02..2026-10,117,0.2121,0.6499
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_kpi_rent_index,primary 2017-02..2026-10,117,0.2174,0.7784
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_sek_usd,primary 2017-02..2026-10,117,0.2142,0.864
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_kpif_package_holidays_index,primary 2017-02..2026-10,117,0.2159,0.9373
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_kpif_accommodation_index,primary 2017-02..2026-10,117,0.2153,0.9429
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_guest_nights_foreign,primary 2017-02..2026-10,117,0.2153,0.9709
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_el_contract_spot_share,primary 2017-02..2026-10,117,0.216,0.9863
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_sek_eur,primary 2017-02..2026-10,117,0.2141,0.9983
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_kpif_air_transport_index,2015-01..2026-10,141,0.1959,0.1427
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_easter_window_days,2015-01..2026-10,141,0.2,0.557
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_guest_nights_domestic,2015-01..2026-10,141,0.2,0.65
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_kpi_rent_index,2015-01..2026-10,141,0.2045,0.7781
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_sek_usd,2015-01..2026-10,141,0.2017,0.8635
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_kpif_package_holidays_index,2015-01..2026-10,141,0.2032,0.9348
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_kpif_accommodation_index,2015-01..2026-10,141,0.2027,0.9442
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_guest_nights_foreign,2015-01..2026-10,141,0.2027,0.9693
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_el_contract_spot_share,2015-01..2026-10,141,0.2033,0.9857
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_sek_eur,2015-01..2026-10,141,0.2017,0.9982
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_kpif_air_transport_index,"2024-01..2026-10 (used, report only)",34,0.2245,0.2962
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_el_contract_spot_share,"2024-01..2026-10 (used, report only)",34,0.2299,0.569
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_easter_window_days,"2024-01..2026-10 (used, report only)",34,0.2301,0.5864
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_sek_usd,"2024-01..2026-10 (used, report only)",34,0.2301,0.6215
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_kpi_rent_index,"2024-01..2026-10 (used, report only)",34,0.2334,0.733
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_guest_nights_domestic,"2024-01..2026-10 (used, report only)",34,0.2293,0.7758
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_sek_eur,"2024-01..2026-10 (used, report only)",34,0.2314,0.8699
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_guest_nights_foreign,"2024-01..2026-10 (used, report only)",34,0.2296,0.8825
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_kpif_accommodation_index,"2024-01..2026-10 (used, report only)",34,0.2303,0.9603
+2026-11-23T14:34:21Z,8e0ad8e,v2s_R_kpif_package_holidays_index,"2024-01..2026-10 (used, report only)",34,0.2308,0.9838
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_kpif_air_transport_index,primary 2017-02..2026-10,117,0.2241,0.032
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_easter_window_days,primary 2017-02..2026-10,117,0.2317,0.4786
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_kpi_rent_index,primary 2017-02..2026-10,117,0.2376,0.7649
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_kpif_accommodation_index,primary 2017-02..2026-10,117,0.2351,0.8333
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_guest_nights_domestic,primary 2017-02..2026-10,117,0.2349,0.8668
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_sek_usd,primary 2017-02..2026-10,117,0.2353,0.87
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_kpif_package_holidays_index,primary 2017-02..2026-10,117,0.237,0.9225
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_el_contract_spot_share,primary 2017-02..2026-10,117,0.2354,0.9347
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_sek_eur,primary 2017-02..2026-10,117,0.2356,0.9792
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_guest_nights_foreign,primary 2017-02..2026-10,117,0.2368,0.9884
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_kpif_air_transport_index,2015-01..2026-10,141,0.21,0.033
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_easter_window_days,2015-01..2026-10,141,0.2163,0.4786
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_kpi_rent_index,2015-01..2026-10,141,0.2212,0.7648
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_kpif_accommodation_index,2015-01..2026-10,141,0.2191,0.8345
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_guest_nights_domestic,2015-01..2026-10,141,0.2189,0.8662
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_sek_usd,2015-01..2026-10,141,0.2193,0.8694
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_kpif_package_holidays_index,2015-01..2026-10,141,0.2207,0.9202
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_el_contract_spot_share,2015-01..2026-10,141,0.2193,0.9344
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_sek_eur,2015-01..2026-10,141,0.2195,0.9786
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_guest_nights_foreign,2015-01..2026-10,141,0.2205,0.9871
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_easter_window_days,"2024-01..2026-10 (used, report only)",34,0.243,0.2579
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_kpif_air_transport_index,"2024-01..2026-10 (used, report only)",34,0.244,0.3962
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_sek_usd,"2024-01..2026-10 (used, report only)",34,0.246,0.4851
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_el_contract_spot_share,"2024-01..2026-10 (used, report only)",34,0.2469,0.5689
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_guest_nights_domestic,"2024-01..2026-10 (used, report only)",34,0.2463,0.6804
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_guest_nights_foreign,"2024-01..2026-10 (used, report only)",34,0.2467,0.8709
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_kpif_accommodation_index,"2024-01..2026-10 (used, report only)",34,0.2477,0.9192
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_sek_eur,"2024-01..2026-10 (used, report only)",34,0.2502,0.9442
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_kpi_rent_index,"2024-01..2026-10 (used, report only)",34,0.2531,0.957
+2026-11-23T14:34:21Z,8e0ad8e,v2s_A_kpif_package_holidays_index,"2024-01..2026-10 (used, report only)",34,0.2488,0.9613

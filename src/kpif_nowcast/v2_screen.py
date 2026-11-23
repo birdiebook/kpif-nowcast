@@ -76,7 +76,7 @@ GLOBAL_BLOCK, GLOBAL_B, SENS_BLOCKS = 3.0, 9999, (1, 6, 12)
 # Mechanical outcome of the selection rule on the primary screen (frozen after the one run, like
 # k12_global.J3_COMBO_KEYS), so k12_global can rebuild the variants without rerunning the screen.
 # test_v2_screen checks that choose() on the screen still gives these.
-V2_CHOSEN: dict[str, list[str]] | None = None
+V2_CHOSEN: dict[str, list[str]] | None = {"R": ["kpif_air_transport_index"], "A": ["kpif_air_transport_index"]}
 
 
 # ====================================================================== features
