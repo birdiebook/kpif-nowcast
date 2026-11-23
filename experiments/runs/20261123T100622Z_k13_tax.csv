@@ -1,0 +1,25 @@
+utc,git_sha,variant,period,n,MAE,dm_p_vs_rb_updated
+2026-11-23T10:06:22Z,f5ab041+dirty,rb_updated,"2015-02..2026-10 (primary, Holm over 2)",141,0.2555,nan
+2026-11-23T10:06:22Z,f5ab041+dirty,avg_5050,"2015-02..2026-10 (primary, Holm over 2)",141,0.2165,0.0147
+2026-11-23T10:06:22Z,f5ab041+dirty,j2,"2015-02..2026-10 (primary, Holm over 2)",141,0.2429,0.2824
+2026-11-23T10:06:22Z,f5ab041+dirty,k13_j2_clean,"2015-02..2026-10 (primary, Holm over 2)",141,0.2389,0.2266
+2026-11-23T10:06:22Z,f5ab041+dirty,k2_avg_ens_s,"2015-02..2026-10 (primary, Holm over 2)",141,0.2009,0.0051
+2026-11-23T10:06:22Z,f5ab041+dirty,k13_ens_clean,"2015-02..2026-10 (primary, Holm over 2)",141,0.2029,0.0054
+2026-11-23T10:06:22Z,f5ab041+dirty,rb_updated,2015-02..2026-10 without event months (base effect only),134,0.2434,nan
+2026-11-23T10:06:22Z,f5ab041+dirty,avg_5050,2015-02..2026-10 without event months (base effect only),134,0.2101,0.0269
+2026-11-23T10:06:22Z,f5ab041+dirty,j2,2015-02..2026-10 without event months (base effect only),134,0.2361,0.368
+2026-11-23T10:06:22Z,f5ab041+dirty,k13_j2_clean,2015-02..2026-10 without event months (base effect only),134,0.2355,0.3565
+2026-11-23T10:06:22Z,f5ab041+dirty,k2_avg_ens_s,2015-02..2026-10 without event months (base effect only),134,0.1937,0.0068
+2026-11-23T10:06:22Z,f5ab041+dirty,k13_ens_clean,2015-02..2026-10 without event months (base effect only),134,0.194,0.0078
+2026-11-23T10:06:22Z,f5ab041+dirty,rb_updated,"2024-01..2026-10 (used, report only)",34,0.2668,nan
+2026-11-23T10:06:22Z,f5ab041+dirty,avg_5050,"2024-01..2026-10 (used, report only)",34,0.2461,0.1986
+2026-11-23T10:06:22Z,f5ab041+dirty,j2,"2024-01..2026-10 (used, report only)",34,0.2522,0.3717
+2026-11-23T10:06:22Z,f5ab041+dirty,k13_j2_clean,"2024-01..2026-10 (used, report only)",34,0.2321,0.2278
+2026-11-23T10:06:22Z,f5ab041+dirty,k2_avg_ens_s,"2024-01..2026-10 (used, report only)",34,0.2168,0.0896
+2026-11-23T10:06:22Z,f5ab041+dirty,k13_ens_clean,"2024-01..2026-10 (used, report only)",34,0.2165,0.0844
+2026-11-23T10:06:22Z,f5ab041+dirty,rb_updated,"2026-04..2026-10 (after the VAT cut, report only)",7,0.26,nan
+2026-11-23T10:06:22Z,f5ab041+dirty,avg_5050,"2026-04..2026-10 (after the VAT cut, report only)",7,0.2918,0.7661
+2026-11-23T10:06:22Z,f5ab041+dirty,j2,"2026-04..2026-10 (after the VAT cut, report only)",7,0.3391,0.8373
+2026-11-23T10:06:22Z,f5ab041+dirty,k13_j2_clean,"2026-04..2026-10 (after the VAT cut, report only)",7,0.275,0.5917
+2026-11-23T10:06:22Z,f5ab041+dirty,k2_avg_ens_s,"2026-04..2026-10 (after the VAT cut, report only)",7,0.3369,0.9168
+2026-11-23T10:06:22Z,f5ab041+dirty,k13_ens_clean,"2026-04..2026-10 (after the VAT cut, report only)",7,0.3292,0.8704
