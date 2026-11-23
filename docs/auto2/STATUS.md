@@ -1,8 +1,8 @@
 # Status: autonom körning 2 (Sverige på djupet)
 
-**Lås:** orkestrerare 2026-11-23T09:41Z · heartbeat 2026-11-23T09:41Z
+**Lås:** orkestrerare 2026-11-23T09:52Z · heartbeat 2026-11-23T09:52Z
 **Start:** 2026-11-23 · **Bas:** main @ 42b717b
-**Varianter i körningen:** 22/30 (projektet totalt 23 + 22 = 45) · **main:** 11e0c8f · **parallellt:** 6 (höjt från 3)
+**Varianter i körningen:** 26/30 (projektet totalt 23 + 26 = 49) · **main:** 80bc02f · **parallellt:** 6 (höjt från 3)
 **Merge:** klara spår mergas till main av orkestreraren (ändrat 2026-11-23) · **Brief:** [BRIEF.md](BRIEF.md) · regler: `docs/autonom-korning-2.md` på main
 
 ## Spår
@@ -18,7 +18,8 @@
 | K5 Sverigeläget v2 | auto2/k5 | k5 | pågår (dashboard v2, månadsbrev) | – | f74d2bb | – |
 | K6 Om lätt | auto2/k6 | k6 | **KLAR, mergad**  | 2/4 | 0734d09 | Vintages TAB6613 BLOCKED (finns inte); ersatt med kontroll gammal/ny HIKP: el och drivmedel identiska (r 1,000) → J4 D2:s vinst är ingen revisionseffekt. Nordisk el: FI −0,011 (Holm 0,58), DK +0,002 (0,86), klarade inte skärmen; el-HIKP i FI/DK följer spot med en månads lagg, metoden är SCB-specifik. |
 | K7 Tjänster | auto2/k7 | k7 | **KLAR, mergad** (11e0c8f) | 5/5 | 89a6db2 | Ingen klarade skärmen (bäst −0,001 mot 50/50). 77 % av tjänstefelet är resor (paketresor, flyg, logi); säsong+trend går knappt att slå med fri data. |
-| K8 Livsmedel | auto2/k8 | k8 | pågår | 0/4 | 51fa62f | – |
+| K8 Livsmedel | auto2/k8 | k8 | **KLAR, mergad** (bf36a1c) | 4/4 | d366a3c | Ingen klarade skärmen (bäst 0,214 mot 0,217, Holm 0,41). Livsmedelsbidragets eget fel −10 % (2022–23 −35 %), men drunknar i totalen. Fynd: momssänkningen 2026-04 ligger kvar i trend/säsong → K13. |
+| K13 Skatterensad bas | auto2/k13 | k13 | pågår | 0/2 | 80bc02f | – |
 | K9 Horisont 3–12 | auto2/k9 | k9 | **KLAR, mergad** (7bbd5f3) | 4/4 | eecfbd4 | Ingen klarade skärmen. Riksbanken kvar som ribba på 3–12 mån; "2 %" lika bra på 12 mån. Effektivt n 46/23/11 för litet för korrektioner. |
 | K10 Pages-dashboard (fas 6) | – | – | väntar (K5) | – | – | – |
 | K12 Globalt test (SPA/MCS) | auto2/k12 | k12 | pågår | 0 | 11e0c8f | – |
@@ -29,6 +30,7 @@
 - Riksbanken, KI, Eurostat: K6 (K2b får göra en liten onlinerepro mot SCB)
 
 ## Logg
+- 2026-11-23T09:52Z: K8 klar (negativ), mergad; test_k8_food skippar nu utan K0-data (80bc02f, 108 passed). K13 skatterensad bas startad (2 av 4 reservvarianter).
 - 2026-11-23T09:41Z: K9 och K7 klara (negativa), mergade (107 passed). K12 globalt test startat.
 - 2026-11-23T09:25Z: Johannes: K0–K6 använde ~20 % av ett 5-timmarsfönster. Parallellitet höjd till 6 och backloggen utökad med K7 tjänster (37 % av felet), K8 livsmedel, K9 horisont 3–12, K10 Pages (efter K5) och K11 granskning av publiceringsfördröjningar. Variantbudget: K7 5, K8 4, K9 4 → max 26/30.
 - 2026-11-23T09:22Z: K6 och K4 klara, mergade (96 passed på main f74d2bb). K5 startad. Kalibrering uppdaterad.

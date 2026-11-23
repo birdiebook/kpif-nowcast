@@ -30,4 +30,6 @@ J3:s screening räknas inte.
 | 37–40 | K9 | k9_ridge_h3, k9_ridge_h12, k9_shrink_h12, k9_miss_h6 (förreg. b4b5287) | 0ab9fcd | ingen klarade (Holm 1,00) |
 | 41–45 | K7 | k7_med_half, k7_med_full, k7_cal_half, k7_cal_full, k7_k2_cal_full (förreg. b27f89b) | b8ed849 | bäst −0,001 mot 50/50 (Holm 1) |
 
-**Löpande total: 45 (körning 2: 22/30)**
+| 46–49 | K8 | k8_fixed, k8_ridge, k8_ridge_nr, k8_ens_ridge (förreg. 1bc8e84) | 711f3bd | bäst 0,214 mot 0,217 (Holm 0,41) |
+
+**Löpande total: 49 (körning 2: 26/30)**
