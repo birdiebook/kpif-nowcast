@@ -413,6 +413,9 @@ CATALOG += catalog_el.specs()
 from kpif_nowcast import catalog_fx  # noqa: E402
 
 CATALOG += catalog_fx.specs()
+from kpif_nowcast import catalog_flash  # noqa: E402
+
+CATALOG += catalog_flash.specs()
 
 # County series (K4): in the observation table and the docs, but kept out of CATALOG so that the national
 # candidate lists (j3_screen, k2_ml) and the national dashboard do not change.
