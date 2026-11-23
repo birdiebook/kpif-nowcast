@@ -64,8 +64,11 @@ K0_COMBO_KEYS = ["ppi_hmpi_food", "rapeseed_oil_usd", "swestr"]
 
 # Which track each variant belongs to (for the report). Phase 2-4 models are "fas2-4".
 TRACK_PREFIX = [("j1_", "J1"), ("j2_", "J2"), ("j3_", "J3"), ("j4_", "J4"), ("k0_", "K0"), ("k2_", "K2"),
-                ("k7_", "K7"), ("k8_", "K8")]
-REFERENCES = {"rb_updated": "referens", "avg_5050": "referens (= j1_comb_equal)", "j2": "referens (= j2_el_dev)"}
+                ("k7_", "K7"), ("k8_", "K8"), ("v2_", "V2")]
+# K2b-corrected shadow version of k2_avg_ridge_l: the ribbon of run 3's V2 (not a new variant)
+SHADOW_K2 = "k2_avg_ridge_l_shadow"
+REFERENCES = {"rb_updated": "referens", "avg_5050": "referens (= j1_comb_equal)", "j2": "referens (= j2_el_dev)",
+              SHADOW_K2: "referens (skugga, K2b-rättad)"}
 
 
 # ====================================================================== statistics (numpy only)
@@ -360,6 +363,13 @@ def collect_k8(inp: dict, k2: pd.DataFrame) -> pd.DataFrame | None:
     return k8.totals(avg, d["k"], corr, k2["k2_avg_ens_s"])
 
 
+def collect_v2(inp: dict) -> pd.DataFrame:
+    """Run 3 wave 2 (V2): the joint corrections with the frozen selection, plus the shadow k2_avg_ridge_l."""
+    from kpif_nowcast.v2_screen import k12_forecasts
+
+    return k12_forecasts(inp)
+
+
 def _source_hash(modules: list[str]) -> str:
     h = hashlib.sha256()
     for m in modules:
@@ -385,6 +395,8 @@ FAMILIES = {
     "k2": (["k2_ml", "j1_hybrid", "j2_el", "j3_screen"], collect_k2, False),
     "k7": (["k7_services", "j2_el", "j1_hybrid"], collect_k7, True),
     "k8": (["k8_food"], collect_k8, True),
+    "v2": (["v2_screen", "shadow", "k2_ml", "k2b_review", "j1_hybrid", "j2_el", "j3_screen", "publication"],
+           collect_v2, False),
 }
 COMMON_MODULES = ["data", "features", "observations", "catalog"]
 
@@ -550,7 +562,7 @@ def main(argv: list[str] | None = None) -> None:
     err_all, kept, dropped = common_sample(preds, candidates)
     err_all, alias = dedupe(err_all, prefer=BENCHMARKS)
     phase = [c for c in err_all.columns if family_of.get(c) == "phase"]
-    variants = [c for c in err_all.columns if c not in phase and c not in BENCHMARKS and c != "j2"]
+    variants = [c for c in err_all.columns if c not in phase and c not in BENCHMARKS and c not in REFERENCES]
     n = len(err_all)
 
     # block length: Politis-White on the loss differences vs each benchmark
@@ -560,7 +572,8 @@ def main(argv: list[str] | None = None) -> None:
 
     mae = err_all.abs().mean()
     universes = {
-        "U1 registrerade varianter + referenser": [*BENCHMARKS, "j2", *variants],
+        "U1 registrerade varianter + referenser": [*BENCHMARKS, *[r for r in REFERENCES if r in err_all.columns
+                                                                  and r not in BENCHMARKS], *variants],
         "U2 U1 + fas 2–4-modeller": list(err_all.columns),
     }
     res = {}

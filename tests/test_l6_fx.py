@@ -40,6 +40,7 @@ def test_registered_once_after_catalog_prices():
 
     keys = [s.key for s in CATALOG]
     assert len(keys) == len(set(keys))
+    # after the wave 1 merge other run 3 modules sit between K0's block and FX: check order, not adjacency
     last_k0 = keys.index(catalog_prices.keys()[-1])
     first_fx = keys.index(fx.keys()[0])
     assert first_fx > last_k0
