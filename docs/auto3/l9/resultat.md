@@ -95,16 +95,18 @@ Riksbanksomgångar publicerade efter cutoff, sammansättning utan modelldata), `
 
 ## Status
 
-- **Brevet `docs/manadsbrev/2026-11.md` är inte omgenererat.** Omgenereringen
-  (`python -m kpif_nowcast.manadsbrev 2026-11 --today 2026-11-23 --no-k2`) hann inte bli klar på 40 minuter i den
-  delade containern. Champion-tabellen räknar K2-historiken, och lasten var ~35 på 4 kärnor. Körningen stoppades vid
-  fönstrets slut. Sektionerna är testade utan modelldata (`test_letter_has_new_sections_without_model_data`), och
-  innehållet för november och december står ovan. Nästa månadsjobb (eller samma kommando på en ledig maskin)
-  skriver brevet med de nya sektionerna. Informationsdatumet blir oförändrat 2026-11-23.
-- **Hela pytest-sviten är inte körd** (> 40 min seriellt, containern överbelastad). Riktade sviter är gröna:
-  test_l9_routine, test_l1_admin_calendar, test_l7_flash, test_k13_tax, test_publication_calendar och delar av
-  test_shadow (41 + 12 passerade, 1 hoppad). test_k5:s brevtester (tunga) är inte körda. Orkestreraren kör hela sviten
-  på det sammanslagna resultatet.
+- **Brevet `docs/manadsbrev/2026-11.md` är omgenererat** i rättningsrundan
+  (`python -m kpif_nowcast.manadsbrev 2026-11 --today 2026-11-23`, med K2, ~2 min när containern var ledig).
+  Informationsdatumet är oförändrat 2026-11-23. Nytt: sektionerna "Beslutade engångshändelser" (+0,04 pe, med
+  beslutet citerat) och "Förhandsvisning: december 2026" (+0,52 pe), en punkt i huvudbudskapet, och K2-skuggorna som
+  mergats till main sedan förra brevet. K2-kandidaten 1,68 → 1,66 % och ML-annonserna 30,9 → 31,0 kommer från
+  datauppdateringar sedan K5, inte från L9. Första försöket saknade K2-förklaringen eftersom
+  `data/processed/el_contracts.csv` saknades i worktreens data (inte i git); filen kopierades från v2-worktreen och
+  brevet kördes om. Etiketter i förhandsvisningen kapas nu vid 160 tecken i stället för 90 (decemberraden klipptes
+  mitt i en parentes).
+- **Hela pytest-sviten** på den mergade grenen (origin/main 856ced2 + L9 + rättningar), `-n 2`:
+  **243 passerade, 2 hoppade, 0 fel** (14,5 min). Första körningen gav 1 fel i test_k5 (se Granskning 5) och fler
+  hoppade, eftersom `el_contracts.csv` saknades i datan då.
 
 ## Granskning
 
@@ -124,6 +126,10 @@ Oberoende granskning, 5 fynd (alla minor). Bedömda mot koden och källan:
    varnar i `monthly` och att `admin` (strict) fortfarande fallerar.
 4. **Grenen låg två commits efter auto3/merge1.** Rättat: origin/main (856ced2, = merge1 + L8 + L6-testet) är
    mergad in i auto3/l9 med vanlig 3-vägsmerge, utan konflikter. `git diff origin/main --stat` visar nu bara L9:s filer.
-5. **test_k5, hela test_shadow och brevet var inte körda.** Se Status: hela sviten körd i rättningsrundan på den
-   mergade grenen, och omgenereringen av brevet gjordes om när containern var ledig.
+5. **test_k5, hela test_shadow och brevet var inte körda.** Höll, och fyndet var verkligt: första hela körningen
+   (217 passerade, 9 hoppade, **1 fel**) fällde `test_k5::test_letter_uses_only_data_known_at_cutoff`. Brevet för
+   juni 2026 skrev "Kalenderns förslag för 2026-07" i förhandsvisningen. Det är etiketten för månaden som
+   förhandsvisas, inte data efter cutoff (brevet var identiskt med och utan senare observationer), men testets regel
+   är att inga perioder efter cutoff står i brevet. Rättat: förhandsvisningen skriver månadsnamnet ("juli 2026") som
+   resten av brevet. test_k5 + test_l9_routine: 21 passerade. Brevet för 2026-11 är omgenererat (se Status).
 

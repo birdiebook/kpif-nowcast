@@ -421,11 +421,11 @@ def section_preview(month: pd.Period, cutoff: pd.Timestamp, events: list, index:
     nxt = month + 1
     s = ac.suggest(nxt, events, index, cutoff)
     lines = [f"## Förhandsvisning: {month_sv(str(nxt))}", "",
-             f"*Kalenderns förslag för {nxt} med beslut kända vid informationsdatumet {cutoff.date()}. Prognosen för "
+             f"*Kalenderns förslag för {month_sv(str(nxt))} med beslut kända vid informationsdatumet {cutoff.date()}. Prognosen för "
              f"{month_sv(str(nxt))} görs i månadsrutinen dag 1–4 i {month_sv(str(nxt + 1))}; förslaget räknas om då "
              "med beslut fram till dess. Johannes beslutar om justeringen används.*", ""]
     if s.used:
-        lines += [f"- {ac._short(e.label, 90)}: {ac._num(e.suggest_pe)} pe m/m ({e.method}, beslut senast {e.decided})."
+        lines += [f"- {ac._short(e.label, 160)}: {ac._num(e.suggest_pe)} pe m/m ({e.method}, beslut senast {e.decided})."
                   for e in s.used]
         lines += [f"- Summa {ac._num(s.mm_pe)} pe m/m, i årstakt **{ac._num(s.adjust, 2)} pe**: används förslaget blir den "
                   f"skarpa prognosen för {month_sv(str(nxt))} modellens siffra plus {num(s.adjust, 2)} procentenheter. "
@@ -435,7 +435,7 @@ def section_preview(month: pd.Period, cutoff: pd.Timestamp, events: list, index:
         lines.append(f"- Inga beslutade engångshändelser med känd storlek för {month_sv(str(nxt))}.")
     for e in s.listed:
         size = "?" if e.pe is None else ac._num(e.pe)
-        lines.append(f"- Ej med ({ac.why_not_used(e, nxt, cutoff)}): {size} pe, {ac._short(e.label, 90)}.")
+        lines.append(f"- Ej med ({ac.why_not_used(e, nxt, cutoff)}): {size} pe, {ac._short(e.label, 160)}.")
     lines.append(f"- Eko av tidigare engångshändelser i modellens trend och säsong: {ac._num(s.echo_pe)} pe m/m "
                  "(information, ingår inte i förslaget).")
     facts = {"preview": s}
