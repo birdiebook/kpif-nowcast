@@ -404,3 +404,13 @@ kandidatlistorna i J3/K2 och den nationella dashboarden. `by_key`, `refresh` och
 241 serier, 11 mått (AF-andel och antal, varsel, BAS, AKU, småhuspris, FPI, konkurser, folkmängd), bara deskriptivt.
 Inga modellvarianter. Länskarta BLOCKED (inget öppet länslager utan konto eller nytt GIS-paket), rutnätskarta i stället.
 Detaljer: [docs/auto2/k4/resultat.md](auto2/k4/resultat.md), [kvalitet](auto2/k4/kvalitet.md), [läget](auto2/k4/lage.md).
+
+## 2026-11-23 – K11 Granskning av publiceringsfördröjningar
+**Dom: fel som påverkar.** Fyra serier hade för kort fördröjning (läckage): BNP-indikatorn 35 → 45 d (belagt
+38–41 d), hushållens konsumtionsindikator 15 → 45 d (gamla indikatorn ca 40 d), euroområdets decemberflash
+(belagt dag 4–7, nu exakta datum) och BLS frakt-PPI sep–dec 2025 (shutdown). **Val:** `publication.py` sätter
+`known_from = max(slut + lag, dokumenterat releasedatum)` och `observations.load()` tillämpar det, så rättningen
+gäller utan ombyggd parquet. Fördröjningar och revised-flaggor låses mot `docs/publiceringskalender.md` (pytest).
+K2:s L frystes till 43 serier (hade vuxit till 72 med K0). K2 omkörd: ridge_l 0,200 (Holm 0,018), ens_s 0,202
+(Holm 0,082), ridge_s 0,207 (Holm 0,132, klarar inte längre skärmen). 0 varianter.
+Detaljer: [docs/auto2/k11/granskning.md](auto2/k11/granskning.md).

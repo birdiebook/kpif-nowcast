@@ -132,8 +132,32 @@ har nu Holm 0,082 i stället för 0,055. De här är fortfarande urvalsevidens, 
 
 ## BLOCKED / inte belagt
 
-<!--BLOCKED-->
+- **SCB:s historiska publiceringskalender**: inget API för gamla publiceringsdatum. PxWeb v2 ger bara
+  senaste `updated`. Historiska datum togs från statistiknyheter (BNP-indikatorn 17 st, AKU, detaljhandel).
+  För bolåneränta/utlåning, IPI/tjänsteproduktion/order, PPI och KPIF finns bara 1 stickprov per tabell;
+  marginalen till läckagegränsen är där ≥ 5 dagar, så domen OK står sig ändå.
+- **Gamla hushållskonsumtionsindikatorns datum**: inte belagt per release (sidorna är flyttade). ~40 d bygger på
+  att den publicerades med BNP-indikatorn (aug 2025 → 2025-10-10). 45 d är konservativt oavsett.
+- **ALFRED-vintages (FRED)**: CSV-gränssnittet svarade tomt, så FRED-serierna kontrollerades mot BLS releasekalender
+  och FRED:s seriesidor i stället.
+- **Eurostat**: releasesidorna throttlas (HTTP 429). Proben gick långsamt med backoff; resultat i
+  `data/raw/k11/eurostat_flash_late_v2.csv` och `eurostat_probe_log.csv`.
+- **JobTech historical**: ingen releasekalender; `jobads_total` (i L) kan inte beläggas som realtidsdata.
+- **Revideringar**: observationstabellen har inga vintages ännu, så revised-flaggorna bedömdes från dokumentation,
+  inte mättes.
+- Kvartals- och årsserier från Eurostat (`lp_hour_*`, `ai_use_*`) granskades inte (ingår inte i K2/K0).
 
 ## Vad lärde vi oss
 
-<!--LARDOM-->
+- Den farligaste felkällan var inte en slarvig siffra utan **en regel som inte håller varje månad**: 35 d räcker
+  för BNP-indikatorn efter kvartalsmånader men inte efter andra, och 2 d räcker för flash utom i december. Ett
+  enda medeltal per serie döljer det. Nu kan undantag skrivas som datum i `publication.py`.
+- **Serier kan byta metod och fördröjning**: hushållens konsumtionsindikator finns i nuvarande form först från
+  2026 men är bakåtskattad till 2019. En backfill med dagens fördröjning ger då både för tidig och för bra data.
+- **Läckaget var litet i MAE (ca 0,001 pe) men flyttade evidensen**: `k2_avg_ridge_s` föll under skärmen och
+  huvudkandidaten `k2_avg_ens_s` gick från Holm 0,055 till 0,082. Små läckor räcker för att ändra beslut nära
+  gränsen.
+- **"Fryst" måste betyda fryst i koden**: K2:s L var definierad som "alla månadsserier i katalogen", så
+  varianten ändrades tyst när katalogen växte. Feature-listor ska vara explicita.
+- Gränstabellen (≤ 4 d → t, 5–32 → t−1, 35–63 → t−2) visar var en fördröjning spelar roll. De flesta
+  felaktiga lag_days var ofarliga eftersom samma period syns ändå.
