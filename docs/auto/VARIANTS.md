@@ -27,4 +27,7 @@ J3:s screening räknas inte.
 
 | 35–36 | K6 | N1 k6_fi_el_dev, N2 k6_dk_el_dev (förreg. d69af51) | 4653ca9 | −0,011 (Holm 0,58); +0,002 (0,86) mot säsongsbaslinje |
 
-**Löpande total: 36 (körning 2: 13/30)**
+| 37–40 | K9 | k9_ridge_h3, k9_ridge_h12, k9_shrink_h12, k9_miss_h6 (förreg. b4b5287) | 0ab9fcd | ingen klarade (Holm 1,00) |
+| 41–45 | K7 | k7_med_half, k7_med_full, k7_cal_half, k7_cal_full, k7_k2_cal_full (förreg. b27f89b) | b8ed849 | bäst −0,001 mot 50/50 (Holm 1) |
+
+**Löpande total: 45 (körning 2: 22/30)**
