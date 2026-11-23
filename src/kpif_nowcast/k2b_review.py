@@ -10,6 +10,9 @@ Scenarios (observation table perturbed, everything else unchanged):
 - decfix:  correction. The backfill sets known_from = period end + 2 days for the Eurostat flash, but the
            December flash is released 4-7 January (after our deadline, day 4), and the January 2026 flash
            on 4 February. Those periods get their real release date, so they are not usable at the deadline.
+- plant:   positive control. The euro-area flash total (feeds ea_news in S and a catalog feature in L) is
+           replaced by Swedish KPIF y/y for the same month under the flash's known_from, i.e. the outcome
+           itself is planted as if published two days after the month. Must give a much lower MAE.
 - no2223:  base inputs, but rows 2022-01..2023-12 are dropped from training and from evaluation.
 
 Run: python -m kpif_nowcast.k2b_review [scenario ...]
@@ -33,6 +36,7 @@ LATE_FLASH = {
     "2017-12": "2018-01-05", "2018-12": "2019-01-04", "2019-12": "2020-01-07", "2020-12": "2021-01-07",
     "2021-12": "2022-01-07", "2022-12": "2023-01-06", "2023-12": "2024-01-05", "2024-12": "2025-01-07",
     "2025-12": "2026-01-07", "2026-01": "2026-02-04",
+    "2018-03": "2018-04-04",  # Easter; confirmed (flash 1.4 %, 4 April 2018)
 }
 CORE3 = ["k2_avg_ridge_s", "k2_avg_ens_s", "k2_avg_ridge_l"]
 START, END = pd.Period("2015-02", "M"), pd.Period("2026-10", "M")
@@ -50,12 +54,22 @@ def shifted_obs(obs: pd.DataFrame, keys: list[str], k: int) -> pd.DataFrame:
     return pd.concat(out, ignore_index=True)
 
 
-def decfix_obs(obs: pd.DataFrame) -> pd.DataFrame:
+def realistic_flash(obs: pd.DataFrame) -> pd.DataFrame:
+    """Flash periods released on or after day 4 get their release time: LATE_FLASH, and every December
+    (always released in January's first working week) at least 5 January."""
     o = obs.copy()
-    for p, rel in LATE_FLASH.items():
-        m = o["series"].isin(FLASH) & (o["period"].astype(str) == p)
-        o.loc[m, "known_from"] = np.maximum(o.loc[m, "known_from"], pd.Timestamp(rel))
+    flash = o["series"].isin(FLASH)
+    per = o["period"].astype(str)
+    rel = per.map(LATE_FLASH)
+    dec = flash & per.str.endswith("-12") & rel.isna()
+    rel[dec] = (pd.PeriodIndex(per[dec], freq="M") + 1).to_timestamp().strftime("%Y-%m-05") if dec.any() else rel[dec]
+    m = flash & rel.notna()
+    # releases are at 11:00 CET, so a release on day 4 is after the deadline (day 4, 00:00)
+    o.loc[m, "known_from"] = np.maximum(o.loc[m, "known_from"], pd.to_datetime(rel[m]) + pd.Timedelta(hours=11))
     return o
+
+
+decfix_obs = realistic_flash
 
 
 class MaskedRunner(K2Runner):
@@ -101,6 +115,12 @@ def predictions(scenario: str, data, names: list[str]) -> pd.DataFrame:
         obs = shifted_obs(obs, keys, -1)
     elif scenario == "decfix":
         obs = decfix_obs(obs)
+    elif scenario == "plant":
+        obs = obs.copy()
+        m = obs["series"] == "ea_flash_total"
+        yy = kpif["yy_official"]
+        obs.loc[m, "value"] = yy.reindex(pd.PeriodIndex(obs.loc[m, "period"], freq="M")).to_numpy()
+        obs = obs.dropna(subset=["value"])
     d = build_design(kpif, comps, feats, contracts, se3, rb_fc, obs)
     drop = pd.period_range("2022-01", "2023-12", freq="M")
     run = MaskedRunner(d, drop) if scenario == "no2223" else K2Runner(d)
