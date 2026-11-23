@@ -74,7 +74,7 @@ K13_SOURCE = {
     "2026-05": RD + "HD03236 " + RDS + "HD01FiU48 " + SKV_FUEL,
     "2026-07": RD + "HD03275 " + RDS + "HD01FiU47 " + SKV_FUEL,
     "2026-10": RD + "HD03236 " + RDS + "HD01FiU48 " + SKV_FUEL,
-    "2026-12": RD + "HD03275 " + RDS + "HD01FiU47 " + SKV_FUEL + " " + RD + "HE031d2",
+    "2026-12": SKV_FUEL + " " + RD + "HD03275 " + RDS + "HD01FiU47 " + RD + "HE031d2",  # SKV first: the --note cites it
 }
 K13_VERIFIED = {
     "2022-05": "2026-11-23: prop. 2021/22:221 läst; riksdagsbeslut bet. 2021/22:FiU39 27 apr 2022 (dokumentstatus)",
@@ -221,6 +221,16 @@ ADMIN_EVENTS: list[AdminEvent] = [
                method_note="SCB KS icke-energidel 2025-05 (k13_tax.ks_parts; −0,189 i tax_effects är tax_xe_own, "
                            "KPIF-XE-skala). Reparationstjänsterna (04.3.2) publiceras inte; publicerade 04.3 är bara "
                            "material (= 04.3.1, +0,8 % i maj)"),
+    AdminEvent("2025-07", "07.3.3", "Persontransport med flyg", "one_off", -0.181, "scb_ks", date(2024, 11, 27),
+               "Flygskatten avskaffas 1 jul 2025 (lag 2024:1138 om upphävande av lag 2017:1200), BP 2025",
+               RD + "sfs-2017-1200 " + RD + "HC031 " + RDS + "HC01FiU1", in_ks=True,
+               method_note="SCB KS icke-energidel 2025-07 (k13_tax.ks_parts), hela tillskriven flygskatten, som också "
+                           "ligger i paketresor (09.6.0); inga andra kända icke-energiskatter i juli 2025. Övre gräns i "
+                           "absolutbelopp: KS icke-energi aug +0,066 och sep +0,041 tyder på att en del av julisiffran är "
+                           "säsongsvikt i flyg och paketresor, inte skatten. Införandet 2018-04 gav bara +0,041",
+               verified="2026-11-23: L1b-tillägg efter granskning. SFS 2017:1200 'Upphävd: 2025-07-01', "
+                        "övergångsbestämmelse 2024:1138 (ikraft 1 jul 2025); prop. 2024/25:1 avsnitt 12.18; beslut "
+                        "bet. 2024/25:FiU1 27 nov 2024 (dokumentstatus)"),
     AdminEvent("2025-07", "06.1.1", "Läkemedel", "one_off", round(10.91 * 1.0 / 1000, 3), "observed",
                date(2025, 5, 22), "Höjt högkostnadsskydd för läkemedel (prop. 2024/25:144)",
                "https://data.riksdagen.se/dokument/HC03144 " + SCB_KPI.format("juli-2025"),
@@ -229,11 +239,13 @@ ADMIN_EVENTS: list[AdminEvent] = [
     AdminEvent("2025-07", "07.2.2", "Bränslen och smörjmedel", "one_off", 0.0, "assumption", date(2025, 5, 22),
                "Energiskatten på bensin och diesel −32 öre/l samtidigt som reduktionsplikten höjs (+32 öre/l), "
                "1 jul 2025; nettoeffekt på pumppriset ≈ 0",
-               RD + "HC03131 " + RDS + "HC01MJU17 " + SKV_FUEL, in_ks=True,
+               RD + "HC03131 " + RDS + "HC01MJU17 " + RD + "HC031 " + RDS + "HC01FiU1 " + SKV_FUEL, in_ks=True,
                method_note="prop. 2024/25:131: skattesänkningen väger upp reduktionspliktens prishöjning. SCB:s KS "
                            "energidel 2025-07 −0,05 ser bara skatten, så KS-baserade justeringar överskattar effekten",
-               verified="2026-11-23: L1b-tillägg. Skatteverket: bensin 5,11 → 4,79 kr/l skatt 1 jul 2025; prop. "
-                        "2024/25:131 läst; beslut bet. 2024/25:MJU17 22 maj 2025"),
+               verified="2026-11-23: L1b-tillägg. Skatteverket: bensin 5,11 → 4,79 kr/l skatt 1 jul 2025. "
+                        "Skattesänkningen (−32 öre/l) beslutades i BP 2025: prop. 2024/25:1, bet. 2024/25:FiU1 27 nov "
+                        "2024; reduktionspliktens höjning i prop. 2024/25:131, bet. 2024/25:MJU17 22 maj 2025. "
+                        "Beslutsdatum = det senare beslutet, eftersom nettoeffekten 0 kräver båda"),
     # ---------------------------------------------------------------- 2026
     AdminEvent("2026-01", "06.2.2", "Öppen tandvård", "one_off", round(8.77 * -21.2 / 1000, 3), "observed",
                date(2025, 12, 8), "Tandvårdsstöd för 67+ (betalar 10 % av referenspriset), från 1 jan 2026",
@@ -277,7 +289,7 @@ ADMIN_EVENTS: list[AdminEvent] = [
     AdminEvent("2026-12", "07.3.5", "Kombinerad persontransport", "end", round(-TRANSIT_PE * SHARE_REST, 3),
                "assumption", date(2026, 10, 28),
                "Månadskort åter fullpris från 3 dec i övriga regioner (SL och Västtrafik: sista köpdag 2 dec)",
-               TT_TRANSIT + " " + SL_DEC, weight=5.91,
+               RD + "sfs-2026-1391 " + TT_TRANSIT + " " + SL_DEC, weight=5.91,
                method_note="+0,156 × 74,0 % (alla utom söder och Halland). Förlänger Västtrafik till 29 dec flyttas "
                            "+0,026 till 2027-01. Risk: SL-abonnemang dras med halvpris för december 26 nov och "
                            "30-dagarskort aktiverade 2 dec gäller till ~1 jan; prisar SCB efter giltighetstid hamnar "
@@ -287,7 +299,8 @@ ADMIN_EVENTS: list[AdminEvent] = [
     # ---------------------------------------------------------------- 2027-2028
     AdminEvent("2027-01", "07.3.5", "Kombinerad persontransport", "end", round(-TRANSIT_PE * SHARE_HALLAND, 3),
                "assumption", date(2026, 10, 28),
-               "Halland: rabatterat kort kan aktiveras till 1 jan, fullpris i januari", TT_TRANSIT, weight=5.91,
+               "Halland: rabatterat kort kan aktiveras till 1 jan, fullpris i januari",
+               RD + "sfs-2026-1391 " + TT_TRANSIT, weight=5.91,
                method_note="+0,156 × 3,3 %",
                verified="ej verifierad: hallandstrafiken.se och TV4 inte nåbara. Obs: SFS 2026:1391 ger bara bidrag "
                         "för kort aktiverade senast 2 dec eller giltiga t.o.m. 31 dec, så aktivering till 1 jan är "
@@ -317,7 +330,9 @@ ADMIN_EVENTS: list[AdminEvent] = [
                "https://www.regeringen.se/regeringens-politik/skatt-och-tull/"
                "skatteforslag-som-remitterats-infor-hostbudgeten-2027/ " + RD + "HE031d2 "
                "https://toreenergi.se/energiskatt-2027/", in_ks=True,
-               method_note="0,25 öre inkl. moms på ~180 öre/kWh ≈ +0,14 % × 31,8 ‰; normal indexering, säsongen har den",
+               method_note="0,25 öre inkl. moms på ~180 öre/kWh ≈ +0,14 % × 31,8 ‰; normal indexering, säsongen har den. "
+                           "Nivån fastställs av regeringen senast 30 nov 2026; beslutsdatum 12 nov = budgetpropositionen "
+                           "utan låsning. Kontrollera Skatteverkets skattesats för el 2027 före januariprognosen",
                verified="delvis: remissen (18 maj 2026) föreslog 36,0 öre/kWh 2027 men prop. 2026/27:1 (12 nov) "
                         "lägger bara inkomstskatteförslag, så indexeringen i 11 kap. 3 § LSE gäller (regeringen "
                         "fastställer före november månads utgång). Nivån 36,2 och SFS 2026:1859 kommer från "
@@ -408,8 +423,18 @@ class Suggestion:
         return round(self.mm_pe * self.yy_factor, 2)
 
     def note(self) -> str:
-        parts = [f"{_short(e.label)} {e.suggest_pe:+.3f} ({e.source.split()[0]})" for e in self.used]
+        parts = [f"{_short(e.label)} {e.suggest_pe:+.3f}{_flag(e)} ({e.source.split()[0]})" for e in self.used]
         return f"admin_calendar {self.target}: " + "; ".join(parts)
+
+
+def _flag(e: AdminEvent) -> str:
+    """Marks an event whose primary-source check is incomplete (L1b), so the user sees what rests on
+    secondary sources."""
+    if e.verified.startswith("ej verifierad"):
+        return " [overifierad]"
+    if e.verified.startswith("delvis"):
+        return " [delvis verifierad]"
+    return ""
 
 
 def _short(text: str, n: int = 70) -> str:
@@ -448,11 +473,15 @@ def report(s: Suggestion) -> str:
     lines = [f"Administrerade priser för {s.target} (deadline {dl}, händelser beslutade före den)", ""]
     for e in s.used:
         extra = f" (normal {e.normal_pe:+.3f})" if e.kind == "recurring" else ""
-        lines.append(f"  {e.suggest_pe:+.3f} pe  {e.coicop:7s} {_short(e.label, 90)}{extra}  [{e.origin}, {e.method}]")
+        lines.append(f"  {e.suggest_pe:+.3f} pe  {e.coicop:7s} {_short(e.label, 90)}{extra}  [{e.origin}, {e.method}]"
+                     f"{_flag(e)}")
     if not s.used:
         lines.append("  inga beslutade engångshändelser")
     lines.append("")
     lines.append(f"  Summa m/m: {s.mm_pe:+.3f} pe; i årstakt × {s.yy_factor:.3f} = {s.mm_pe * s.yy_factor:+.3f} pe")
+    weak = sum(e.suggest_pe for e in s.used if _flag(e))
+    if weak:
+        lines.append(f"  varav delvis verifierat eller overifierat: {weak:+.3f} pe m/m")
     for e in s.listed:
         why = ("ej beslutad" if e.decided is None else "beslut efter deadline" if not known(e, s.target)
                else "storlek okänd" if e.pe is None else "ingen effekt" if e.pe == 0

@@ -171,3 +171,64 @@ def test_verified_corrections():
 def test_suggestions_unchanged_by_source_check():
     assert ac.suggest("2026-12", EVENTS).mm_pe == pytest.approx(0.398 + 0.156 * ac.SHARE_REST, abs=0.002)
     assert ac.suggest("2027-01", EVENTS).mm_pe == pytest.approx(-0.026, abs=0.002)
+
+
+# ---------------------------------------------------------------- L1b review round (2026-11-23)
+DECIDED_SNAPSHOT = {  # L1b, 2026-11-23: every decision date checked against a primary source
+    ('2016-01', '07.2.2', 'Höjd energiskatt'): '2015-11-25',
+    ('2016-01', '07.2.4', 'Höjd trängselska'): '2015-12-31',
+    ('2017-07', '05.3.1', 'Ny kemikalieskat'): '2016-11-24',
+    ('2018-04', '07.3.3', 'Ny flygskatt (la'): '2017-11-30',
+    ('2019-01', '08.3.9', 'Radio- och tv-av'): '2018-11-14',
+    ('2019-07', '06.2.2', 'Ny metod för all'): '2019-08-14',
+    ('2022-05', '07.2.2', 'Tillfälligt sänk'): '2022-04-30',
+    ('2022-10', '07.2.2', 'Sänkningen från '): '2022-04-30',
+    ('2024-01', '07.2.2', 'Reduktionsplikte'): '2023-11-30',
+    ('2025-05', '04.3', 'ROT-avdraget 30 '): '2025-05-07',
+    ('2025-07', '06.1.1', 'Höjt högkostnads'): '2025-05-22',
+    ('2025-07', '07.2.2', 'Energiskatten på'): '2025-05-22',
+    ('2025-07', '07.3.3', 'Flygskatten avsk'): '2024-11-27',
+    ('2026-01', '04.3', 'ROT 50 % upphör '): '2025-05-07',
+    ('2026-01', '04.5.1', 'Sänkt energiskat'): '2025-11-30',
+    ('2026-01', '06.2.2', 'Tandvårdsstöd fö'): '2025-12-08',
+    ('2026-04', '01', 'Matmomsen 12 → 6'): '2026-02-25',
+    ('2026-05', '07.2.2', 'Tillfälligt sänk'): '2026-04-30',
+    ('2026-07', '07.2.2', 'Tillfälligt sänk'): '2026-06-30',
+    ('2026-07', '07.3.5', 'Halverat pris på'): '2026-06-25',
+    ('2026-07', '09.4.6', 'Dansbandsmoms 25'): '2026-05-20',
+    ('2026-07', '10.1.0', 'Fribelopp i maxt'): '2026-06-30',
+    ('2026-07', '13.3.0', 'Fribelopp i maxt'): '2026-06-30',
+    ('2026-10', '07.2.2', 'Energiskattesänk'): '2026-04-30',
+    ('2026-11', '07.3.5', 'Månadskort åter '): '2026-10-28',
+    ('2026-12', '07.2.2', 'Koldioxidskattes'): '2026-06-30',
+    ('2026-12', '07.3.5', 'Månadskort åter '): '2026-10-28',
+    ('2027-01', '02.3', 'Aviserad tobakss'): '2026-11-12',
+    ('2027-01', '04.4', 'Kommunala VA- oc'): None,
+    ('2027-01', '04.5.1', 'Energiskatt på e'): '2026-11-12',
+    ('2027-01', '04.5.1', 'Elnätsavgifter i'): None,
+    ('2027-01', '07.2.2', 'Ordinarie indexe'): '2026-11-23',
+    ('2027-01', '07.3.5', 'Halland: rabatte'): '2026-10-28',
+    ('2027-01', '07.3.5', 'Västtrafik: förl'): None,
+    ('2027-01', '13.3.0', 'Prisbasbeloppet '): '2026-09-24',
+    ('2028-01', '01', 'Matmomsen 6 → 12'): '2026-02-25',
+}
+
+
+def test_decision_dates_frozen():
+    # Guards the leakage rule for L1 rows as well as K13 rows: a decision date may change only together with
+    # this snapshot, after a primary-source check (an earlier date needs the source in `verified`).
+    got = {(e.month, e.coicop, e.label[:16]): e.decided.isoformat() if e.decided else None for e in EVENTS}
+    assert got == DECIDED_SNAPSHOT
+    assert all(e.decided is None or e.decided <= ac.CURATED for e in EVENTS)
+
+
+def test_flight_tax_abolition_and_review_fixes():
+    by = {(e.month, e.coicop, e.kind): e for e in EVENTS}
+    fly = by[("2025-07", "07.3.3", "one_off")]
+    assert fly.pe < 0 and fly.decided == date(2024, 11, 27) and fly.in_ks and "sfs-2017-1200" in fly.source
+    assert "HC01FiU1" in by[("2025-07", "07.2.2", "one_off")].source  # tax cut decided in BP 2025
+    s = ac.suggest("2026-12", EVENTS)
+    assert "skatteverket.se" in s.note().split(";")[0]  # CO2 end cites Skatteverket's December rates first
+    assert "[delvis verifierad]" in s.note() and "sfs-2026-1391" in s.note()
+    assert "[overifierad]" in ac.suggest("2027-01", EVENTS).note()
+    assert "varav delvis verifierat" in ac.report(s)
