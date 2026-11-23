@@ -7,7 +7,8 @@ Sources (all open, no key):
   1990-). SCB produced the Swedish accommodation statistics up to and including reference year
   2024; Tillväxtverket took over collection and production from reference year 2025 (possible
   producer break 2024/2025). SCB's own database tables (TAB5295, TAB3162) end 2021-12. Tillväxtverket's statistics portal
-  (tillvaxtdata.tillvaxtverket.se) publishes 22-30 days after month end but is a DivePort BI front end with no open
+  (tillvaxtdata.tillvaxtverket.se) publishes 22-31 days after month end
+  (from reference month 2025-08) but is a DivePort BI front end with no open
   machine-readable interface (no PxWeb API, no stable CSV/xlsx URL; only a session-bound internal RPC), see
   docs/auto3/l2b/resultat.md, so Eurostat is used. Eurostat I551-I553 matches Tillväxtverket's hotel nights
   (2025: 43.2 M both) but not its total (70.8 M vs 65.7 M), most likely because Tillväxtverket's total also
