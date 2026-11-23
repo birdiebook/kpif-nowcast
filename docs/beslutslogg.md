@@ -408,3 +408,11 @@ Detaljer: [docs/auto2/k4/resultat.md](auto2/k4/resultat.md), [kvalitet](auto2/k4
 ## 2026-11-23 – K9 Längre horisont 3–12 mån (förregistrering)
 Korrektion/krympning av Riksbankens prognos, 4 varianter (k9_ridge_h3, k9_ridge_h12, k9_shrink_h12, k9_miss_h6): [docs/auto2/k9/hypotes.md](auto2/k9/hypotes.md).
 **Resultat (4 varianter, ingen klarade urvalsskärmen, alla Holm p = 1,00):** MAE 2015–2026 mot Riksbanken: h=3 ridge 0,471 mot 0,489 (rå p 0,33), h=6 miss 0,833 mot 0,814, h=12 krympning mot 2 % 1,485 och ridge 1,945 mot 1,388. Effektivt n ≈ 46/23/11. Riksbanken och "2 %" lika på h=12 (1,388/1,385). Ingen frysning; Riksbanken förblir referens på längre sikt. Detaljer: [docs/auto2/k9/resultat.md](auto2/k9/resultat.md).
+
+## 2026-11-23 – K7 Tjänstekomponenten (förregistrering)
+Robust säsong (median) och påsk-/januariregressorer för tjänstedelen, 5 varianter (T1–T5): [docs/auto2/k7/hypotes.md](auto2/k7/hypotes.md).
+**Resultat (5 varianter, ingen klarade urvalsskärmen):** median-säsong och påsk-/januariregressorer gör tjänstedelen
+sämre, inte bättre (m/m-MAE 0,157 → 0,160–0,162 2015–2026; 0,067 → 0,068–0,069 på den rena perioden 2000–2009).
+Totalt T1–T4 −0,001 till +0,003 mot 50/50 (Holm 1), T5 +0,010 mot `k2_avg_ens_s`. Påskeffekten finns (≈ 0,01 pe per dag)
+men är liten. Tjänstefelet är resor och går inte att förutse med data vi har vid deadline. Ingen frysning.
+Detaljer: [docs/auto2/k7/resultat.md](auto2/k7/resultat.md).
