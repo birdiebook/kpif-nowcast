@@ -11,8 +11,8 @@
 | `kpif_xe_index` | KPIF exkl. energi (KPIF-XE), index | M | 1987-01–2026-10 | 15 d | nej | SCB TAB6593 | Underliggande inflation utan energipriser. |
 | `kpif_goods_index` | KPIF varor, index | M | 1987-01–2026-10 | 15 d | ja | SCB TAB6627 | Varudelen av KPIF, påverkas av import- och producentpriser. |
 | `kpif_services_index` | KPIF tjänster, index | M | 1987-01–2026-10 | 15 d | ja | SCB TAB6627 | Tjänstedelen av KPIF, driven av löner och hyror. |
-| `easter_window_days` | Påskens resefönster: dagar i månaden | M | 2000-01–2030-12 | -366 d | nej | Kalender (gregoriansk påsk) | Påskresor höjer priset på paketresor, flyg och logi; K7: ≈ 0,01 pe KPIF per dag. |
-| `easter_sunday_in_month` | Påskdagen infaller i månaden | M | 2000-01–2030-12 | -366 d | nej | Kalender (gregoriansk påsk) | Skiljer tidig påsk (mars) från sen (april). |
+| `easter_window_days` | Påskens resefönster: dagar i månaden | M | 2000-01–2050-12 | -366 d | nej | Kalender (gregoriansk påsk) | Påskresor höjer priset på paketresor, flyg och logi; K7: ≈ 0,01 pe KPIF per dag. |
+| `easter_sunday_in_month` | Påskdagen infaller i månaden | M | 2000-01–2050-12 | -366 d | nej | Kalender (gregoriansk påsk) | Skiljer tidig påsk (mars) från sen (april). |
 | `kpif_package_holidays_index` | KPIF paketresor (COICOP 09.8), index | M | 1989-01–2026-10 | 15 d | ja | SCB TAB6613 (09.8) | Resekomponenterna som står för största delen av tjänstefelet (K7). |
 | `kpif_air_transport_index` | KPIF persontransport med flyg (COICOP 07.3.3), index | M | 1987-01–2026-10 | 15 d | ja | SCB TAB6613 (07.3.3) | Resekomponenterna som står för största delen av tjänstefelet (K7). |
 | `kpif_accommodation_index` | KPIF logitjänster (COICOP 11.2), index | M | 1987-01–2026-10 | 15 d | ja | SCB TAB6613 (11.2) | Resekomponenterna som står för största delen av tjänstefelet (K7). |

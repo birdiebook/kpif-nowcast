@@ -4,8 +4,9 @@ Travel (package holidays, air fares, accommodation) is ~77 % of the services for
 
 Sources (all open, no key):
 - Guest nights: Eurostat tour_occ_nim (nights spent at tourist accommodation, Sweden, monthly,
-  1990-), transmitted by Tillväxtverket, which owns the Swedish accommodation statistics since
-  2022. SCB's own tables (TAB5295, TAB3162) end 2021-12. Tillväxtverket's statistics portal
+  1990-). SCB produced the Swedish accommodation statistics up to and including reference year
+  2024; Tillväxtverket took over collection and production from reference year 2025 (possible
+  producer break 2024/2025). SCB's own database tables (TAB5295, TAB3162) end 2021-12. Tillväxtverket's statistics portal
   (tillvaxtdata.tillvaxtverket.se) is not reachable from the run environment, so Eurostat is used.
   Total/domestic/foreign start in 2001 (camping included from 2001: a level break), hotels in 1990.
   Domestic nights are total minus foreign: Eurostat lacks the domestic split for 1991-2010
@@ -15,18 +16,23 @@ Sources (all open, no key):
 - KPIF sub-indices: SCB TAB6613 (KPIF by COICOP 2018, all levels), index 2020=100.
 
 Raw responses are cached under data/raw/l2/<name>_<fetch date>.json; a cached file at most
-MAX_AGE_DAYS old is reused. With KPIF_OFFLINE=1 the newest cached file is used whatever its age.
+MAX_AGE_DAYS old is reused (6, so the weekly Sunday job refetches every week); only the newest
+KEEP_VERSIONS files per response are kept. With KPIF_OFFLINE=1 the newest cached file is used whatever its age.
 
 Publication lags (days after period end, rounded towards later publication; evidence in
 docs/publiceringskalender.md, section "Körning 3: L2"):
 - Eurostat guest nights: 80 days. Regulation 692/2011: monthly data transmitted within 6 weeks,
   Eurostat releases 1 day - 1 month after delivery (ESMS 14.1-14.2) -> at most ~73 days. On
   2026-11-23 (dataset updated 2026-11-16) Sweden ended 2026-08; 2026-09 was missing 54 days after
-  period end although Tillväxtverket published it on 2026-10-29. Preliminary until March of the
-  next year (Tillväxtverket: final 2025 was ~2 % lower than preliminary) -> revised=True.
+  period end although Tillväxtverket published it on 2026-10-29. The 6-week rule holds from 2020;
+  the 1990-2019 backfill rests on SCB having published the same months itself (~t+35). Any lag of
+  67-93 days gives exactly t-3 at the deadline. Preliminary until the final annual statistics ->
+  revised=True.
 - Easter: -366 days. The calendar is known long in advance; a value is stored as known one year
   before its month ends, so horizon forecasts up to 12 months can use it. The warehouse check
-  "known_from_after_period_end" allows negative lags. Never revised.
+  "known_from_after_period_end" allows negative lags. Never revised. The series has a FIXED end
+  (EASTER_END): a rolling end would add new periods through a later 'fetch' upsert, dated at the
+  fetch date, which the warehouse check flags (known_from earlier than period end - 366).
 - TAB6613: 15 days (as the other KPIF tables). History before 2026 is SCB's back-calculation to
   COICOP 2018 -> revised=True.
 """
@@ -43,7 +49,8 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
 RAW_DIR = ROOT / "data" / "raw" / "l2"
-MAX_AGE_DAYS = 7
+MAX_AGE_DAYS = 6
+KEEP_VERSIONS = 4
 HEADERS = {"User-Agent": "kpif-nowcast research script"}
 
 EUROSTAT_URL = "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/tour_occ_nim"
@@ -51,7 +58,7 @@ SCB_URL = "https://statistikdatabasen.scb.se/api/v2/tables/TAB6613/data"
 
 LAG_NIGHTS, LAG_EASTER, LAG_KPIF = 80, -366, 15
 EASTER_START = 2000
-EASTER_YEARS_AHEAD = 4  # calendar series run to December of (current year + 4): 2030 in 2026
+EASTER_END = 2050  # fixed: every period is in the first (backfill) load, none arrive later via 'fetch'
 
 NIGHTS_NAME = "eurostat_tour_occ_nim_SE"
 KPIF_NAME = "scb_TAB6613_travel"
@@ -109,6 +116,9 @@ def _get_json(name: str, url: str, params: dict) -> dict:
             time.sleep(2 ** (k + 1))
     RAW_DIR.mkdir(parents=True, exist_ok=True)
     (RAW_DIR / f"{name}_{date.today():%Y%m%d}.json").write_text(r.text, encoding="utf-8")
+    from kpif_nowcast.sources.rawcache import prune
+
+    prune(RAW_DIR, KEEP_VERSIONS)  # pipeline prune only reads the top level of data/raw
     time.sleep(0.5)
     return r.json()
 
@@ -154,7 +164,7 @@ def nights(resid: str, nace: str = "I551-I553", start: str | None = None):
 
 
 def _months(end_year: int | None = None) -> pd.PeriodIndex:
-    end_year = end_year or date.today().year + EASTER_YEARS_AHEAD
+    end_year = end_year or EASTER_END
     return pd.period_range(f"{EASTER_START}-01", f"{end_year}-12", freq="M")
 
 
@@ -229,7 +239,8 @@ def specs() -> list:
 
     out = []
     for key, resid, nace, start, label in NIGHTS:
-        note = "Preliminär till mars året efter. Tillväxtverket: utländska gästnätter underrapporterade 2024."
+        note = ("Preliminär till slutlig årsstatistik. SCB t.o.m. 2024, Tillväxtverket från 2025 (möjligt brott). "
+                "Tillväxtverket: utländska gästnätter underrapporterade 2024.")
         if resid == "DOM":
             note = "Beräknad som totalt minus utländska (Eurostat saknar svenska 1991–2010). " + note
         out.append(Spec(key, "hushall", label, "tusental", "M", f"Eurostat tour_occ_nim ({resid}, {nace})",

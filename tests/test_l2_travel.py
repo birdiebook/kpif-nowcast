@@ -49,8 +49,39 @@ def test_easter_sunday_flag():
     assert s[pd.Period("2026-04", "M")] == 1
 
 
-def test_easter_runs_four_years_ahead():
-    assert ct.easter_window_days().index[-1] == pd.Period(f"{date.today().year + 4}-12", "M")
+def test_easter_has_fixed_end():
+    """A fixed end: the default series doesn't depend on today's date (no new periods after a year change)."""
+    assert ct.easter_window_days().index[-1] == pd.Period(f"{ct.EASTER_END}-12", "M")
+    assert ct.easter_sunday_in_month().index[-1] == pd.Period(f"{ct.EASTER_END}-12", "M")
+    assert ct.EASTER_END >= date.today().year + 10
+
+
+def test_easter_refresh_after_year_change_keeps_checks_green(monkeypatch, tmp_path):
+    """Backfill now, refresh next January: no new 'fetch' rows, warehouse checks stay clean."""
+    from kpif_nowcast import observations as obs
+    from kpif_nowcast.warehouse import connect, run_checks
+
+    path = tmp_path / "obs.parquet"
+    monkeypatch.setattr(obs, "PATH", path)
+    first = obs.upsert("easter_window_days", ct.easter_window_days(), fetched_at=date(2026, 11, 23))
+    assert first == len(ct.easter_window_days())
+    assert obs.upsert("easter_window_days", ct.easter_window_days(), fetched_at=date(2027, 1, 5)) == 0
+    checks = run_checks(connect(path))
+    assert checks["known_from_after_period_end"].empty
+    assert checks["fetched_known_from_not_after_fetch"].empty
+    assert ct.quality(obs.load(raw=True)).loc["easter_window_days", "kf_too_early"] == 0
+
+
+def test_calendar_series_kept_out_of_screen():
+    from kpif_nowcast.j3_screen import screen_keys
+
+    keys = screen_keys()
+    assert "easter_window_days" not in keys and "easter_sunday_in_month" not in keys
+    assert "guest_nights_total" in keys
+
+
+def test_cache_max_age_below_weekly_cadence():
+    assert ct.MAX_AGE_DAYS < 7
 
 
 # ------------------------------------------------------------------ guest nights
