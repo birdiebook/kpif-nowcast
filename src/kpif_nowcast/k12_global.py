@@ -152,7 +152,8 @@ def spa_test(loss_bench: np.ndarray, loss_models: np.ndarray, idx: np.ndarray) -
     max_all = tb_c.max(axis=1)
     adj_p = np.array([float(np.mean(max_all >= tk)) for tk in t])
     stepm = {a: _stepm(t, tb_c, a) for a in (ALPHA, 0.05)}
-    return {"p": p, "stat": stat, "t": t, "dbar": dbar, "adj_p": adj_p, "stepm": stepm, "boot_dbar": db}
+    return {"p": p, "stat": stat, "t": t, "dbar": dbar, "adj_p": adj_p, "stepm": stepm, "boot_dbar": db,
+            "max_t_h0": max_all}
 
 
 def _stepm(t: np.ndarray, tb_c: np.ndarray, alpha: float) -> np.ndarray:
@@ -170,12 +171,18 @@ def _stepm(t: np.ndarray, tb_c: np.ndarray, alpha: float) -> np.ndarray:
     return rejected
 
 
-def selection_bias(boot_dbar: np.ndarray, dbar: np.ndarray) -> dict:
-    """Distribution of max_k mean improvement over the benchmark when all models are exactly as good."""
+def selection_bias(spa: dict) -> dict:
+    """Best-of-K under H0 (every model exactly as good as the benchmark), raw and studentized.
+
+    Raw: max_k mean improvement in pp MAE. Studentized: max_k t_k, the scale SPA uses; a model whose
+    improvement is small but very stable (e.g. a small correction on top of the benchmark) has a large t.
+    """
+    boot_dbar, dbar, mt = spa["boot_dbar"], spa["dbar"], spa["max_t_h0"]
     mx = (boot_dbar - dbar).max(axis=1)
     return {"mean": float(mx.mean()), "q50": float(np.quantile(mx, 0.5)), "q90": float(np.quantile(mx, 0.9)),
             "q95": float(np.quantile(mx, 0.95)), "observed_max": float(dbar.max()),
-            "p": float(np.mean(mx >= dbar.max()))}
+            "p": float(np.mean(mx >= dbar.max())),
+            "t_mean": float(mt.mean()), "t_q90": float(np.quantile(mt, 0.9)), "t_observed": float(spa["t"].max())}
 
 
 def mcs(losses: np.ndarray, idx: np.ndarray, stat: str = "max") -> np.ndarray:
@@ -500,7 +507,7 @@ def analyse(err: pd.DataFrame, bench: str, block: float, B: int, seed: int) -> d
     loss = err.abs()
     models = [c for c in loss.columns if c != bench]
     spa = spa_test(loss[bench].to_numpy(), loss[models].to_numpy(), idx)
-    sb = selection_bias(spa["boot_dbar"], spa["dbar"])
+    sb = selection_bias(spa)
     all_names = [bench, *models]
     L = loss[all_names].to_numpy()
     mcs_max = mcs(L, idx, "max")
@@ -584,41 +591,67 @@ def main(argv: list[str] | None = None) -> None:
     mcs_excl_rb = r_rb["mcs_max"]["rb_updated"] < ALPHA
     mcs_excl_50 = r_rb["mcs_max"]["avg_5050"] < ALPHA
 
-    holds_rb = spa_rb < ALPHA and best in stepm_rb
-    holds_50 = spa_50 < ALPHA and best in stepm_50
+    def spa_at(bench: str, bl: float) -> float:
+        r = res[(U1, bench, bl)] if bl == block else sens.get((bl, bench))
+        return r["spa"]["p"]["consistent"] if r else float("nan")
+
+    robust = {bn: max(spa_at(bn, 3), spa_at(bn, 6)) for bn in BENCHMARKS}  # worst case over blocks 3-6
+    holds_rb = robust["rb_updated"] < ALPHA and best in stepm_rb
+    holds_50 = robust["avg_5050"] < ALPHA and best in stepm_50
+    n_active = int((err_all[best] != err_all["avg_5050"]).sum())
     if holds_rb and holds_50:
-        verdict = (f"**Den bästa håller även globalt.** `{best}` är bättre än både rb_updated och 50/50 även när alla "
-                   f"{len(variants)} varianter räknas (SPA p = {_f(spa_rb)} resp. {_f(spa_50)}; StepM 10 % väljer den mot båda).")
+        verdict = (f"**Den bästa håller även globalt, men marginalen mot 50/50 är liten.** `{best}` är bättre än både "
+                   f"rb_updated och 50/50 även när alla {len(variants)} varianter räknas: SPA p = {_f(spa_rb)} mot "
+                   f"rb_updated och {_f(spa_50)} mot 50/50 (högst {_f(robust['rb_updated'])} resp. "
+                   f"{_f(robust['avg_5050'])} för blocklängd 3–6), och Romano–Wolf StepM (10 %) pekar ut den mot båda "
+                   f"ribborna (justerat p {_f(best_rb_adj)} resp. {_f(best_50_adj)}).")
     elif holds_rb:
         verdict = (f"**Håller globalt mot rb_updated, men inte mot 50/50.** Efter att alla {len(variants)} varianter "
-                   f"räknats är det säkert att *någon* variant (och `{best}` enligt StepM) slår rb_updated "
-                   f"(SPA p = {_f(spa_rb)}). Fördelen för `{best}` över 50/50 går däremot inte att skilja från "
-                   f"urvalsbias (SPA p = {_f(spa_50)}, justerat p för `{best}` = {_f(best_50_adj)}).")
-    elif spa_rb < ALPHA:
-        verdict = (f"**Håller inte globalt för den enskilda modellen, men ...** något i universum slår rb_updated "
-                   f"(SPA p = {_f(spa_rb)}), men `{best}` utpekas inte av StepM.")
+                   f"räknats slår `{best}` rb_updated (SPA p = {_f(spa_rb)}, StepM väljer den). Fördelen över 50/50 går "
+                   f"däremot inte att skilja från urvalsbias (SPA p = {_f(spa_50)}, högst {_f(robust['avg_5050'])} "
+                   f"för block 3–6; justerat p för `{best}` = {_f(best_50_adj)}).")
+    elif robust["rb_updated"] < ALPHA:
+        verdict = (f"**Håller inte globalt för den enskilda modellen, men** något i universum slår rb_updated "
+                   f"(SPA p = {_f(spa_rb)}); `{best}` utpekas inte av StepM.")
     else:
         verdict = (f"**Håller inte globalt.** När alla {len(variants)} varianter räknas går ingen förbättring mot "
-                   f"rb_updated att skilja från urvalsbias (SPA p = {_f(spa_rb)}).")
+                   f"rb_updated att skilja från urvalsbias (SPA p = {_f(spa_rb)}, högst {_f(robust['rb_updated'])} "
+                   f"för block 3–6).")
 
     L = []
     L.append("# K12 Globalt test över alla modellvarianter: resultat\n")
     L.append(f"Genererad av `python -m kpif_nowcast.k12_global` (kod @ {git_sha()}). Inga nya varianter "
-             f"(0 förbrukade). Bootstrap B = {a.B}, stationär bootstrap, medelblocklängd {block:g} månader, seed {SEED}.\n")
+             f"(0 förbrukade). Bootstrap B = {a.B}, stationär bootstrap, medelblocklängd {block:g} månader, seed {SEED}. "
+             f"Förlust = absolutfel (MAE). Allt är urvalsevidens på samma urval som modellerna valdes på.\n")
     L.append("## Dom\n")
     L.append(verdict + "\n")
     L.append(f"- Urval: {PERIOD[0]}..{PERIOD[1]}, gemensamt för alla serier, **n = {n}**. {len(variants)} registrerade "
-             f"h=1-varianter (+ referenserna rb_updated, 50/50, J2 V2), {len(phase)} fas 2–4-modeller i U2.")
+             f"h=1-varianter + referenserna rb_updated, 50/50 och J2 V2 (U1), plus {len(phase)} fas 2–4-modeller (U2).")
     L.append(f"- Bästa variant: `{best}`, MAE {_f(mae[best])} mot rb_updated {_f(mae['rb_updated'])} och 50/50 "
-             f"{_f(mae['avg_5050'])}.")
-    L.append(f"- **Urvalsbias.** Om alla {len(r_rb['models'])} modeller vore exakt lika bra som rb_updated skulle den "
-             f"bästa ändå se ut att vinna med i snitt {_f(sb_rb['mean'])} pe MAE (90 %-kvantil {_f(sb_rb['q90'])}). "
-             f"Observerat: {_f(sb_rb['observed_max'])}. Mot 50/50: förväntat {_f(sb_50['mean'])} "
-             f"(90 % {_f(sb_50['q90'])}), observerat {_f(sb_50['observed_max'])}.")
-    L.append(f"- Biasjusterad fördel för den bästa: mot rb_updated ≈ {_f(sb_rb['observed_max'] - sb_rb['mean'])} pe, "
-             f"mot 50/50 ≈ {_f(sb_50['observed_max'] - sb_50['mean'])} pe (observerat minus förväntat maximum under H0; grovt mått).")
-    L.append(f"- 90 %-MCS (T_max) innehåller {len(in_mcs)} modeller: " + ", ".join(f"`{m}`" for m in in_mcs) + ". "
-             f"rb_updated {'är utesluten' if mcs_excl_rb else 'ingår'}, 50/50 {'är utesluten' if mcs_excl_50 else 'ingår'}.\n")
+             f"{_f(mae['avg_5050'])}. Den skiljer sig från 50/50 i {n_active} av {n} månader (K2 = 50/50 före 2018-02).")
+    L.append(f"- **Urvalsbias i pe MAE.** Om alla {len(r_rb['models'])} modeller vore exakt lika bra som ribban skulle den "
+             f"bästa ändå se ut att vinna med i snitt {_f(sb_rb['mean'])} pe mot rb_updated (90 %-kvantil "
+             f"{_f(sb_rb['q90'])}) och {_f(sb_50['mean'])} pe mot 50/50 (90 % {_f(sb_50['q90'])}). Observerat bästa: "
+             f"{_f(sb_rb['observed_max'])} resp. {_f(sb_50['observed_max'])}. Grovt biasjusterat: "
+             f"≈ {_f(sb_rb['observed_max'] - sb_rb['mean'])} pe mot rb_updated, "
+             f"≈ {_f(sb_50['observed_max'] - sb_50['mean'])} pe mot 50/50.")
+    L.append(f"- **Varför SPA ändå kan godkänna mot 50/50 när den råa vinsten ligger inom brusbandet:** maximum av råa "
+             f"vinster domineras av modeller som skiljer sig mycket från ribban och därför har stort brus (White RC p = "
+             f"{_f(r_50['spa']['p']['white_rc'])}). SPA studentiserar: `{best}` är 50/50 plus en liten, stabil "
+             f"korrektion, så dess vinst är liten men ovanligt säker. Studentiserat är bästa t under H0 i snitt "
+             f"{_f(sb_50['t_mean'], 2)} (90 % {_f(sb_50['t_q90'], 2)}), observerat {_f(sb_50['t_observed'], 2)}. "
+             f"Mot rb_updated: {_f(sb_rb['t_mean'], 2)} (90 % {_f(sb_rb['t_q90'], 2)}), observerat "
+             f"{_f(sb_rb['t_observed'], 2)}.")
+    L.append(f"- **Model Confidence Set (90 %, T_max)** innehåller {len(in_mcs)} av {len(r_rb['mcs_max'])} modeller; "
+             f"rb_updated {'är utesluten' if mcs_excl_rb else 'ingår'}, 50/50 "
+             f"{'är utesluten' if mcs_excl_50 else 'ingår'}. Utanför: "
+             f"{', '.join(f'`{m}`' for m, p in r_rb['mcs_max'].items() if p < ALPHA) or 'ingen'}. MCS jämför varje "
+             f"modell med *snittet* av mängden och har låg styrka med n = {n} och så här korrelerade modeller. Den "
+             f"säger att datan inte räcker för att rangordna de flesta, inte att de är lika bra. StepM besvarar den "
+             f"skarpare frågan \"vilka slår ribban\".")
+    L.append(f"- Förbehåll: K2b fann att ea_news läckte i tre månader (flashdatum); med K2b:s rättelse är `{best}` "
+             f"0,200. Rättelsen är inte med här (koden på main används). Allt gäller samma urval som modellerna valdes "
+             f"på; det ersätter inte ett utfall utanför urvalet. Skuggprognoserna från 2026-12 är det riktiga testet.\n")
 
     L.append("## Globala test (U1, primär blocklängd)\n")
     L.append("| Ribba | n modeller | SPA lower | SPA consistent | SPA upper | White RC | E[max förbättring] H0 | 90 % | observerat max | StepM 10 % väljer |")
