@@ -1,0 +1,19 @@
+utc,git_sha,variant,period,n,MAE,dm_p_vs_rb_updated
+2026-11-22T22:22:44Z,da55bd4,j5_abs_all,2015-2026 all,142,0.0943,nan
+2026-11-22T22:22:44Z,da55bd4,j5_abs_36,2015-2026 all,142,0.0855,nan
+2026-11-22T22:22:44Z,da55bd4,j5_signed_all,2015-2026 all,142,0.0957,nan
+2026-11-22T22:22:44Z,da55bd4,j5_ewma,2015-2026 all,142,0.0852,nan
+2026-11-22T22:22:44Z,da55bd4,j5_scaled_energy,2015-2026 all,142,0.0864,nan
+2026-11-22T22:22:44Z,da55bd4,j5_qreg_energy,2015-2026 all,142,0.0917,nan
+2026-11-22T22:22:44Z,da55bd4,j5_abs_all,2015-2026 turbulent (top third |el_chg|),48,0.1495,nan
+2026-11-22T22:22:44Z,da55bd4,j5_abs_36,2015-2026 turbulent (top third |el_chg|),48,0.1246,nan
+2026-11-22T22:22:44Z,da55bd4,j5_signed_all,2015-2026 turbulent (top third |el_chg|),48,0.1518,nan
+2026-11-22T22:22:44Z,da55bd4,j5_ewma,2015-2026 turbulent (top third |el_chg|),48,0.1216,nan
+2026-11-22T22:22:44Z,da55bd4,j5_scaled_energy,2015-2026 turbulent (top third |el_chg|),48,0.1198,nan
+2026-11-22T22:22:44Z,da55bd4,j5_qreg_energy,2015-2026 turbulent (top third |el_chg|),48,0.1321,nan
+2026-11-22T22:22:44Z,da55bd4,j5_abs_all,2015-2026 calm (bottom third |el_chg|),48,0.0506,nan
+2026-11-22T22:22:44Z,da55bd4,j5_abs_36,2015-2026 calm (bottom third |el_chg|),48,0.0519,nan
+2026-11-22T22:22:44Z,da55bd4,j5_signed_all,2015-2026 calm (bottom third |el_chg|),48,0.051,nan
+2026-11-22T22:22:44Z,da55bd4,j5_ewma,2015-2026 calm (bottom third |el_chg|),48,0.0527,nan
+2026-11-22T22:22:44Z,da55bd4,j5_scaled_energy,2015-2026 calm (bottom third |el_chg|),48,0.0539,nan
+2026-11-22T22:22:44Z,da55bd4,j5_qreg_energy,2015-2026 calm (bottom third |el_chg|),48,0.0591,nan
