@@ -1,0 +1,170 @@
+{
+  "target_month": "2026-11",
+  "deadline": "2026-12-04",
+  "model": "component_fuel_el_v1",
+  "information_set": {
+    "kpif_through": "2026-10",
+    "energy_prices_for": "2026-11",
+    "riksbank_vintage": "2026:3"
+  },
+  "forecast": {
+    "yy": 2.0544,
+    "mm_pp": 0.6694,
+    "last_known_month": "2026-10",
+    "last_known_yy": 1.1,
+    "change_yy": 0.9544,
+    "k_index_ratio": 1.0138
+  },
+  "components": {
+    "energy": {
+      "mm_pp": 1.1802,
+      "trend_pp": 0.0872,
+      "season_pp": 0.5051,
+      "el_pp": 0.9001,
+      "b_el_chg": 0.9401,
+      "fuel_pp": -0.3123,
+      "b_fuel_chg": 1.1559,
+      "same_month_last_year_pp": 0.3226,
+      "change_yy": 0.8694
+    },
+    "services": {
+      "mm_pp": -0.255,
+      "trend_pp": 0.0622,
+      "season_pp": -0.3172,
+      "same_month_last_year_pp": -0.43,
+      "change_yy": 0.1774
+    },
+    "goods": {
+      "mm_pp": -0.1435,
+      "trend_pp": -0.0066,
+      "season_pp": -0.1369,
+      "same_month_last_year_pp": -0.1184,
+      "change_yy": -0.0254
+    },
+    "food": {
+      "mm_pp": -0.1361,
+      "trend_pp": -0.0764,
+      "season_pp": -0.0597,
+      "same_month_last_year_pp": -0.0388,
+      "change_yy": -0.0987
+    },
+    "capital_stock": {
+      "mm_pp": 0.0239,
+      "trend_pp": 0.0286,
+      "season_pp": -0.0047,
+      "same_month_last_year_pp": 0.0175,
+      "change_yy": 0.0065
+    }
+  },
+  "change_rest_yy": 0.0253,
+  "drivers_change_yy": {
+    "normal_vs_last_year": 0.3333,
+    "el": 0.9125,
+    "fuel": -0.3166,
+    "rest": 0.0253
+  },
+  "inputs": {
+    "el_spot_sek_kwh": 2.0032,
+    "el_chg_sek_kwh": 0.9574,
+    "fuel_proxy_brent_sek": 949.4583,
+    "fuel_chg_log": -0.2702,
+    "el_days": 22,
+    "fuel_last_day": "2026-11-17"
+  },
+  "uncertainty": {
+    "method": "j5_ewma (J5 U4, lambda=0.9)",
+    "n_past": 238,
+    "past_errors": "2007-01..2026-10 (comp_fuel före 2023-12, sedan den skarpa modellen)",
+    "band_50": [
+      1.7568,
+      2.334
+    ],
+    "band_80": [
+      1.461,
+      2.6186
+    ],
+    "band_90": [
+      1.2912,
+      2.8569
+    ]
+  },
+  "last_miss": {
+    "month": "2026-10",
+    "forecast_yy": 1.2767,
+    "actual_yy": 1.1,
+    "error_yy": 0.1767,
+    "per_component_yy": {
+      "energy": -0.0834,
+      "services": 0.1658,
+      "goods": 0.1318,
+      "food": -0.0672,
+      "capital_stock": 0.0006
+    },
+    "actual_mm_pp": {
+      "energy": 0.1603,
+      "services": -0.1186,
+      "goods": -0.0386,
+      "food": -0.0033,
+      "capital_stock": 0.0247
+    },
+    "rest_yy": 0.0292
+  },
+  "shadows": {
+    "j2_el_dev": {
+      "forecast_yy": 1.8613,
+      "diff_vs_live_yy": -0.1931,
+      "energy_mm_pp": 0.9897,
+      "el_pp": 0.5809,
+      "fuel_pp": -0.1835,
+      "el_dev_sek_kwh": 0.6053,
+      "diff_from_el_yy": -0.3236,
+      "diff_from_fuel_yy": 0.1305
+    },
+    "rb_updated": {
+      "forecast_yy": 1.18,
+      "riksbank_yy": 1.73,
+      "policy_round": "2026:3",
+      "months_since_cutoff": 3,
+      "last_miss_pp": -0.55
+    },
+    "j1_comb_equal": {
+      "forecast_yy": 1.5207,
+      "diff_vs_live_yy": -0.5337,
+      "from_riksbank_path": -0.1622,
+      "from_last_rb_miss": -0.275,
+      "from_j2": -0.0965
+    },
+    "k2_avg_ens_s": {
+      "forecast_yy": 1.6832,
+      "base_5050_yy": 1.5207,
+      "ridge_half_yy": 0.0658,
+      "boosting_half_yy": 0.0967,
+      "ridge_intercept_half": 0.0068,
+      "top_ridge_features": [
+        {
+          "feature": "el_dev",
+          "contribution_yy": 0.0335
+        },
+        {
+          "feature": "energy_x_age",
+          "contribution_yy": 0.0271
+        },
+        {
+          "feature": "fuel_chg",
+          "contribution_yy": -0.0252
+        }
+      ]
+    }
+  },
+  "outcome": null,
+  "text": [
+    "**KPIF november 2026: prognos 2,1 %** (upp från 1,1 % i oktober; 2,05 med två decimaler, månadsförändring +0,67 %).",
+    "Störst bidrag till förändringen i årstakt: energi +0,87 pe (prognos +1,18 pe på månadstakten mot +0,32 samma månad i fjol).",
+    "Elpriset (22 dagar hittills) steg med 0,96 kr/kWh mot förra månaden (2,00 kr/kWh), vilket ger +0,91 pe på årstakten; oljepriset i kronor (drivmedel) −24 % ger −0,32 pe. Säsong och trend mot samma månad i fjol ger +0,33 pe.",
+    "Övriga komponenter (förändring i årstakt): tjänster +0,18, varor −0,03, livsmedel −0,10, kapitalstock +0,01 pe.",
+    "Osäkerhet (J5:s EWMA-band, förslag): 50 % 1,8–2,3 %, 80 % 1,5–2,6 %.",
+    "Skuggmodeller: J2 V2 1,9 % (−0,19 pe mot skarpa; elen räknas som avvikelse från hur priset brukar ändras samma månad, +0,61 kr/kWh); 50/50 1,5 % (−0,53 pe; Riksbanken 1,7 % i 2026:3, senaste miss −0,55 pe ger rb_updated 1,2 %); K2-kandidaten 1,7 % (50/50 1,52 +0,16 pe; största ridge-bidrag el_dev +0,03 pe).",
+    "Senaste miss (oktober 2026): prognos 1,28 %, utfall 1,1 %, fel +0,18 pe; störst tjänster +0,17 pe."
+  ],
+  "text_outcome": []
+}
