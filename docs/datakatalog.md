@@ -1,6 +1,6 @@
 # Datakatalog
 
-337 serier: 96 nationella och 241 länsserier. Genererad av `python -m kpif_nowcast.catalog`.
+340 serier: 99 nationella och 241 länsserier. Genererad av `python -m kpif_nowcast.catalog`.
 
 ## Inflation
 
@@ -147,6 +147,9 @@
 | `gvb_5y` | Statsobligationsränta 5 år | M | 1987-01–2026-10 | 1 d | nej | Riksbanken SWEA SEGVB5YC | Marknadens ränteförväntningar och finansiella villkor. |
 | `gvb_10y` | Statsobligationsränta 10 år | M | 1987-01–2026-10 | 1 d | nej | Riksbanken SWEA SEGVB10YC | Marknadens ränteförväntningar och finansiella villkor. |
 | `swestr` | SWESTR (dagslåneränta) | M | 2021-09–2026-10 | 1 d | nej | Riksbanken SWESTR API | Kortränta som styrräntan styr; från 2021-09. |
+| `prospera_mm_5y_mean` | Penningmarknadens inflationsförväntningar 5 år, medel (Prospera/Origo) | M | 2019-01–2026-09 | 3 d | ja | Riksbanken sifferunderlag PPR (Origo/Prospera) | Förankring av inflationsförväntningarna på lång sikt; spridningen visar hur fast ankaret sitter. |
+| `prospera_mm_5y_p25` | Penningmarknadens inflationsförväntningar 5 år, 25:e percentil | M | 2019-01–2026-09 | 3 d | ja | Riksbanken sifferunderlag PPR (Origo/Prospera) | Förankring av inflationsförväntningarna på lång sikt; spridningen visar hur fast ankaret sitter. |
+| `prospera_mm_5y_p75` | Penningmarknadens inflationsförväntningar 5 år, 75:e percentil | M | 2019-01–2026-09 | 3 d | ja | Riksbanken sifferunderlag PPR (Origo/Prospera) | Förankring av inflationsförväntningarna på lång sikt; spridningen visar hur fast ankaret sitter. |
 
 ## Regionalt: län
 

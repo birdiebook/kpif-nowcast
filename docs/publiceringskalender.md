@@ -123,3 +123,13 @@ Granskning, metod och dom: [auto2/k11/granskning.md](auto2/k11/granskning.md). L
 | `freight_ppi_deepsea` | 2025-10 | 2026-01-14 | BLS, historical release dates for the PPI |
 | `freight_ppi_deepsea` | 2025-11 | 2026-01-14 | BLS, historical release dates for the PPI |
 | `freight_ppi_deepsea` | 2025-12 | 2026-01-30 | BLS, historical release dates for the PPI |
+
+## Körning 3: L4 Prospera
+
+Penningmarknadens 5-åriga inflationsförväntningar (Prospera/Origo), läst ur Riksbankens sifferunderlag till de penningpolitiska rapporterna. Mätmånad m publiceras av Origo mitt i m. Se [auto3/l4/resultat.md](auto3/l4/resultat.md).
+
+| Nyckel | Fördröjning | Rev. | Belagd fördröjning (d) | Belägg | Dom |
+|---|---|---|---|---|---|
+| `prospera_mm_5y_mean` | 3 | ja | −21 till −12 (dag 10–19 i mätmånaden: dec 2025 → 2025-12-17, mar 2026 → 03-19, apr → 04-15, maj → 05-18, jul → 07-10, aug → 08-17, okt → 10-15, nov → 11-16) | Origo Groups månadsrelease (via Placera/TT, datum i artikel-URL); Riksbankens sifferunderlag PPR sep 2026 (2026-09-24, data t.o.m. 2026-09) | OK för informationen (känd i mätmånaden). Värdet är Riksbankens aggregering och kommer i vår kedja först med nästa PPR som har diagrammet; därför rev. ja |
+| `prospera_mm_5y_p25` | 3 | ja | −21 till −12 (dag 10–19 i mätmånaden: dec 2025 → 2025-12-17, mar 2026 → 03-19, apr → 04-15, maj → 05-18, jul → 07-10, aug → 08-17, okt → 10-15, nov → 11-16) | Origo Groups månadsrelease (via Placera/TT, datum i artikel-URL); Riksbankens sifferunderlag PPR sep 2026 (2026-09-24, data t.o.m. 2026-09) | OK för informationen (känd i mätmånaden). Värdet är Riksbankens aggregering och kommer i vår kedja först med nästa PPR som har diagrammet; därför rev. ja |
+| `prospera_mm_5y_p75` | 3 | ja | −21 till −12 (dag 10–19 i mätmånaden: dec 2025 → 2025-12-17, mar 2026 → 03-19, apr → 04-15, maj → 05-18, jul → 07-10, aug → 08-17, okt → 10-15, nov → 11-16) | Origo Groups månadsrelease (via Placera/TT, datum i artikel-URL); Riksbankens sifferunderlag PPR sep 2026 (2026-09-24, data t.o.m. 2026-09) | OK för informationen (känd i mätmånaden). Värdet är Riksbankens aggregering och kommer i vår kedja först med nästa PPR som har diagrammet; därför rev. ja |
