@@ -53,11 +53,11 @@ def test_shadow_model_uses_only_deadline_data(inputs, name):
     from dataclasses import replace
 
     slow = name in SLOW
-    full = None if slow else SHADOW_MODELS[name].fn(inputs)["yy_hat"]
+    # slow models: one full-data run from the first checked month (a K2 row depends only on the design and its
+    # own position, so this equals one run per month with rows_from=t; it builds the design once instead of 3x)
+    full = SHADOW_MODELS[name].fn(replace(inputs, rows_from=SLOW_MONTHS.min()) if slow else inputs)["yy_hat"]
     checked = 0
     for t in SLOW_MONTHS if slow else MONTHS:
-        if slow:
-            full = SHADOW_MODELS[name].fn(replace(inputs, rows_from=t))["yy_hat"]
         if t not in full.index or pd.isna(full[t]):
             continue
         live = SHADOW_MODELS[name].fn(cut(inputs, t))["yy_hat"]
