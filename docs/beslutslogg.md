@@ -409,3 +409,8 @@ Detaljer: [docs/auto2/k4/resultat.md](auto2/k4/resultat.md), [kvalitet](auto2/k4
 Livsmedelsbidraget (TAB6628) prognostiseras från PPI livsmedel, IMF-råvaror i SEK, KIX och KI:s prisplaner med
 laggar 1–6 mån; fyra varianter (fasta laggar, ridge med nästlad CV, ridge utan reviderade serier, K2-ensemblen +
 livsmedel): [docs/auto2/k8/hypotes.md](auto2/k8/hypotes.md).
+**Resultat (urvalsevidens, 4 av K8:s 4 varianter):** ingen klarade urvalsskärmen. Mot 50/50 (0,217): fasta laggar
+0,214 (Holm p = 0,41), ridge 0,216 (0,41), ridge utan reviderade serier 0,215 (0,30); K2-ensemblen + livsmedel 0,201
+mot 0,201 (0,55). Livsmedelsbidragets eget fel sjunker 10 % med fasta laggar (0,076 → 0,069 pe), 35 % 2022–23, men
+i totalen blir det ≤ 0,002 pe. Ingen frysning. Nästa kandidat: skatterensad livsmedelsbas (momssänkningen 2026-04).
+Detaljer: [docs/auto2/k8/resultat.md](auto2/k8/resultat.md).
