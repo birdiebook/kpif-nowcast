@@ -43,6 +43,10 @@ class Inputs:
     comps: pd.DataFrame
     feats: pd.DataFrame
     rb_fc: pd.DataFrame
+    obs: pd.DataFrame | None = None  # versioned observation table (K2: euro-area flash, catalog series)
+    # Expensive models (K2: nested CV per month) forecast only months >= rows_from (earlier rows left out).
+    # The live run sets it to the target month; cheap models ignore it.
+    rows_from: pd.Period | None = None
 
 
 # ------------------------------------------------------------------ models
@@ -79,17 +83,56 @@ def j1_comb_equal(inp: Inputs) -> pd.DataFrame:
     return pd.DataFrame({"yy_hat": (0.5 * rbu + 0.5 * j2.reindex(rbu.index)).dropna()})
 
 
+def _k2(name: str) -> Callable[[Inputs], pd.DataFrame]:
+    """K2 frozen variant (k2_ml.VARIANTS) with the K2b information-set correction of the euro-area flash.
+
+    Each row t of the design uses data known at deadline(t); the observation table gets the real release
+    date for flash periods published after day 4 of the next month (k2b_review.realistic_flash), which the
+    backfill dates two days after the period end. Contract and SE3 inputs are not used by K2 (only J2 V2).
+    """
+
+    def fn(inp: Inputs) -> pd.DataFrame:
+        from kpif_nowcast.k2_ml import K2Runner, build_design
+        from kpif_nowcast.k2b_review import realistic_flash
+        from kpif_nowcast.observations import load as load_obs
+
+        obs = realistic_flash(load_obs() if inp.obs is None else inp.obs)
+        empty_se3 = pd.Series(dtype=float, index=pd.PeriodIndex([], freq="M"))
+        d = build_design(inp.kpif, inp.comps, inp.feats, _NO_CONTRACTS, empty_se3, inp.rb_fc, obs,
+                         with_catalog=name.endswith("_l"))
+        run = K2Runner(d)
+        rows = [i for i, t in enumerate(d.index) if inp.rows_from is None or t >= inp.rows_from]
+        return pd.DataFrame({"yy_hat": [run.forecast(name, i) for i in rows]}, index=d.index[rows])
+
+    return fn
+
+
+def _flash_published(inp: Inputs, target: pd.Period) -> bool:
+    """K2 readiness: the euro-area flash for the target month is in the observation table."""
+    obs = inp.obs
+    if obs is None or obs.empty:
+        return False
+    return bool(((obs["series"] == "ea_flash_total") & (obs["period"].astype(str) == str(target))).any())
+
+
 @dataclass
 class ShadowModel:
     fn: Callable[[Inputs], pd.DataFrame]
     description: str
+    # Extra inputs a model's backtest assumes are known at the deadline. If not yet in the data, a FINAL run
+    # before the deadline day is downgraded to PRELIMINARY, so a later run (days 2-4) replaces it.
+    ready: Callable[[Inputs, pd.Period], bool] | None = None
 
 
 SHADOW_MODELS: dict[str, ShadowModel] = {
     "comp_fuel_el": ShadowModel(comp_fuel_el, f"Live model {MODEL_NAME} as a shadow (champion)"),
     "j2_el_dev": ShadowModel(j2_el_dev, "J2 V2: el deviation from same month earlier years, 2012-"),
     "j1_comb_equal": ShadowModel(j1_comb_equal, "J1 C1: 50/50 of rb_updated and J2 V2"),
-    # K2: register a candidate here, e.g. "k2_<name>": ShadowModel(k2_fn, "..."),
+    # K2 candidates, registered by K2b after the review (docs/auto2/k2b/granskning.md)
+    "k2_avg_ens_s": ShadowModel(_k2("k2_avg_ens_s"), "K2: 50/50 + mean of ridge and boosting residual (14 features)",
+                                _flash_published),
+    "k2_avg_ridge_l": ShadowModel(_k2("k2_avg_ridge_l"), "K2: 50/50 + ridge residual (14 + 43 catalog features)",
+                                  _flash_published),
 }
 CHAMPION = "comp_fuel_el"
 
@@ -113,7 +156,9 @@ def load_inputs() -> tuple[Inputs, dict]:
         "el_days": int(el["el_days"].get(target, 0)),
         "fuel_last_day": fuel_days.index.max().date().isoformat() if len(fuel_days) else None,
     }
-    return Inputs(kpif, comps, feats, data_mod.load_riksbank_forecasts()), info
+    from kpif_nowcast.observations import load as load_obs
+
+    return Inputs(kpif, comps, feats, data_mod.load_riksbank_forecasts(), load_obs()), info
 
 
 def status(target: pd.Period, el_days: int, fuel_last: str | None, today: pd.Timestamp) -> tuple[str, str]:
@@ -172,12 +217,18 @@ def run(as_of: str | None = None, force: bool = False, models: list[str] | None 
     today = pd.Timestamp(as_of) if as_of else pd.Timestamp.today().normalize()
     inp, info = load_inputs()
     target = info["target"]
+    inp.rows_from = target  # the live run needs the target month only
     actions = {}
     for name in models or list(SHADOW_MODELS):
         res = SHADOW_MODELS[name].fn(inp)
         if target not in res.index or pd.isna(res.loc[target, "yy_hat"]):
             raise SystemExit(f"{name}: no forecast for {target} (el_days={info['el_days']}, fuel={info['fuel_last_day']})")
         rec = make_record(name, res, inp, info, today)
+        model = SHADOW_MODELS[name]
+        if (rec["status"] == "FINAL" and model.ready is not None and not model.ready(inp, target)
+                and today.date().isoformat() < rec["deadline"]):
+            rec["status"] = "PRELIMINARY"
+            rec["waiting_for"] = "euro-area flash for the target month (expected by day 3)"
         path = SHADOW_DIR / name / f"{target}.json"
         if should_write(path, rec["status"], force):
             path.parent.mkdir(parents=True, exist_ok=True)

@@ -29,21 +29,35 @@ def inputs():
     from kpif_nowcast.data import load_components, load_kpif, load_riksbank_forecasts
     from kpif_nowcast.features import load_features
 
-    return Inputs(load_kpif(), load_components(), load_features(), load_riksbank_forecasts())
+    from kpif_nowcast.observations import load
+
+    return Inputs(load_kpif(), load_components(), load_features(), load_riksbank_forecasts(), load())
 
 
 def cut(inp: Inputs, t: pd.Period) -> Inputs:
-    """Exactly what is known at t's deadline: outcomes to t-1, energy prices for t, earlier vintages."""
+    """Exactly what is known at t's deadline: outcomes to t-1, energy prices for t, earlier vintages,
+    observations with known_from <= deadline (as_of's rule). rows_from=t, as in the live run."""
     rb = inp.rb_fc[inp.rb_fc["published"] < deadline(t)]
-    return Inputs(inp.kpif.loc[: t - 1], inp.comps[inp.comps["month"] <= t - 1], inp.feats.loc[:t], rb)
+    obs = inp.obs[inp.obs["known_from"] <= deadline(t)]
+    return Inputs(inp.kpif.loc[: t - 1], inp.comps[inp.comps["month"] <= t - 1], inp.feats.loc[:t], rb, obs, t)
+
+
+# expensive models (nested CV per month) are checked on fewer months
+SLOW = {"k2_avg_ens_s", "k2_avg_ridge_l"}
+SLOW_MONTHS = pd.PeriodIndex(["2019-06", "2023-02", "2026-10"], freq="M")
 
 
 @needs_data
 @pytest.mark.parametrize("name", list(SHADOW_MODELS))
 def test_shadow_model_uses_only_deadline_data(inputs, name):
-    full = SHADOW_MODELS[name].fn(inputs)["yy_hat"]
+    from dataclasses import replace
+
+    slow = name in SLOW
+    full = None if slow else SHADOW_MODELS[name].fn(inputs)["yy_hat"]
     checked = 0
-    for t in MONTHS:
+    for t in SLOW_MONTHS if slow else MONTHS:
+        if slow:
+            full = SHADOW_MODELS[name].fn(replace(inputs, rows_from=t))["yy_hat"]
         if t not in full.index or pd.isna(full[t]):
             continue
         live = SHADOW_MODELS[name].fn(cut(inputs, t))["yy_hat"]
@@ -155,3 +169,18 @@ def test_offline_blocks_network():
             requests.get("https://example.invalid/")
     finally:
         rawcache.unblock_network()
+
+
+def test_k2_shadows_wait_for_the_flash():
+    """A K2 shadow is only FINAL before the deadline day once the target month's euro-area flash is in."""
+    t = pd.Period("2026-11", "M")
+    empty = pd.DataFrame(columns=["series", "period", "value", "known_from"])
+    obs = pd.DataFrame({"series": ["ea_flash_total"], "period": ["2026-10"], "value": [2.0],
+                        "known_from": [pd.Timestamp("2026-11-02")]})
+    for name in ("k2_avg_ens_s", "k2_avg_ridge_l"):
+        ready = SHADOW_MODELS[name].ready
+        assert ready is not None
+        assert not ready(Inputs(None, None, None, None, empty), t)
+        assert not ready(Inputs(None, None, None, None, obs), t)
+        obs_t = pd.concat([obs, obs.assign(period="2026-11")], ignore_index=True)
+        assert ready(Inputs(None, None, None, None, obs_t), t)

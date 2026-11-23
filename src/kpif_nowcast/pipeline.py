@@ -1,7 +1,7 @@
 """The steps the GitHub Actions workflows run, as one command per job so they run the same locally.
 
     python -m kpif_nowcast.pipeline weekly   [--offline]   # Sunday: fetch everything + data tests
-    python -m kpif_nowcast.pipeline monthly  [--offline]   # day 1-4: fetch forecast inputs, shadows, scorecard
+    python -m kpif_nowcast.pipeline monthly  [--offline]   # day 1-4: fetch forecast inputs (+ K2 series), shadows, scorecard
     python -m kpif_nowcast.pipeline fetch    [--offline] [--no-observations]
     python -m kpif_nowcast.pipeline shadow   [--offline] [--as-of YYYY-MM-DD] [--force]
     python -m kpif_nowcast.pipeline check                  # data tests (pytest, DuckDB)
@@ -59,6 +59,24 @@ def fetch(observations: bool = True) -> None:
         print(f"   {len(status) - len(failed)} ok, {len(failed)} failed: {failed}")
 
 
+def fetch_shadow_observations() -> None:
+    """Monthly: refresh the observation-table series the K2 shadow models read (euro-area flash and
+    K2's 43 catalog series), so that releases since Sunday's weekly fetch (the flash comes at the end
+    of the month or on days 1-3) are in the table. Offline: the existing table is kept as is."""
+    from kpif_nowcast import observations as obs
+    from kpif_nowcast.k2_ml import K2_CATALOG_KEYS
+    from kpif_nowcast.k2b_review import FLASH
+    from kpif_nowcast.sources import rawcache
+
+    if rawcache.offline() and obs.PATH.exists():
+        print("== K2 observation series: offline, existing table kept as is", flush=True)
+        return
+    print("== K2 observation series (flash + 43 catalog series)", flush=True)
+    status = obs.refresh(sorted(set(K2_CATALOG_KEYS) | set(FLASH)))
+    failed = [k for k, v in status.items() if v.startswith("FAILED")]
+    print(f"   {len(status) - len(failed)} ok, {len(failed)} failed: {failed}")
+
+
 def check() -> None:
     """Data tests on observations.parquet (DuckDB) and the processed files."""
     env = {**os.environ, "PYTHONPATH": str(REPO / "src")}
@@ -96,6 +114,7 @@ def main(argv: list[str] | None = None) -> None:
         check()
     elif args.command == "monthly":
         fetch(observations=False)
+        fetch_shadow_observations()
         shadow(args.as_of, args.force)
         scorecard()
     elif args.command == "fetch":

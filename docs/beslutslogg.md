@@ -378,3 +378,12 @@ Nya serier i `catalog_prices.py`, screening enligt J3:s protokoll och variantern
 K0-C2 (samma på 50/50-snittet) MAE 0,226 mot 0,232, Holm p = 0,097: klarade urvalsskärmen formellt men
 obekräftad (revisionsläckage möjligt), bara aktiv 25 månader, alla i använda 2024–26. Inget håller; ingen
 frysning. Serierna behålls i katalogen. Detaljer: [docs/auto2/k0/resultat.md](auto2/k0/resultat.md).
+
+## 2026-11-23 – K2b: oberoende granskning av K2, K2-skuggor i driften
+**Dom: håller med förbehåll.** K2:s mekanik läcker inte, men Eurostats flash för december (och mars 2018,
+januari 2026) publiceras efter deadline medan backfillen sa periodslut + 2 dagar. `ea_news` läckte därmed.
+Efter rättelsen klarar `k2_avg_ridge_l` (MAE 0,200, Holm 0,025) och `k2_avg_ens_s` (0,202, Holm 0,083)
+fortfarande urvalsskärmen mot 50/50 (0,217). `k2_avg_ridge_s` gör det inte (Holm 0,19). Vinsten sitter
+2020–25, och 2026 är sämre. L:s katalogfeatures frystes (hade vuxit 43 → 72 när K0 mergades). **Beslut:** de två
+registreras som skuggor med flashrättelsen, och de blir FINAL före dag 4 först när flashen finns. Inga nya varianter.
+Detaljer: [docs/auto2/k2b/granskning.md](auto2/k2b/granskning.md), [resultat](auto2/k2b/resultat.md).
