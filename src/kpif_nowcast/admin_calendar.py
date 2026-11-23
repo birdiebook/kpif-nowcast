@@ -166,9 +166,13 @@ ADMIN_EVENTS: list[AdminEvent] = [
                weight=25.96, change_pct=-10.8,
                method_note="hela drivmedelsposten −10,8 % i jan 2024 (övre gräns: inkluderar marknadspris); "
                            "huvudmodellen ser bara Brent i SEK"),
-    AdminEvent("2025-05", "04.3.1", "Underhåll och reparation av bostaden (ROT)", "one_off", -0.19, "scb_ks",
-               date(2025, 4, 30), "ROT-avdraget 30 → 50 % 12 maj–31 dec 2025 (finns i K13:s kalender, inte i EVENTS)",
-               SCB_KPI.format("maj-2025"), in_ks=True, method_note="SCB KS icke-energidel 2025-05"),
+    AdminEvent("2025-05", "04.3", "Underhåll, reparation och säkerhet avseende bostaden (ROT)", "one_off", -0.176,
+               "scb_ks", date(2025, 4, 30),
+               "ROT-avdraget 30 → 50 % 12 maj–31 dec 2025 (finns i K13:s kalender, inte i EVENTS)",
+               SCB_KPI.format("maj-2025"), in_ks=True,
+               method_note="SCB KS icke-energidel 2025-05 (k13_tax.ks_parts; −0,189 i tax_effects är tax_xe_own, "
+                           "KPIF-XE-skala). Reparationstjänsterna (04.3.2) publiceras inte; publicerade 04.3 är bara "
+                           "material (= 04.3.1, +0,8 % i maj)"),
     AdminEvent("2025-07", "06.1.1", "Läkemedel", "one_off", round(10.91 * 1.0 / 1000, 3), "observed",
                date(2025, 6, 30), "Höjt högkostnadsskydd för läkemedel (prop. 2024/25:144)",
                "https://data.riksdagen.se/dokument/HC03144 " + SCB_KPI.format("juli-2025"),
@@ -179,9 +183,12 @@ ADMIN_EVENTS: list[AdminEvent] = [
                "https://regeringen.se/pressmeddelanden/2025/12/tandvarden-for-aldre-blir-billigare-den-1-januari-2026/ "
                + SCB_KPI.format("januari-2026"), weight=8.77, change_pct=-21.2,
                method_note="normal januari +2 till +4 %, så effekten är snarast −0,2 till −0,22"),
-    AdminEvent("2026-01", "04.3.1", "Underhåll och reparation av bostaden (ROT)", "end", 0.19, "assumption",
-               date(2025, 4, 30), "ROT 50 % upphör 31 dec 2025 (solnedgång i lagen)",
-               SCB_KPI.format("januari-2026"), in_ks=True, method_note="minus startmånadens KS-del (ex ante)"),
+    AdminEvent("2026-01", "04.3", "Underhåll, reparation och säkerhet avseende bostaden (ROT)", "end", 0.037,
+               "scb_ks", date(2025, 4, 30), "ROT 50 % upphör 31 dec 2025 (solnedgång i lagen)",
+               SCB_KPI.format("januari-2026"), in_ks=True,
+               method_note="hela icke-energidelen av SCB KS 2026-01 (alla januariändringar), så övre gräns för "
+                           "ROT-slutet om övriga ändringar var ≥ 0. Återgången blev mycket mindre än startens −0,176; "
+                           "orsaken är inte verifierad (osäker)"),
     AdminEvent("2026-07", "07.3.5", "Kombinerad persontransport", "one_off", TRANSIT_PE, "observed",
                date(2026, 6, 30), "Halverat pris på månadskort i kollektivtrafiken (statsbidrag) 1 jul–dec 2026",
                SCB_JULY_2026 + " " + GOV_TRANSIT, weight=5.91, change_pct=-26.4,
@@ -204,7 +211,9 @@ ADMIN_EVENTS: list[AdminEvent] = [
                "Månadskort åter fullpris från 3 dec i övriga regioner (SL och Västtrafik: sista köpdag 2 dec)",
                TT_TRANSIT + " " + SL_DEC, weight=5.91,
                method_note="+0,156 × 74,0 % (alla utom söder och Halland). Förlänger Västtrafik till 29 dec flyttas "
-                           "+0,026 till 2027-01"),
+                           "+0,026 till 2027-01. Risk: SL-abonnemang dras med halvpris för december 26 nov och "
+                           "30-dagarskort aktiverade 2 dec gäller till ~1 jan; prisar SCB efter giltighetstid hamnar "
+                           "en del i januari"),
     # ---------------------------------------------------------------- 2027-2028
     AdminEvent("2027-01", "07.3.5", "Kombinerad persontransport", "end", round(-TRANSIT_PE * SHARE_HALLAND, 3),
                "assumption", date(2026, 10, 28),
@@ -222,7 +231,9 @@ ADMIN_EVENTS: list[AdminEvent] = [
                weight=10.07, change_pct=1.0, normal_pe=0.041,
                method_note="posten följer prisbasbeloppet i januari (pbb +0,6/+8,7/+9,1/+0,7 % gav 2021 +0,6, 2023 +4,7, "
                            "2024 +11,2, 2026 +1,2 %), antag +1,0 %; "
-                           "normal = snitt av januaribidragen 2022–2026"),
+                           "normal = snitt av januaribidragen 2022–2026 (ungefärlig: modellen avtrendar med "
+                           "12-månaderssnittet, skillnad ≈ ±0,005 pe). Posten innehåller barnomsorg (13.3.0.1), vars "
+                           "maxtaxa inte följer prisbasbeloppet, men hela vikten skalas med +1,0 %"),
     AdminEvent("2027-01", "04.5.1", "Elektricitet", "recurring", 0.004, "assumption", date(2026, 11, 5),
                "Energiskatt på el 36,0 → 36,2 öre/kWh (indexering, SFS 2026:1859; förslaget att låsa på 36,0 "
                "genomfördes inte)", "https://toreenergi.se/energiskatt-2027/", in_ks=True,
@@ -239,7 +250,8 @@ ADMIN_EVENTS: list[AdminEvent] = [
     AdminEvent("2027-01", "04.5.1", "Elektricitet (elnät)", "recurring", None, "assumption", None,
                "Elnätsavgifter i januari (Ellevio, Vattenfall, E.ON): inga 2027-besked hittade 23 nov 2026; se L5",
                "https://www.svt.se/nyheter/inrikes/elnatsjattarna-hojer-avgiften-kraftigt"),
-    AdminEvent("2027-01", "04.4.1", "Vatten, avlopp och sophämtning", "recurring", None, "assumption", None,
+    AdminEvent("2027-01", "04.4", "Vattenförsörjning (04.4.1), sophämtning (04.4.2) och avlopp (04.4.3)",
+               "recurring", None, "assumption", None,
                "Kommunala VA- och avfallstaxor i januari (2024: VA +13,9 %, 2025 +9,8 %, 2026 +6,5 %)",
                SCB_COICOP_TABLE),
     AdminEvent("2028-01", "01", "Livsmedel och alkoholfria drycker", "end", 0.773, "assumption",
