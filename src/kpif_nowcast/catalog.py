@@ -20,6 +20,7 @@ import pandas as pd
 
 AREAS = {
     "inflation": "Inflation",
+    "prisled": "Prisleden: producent-, import- och planerade priser",
     "energi": "Energi och råvaror",
     "arbetsmarknad": "Arbetsmarknad och löner",
     "hushall": "Hushållen",
@@ -385,6 +386,10 @@ CATALOG: list[Spec] = [
 from kpif_nowcast import catalog_af  # noqa: E402
 
 CATALOG += catalog_af.specs()
+
+from kpif_nowcast import catalog_prices  # noqa: E402
+
+CATALOG += catalog_prices.specs()
 
 def by_key() -> dict[str, Spec]:
     return {s.key: s for s in CATALOG}
