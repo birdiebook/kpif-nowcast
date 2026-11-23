@@ -62,12 +62,27 @@ POSTHOC = {"k2_avg_ridge_lnr": Variant("avg", "ridge", "LNR")}
 ALL_VARIANTS = {**VARIANTS, **POSTHOC}
 
 
-def catalog_keys() -> list[tuple[str, str, bool]]:
-    """(key, unit, revised) for the monthly catalog series in feature set L."""
-    from kpif_nowcast.catalog import CATALOG
+# Feature set L as frozen at 415ba6f: the 43 monthly catalog series that existed then. Later tracks
+# append series to catalog.CATALOG (K0 added 29), which must not silently change the frozen variant
+# (found by the K2b review: without this list k2_avg_ridge_l had 72 catalog features on main@25a6a6e).
+K2_CATALOG_KEYS = (
+    "brent_sek", "aku_unemp_nsa", "aku_unemp_sa", "gdp_ind_yy", "kix", "policy_rate", "ki_services",
+    "wage_private_nonmanual", "wage_private_manual_hourly", "wage_municipal_yy", "labour_cost_salaried_yy",
+    "labour_cost_workers_yy", "aku_employed", "hh_consumption_yy", "retail_volume_yy", "hh_infl_exp_median",
+    "hh_infl_perceived_median", "hh_price_exp_net", "ea_flash_total", "ea_flash_energy", "ea_flash_food",
+    "ea_flash_goods", "ea_flash_services", "ea_hicp_total", "fao_food_idx", "fao_cereals", "fao_dairy",
+    "gas_eu_usd", "wheat_usd", "gscpi", "freight_ppi_deepsea", "jobads_total", "mortgage_rate_new",
+    "hh_lending_growth", "nfc_lending_growth", "nier_barometer", "nier_conf_services", "nier_conf_trade",
+    "nier_conf_households", "bankruptcies", "ipi_yy", "service_prod_idx", "industry_orders_yy",
+)
 
-    return [(s.key, s.unit, s.revised) for s in CATALOG
-            if s.freq == "M" and s.key not in EXCLUDE_CATALOG and not s.key.startswith("af_")]
+
+def catalog_keys() -> list[tuple[str, str, bool]]:
+    """(key, unit, revised) for the monthly catalog series in feature set L (frozen list, catalog order)."""
+    from kpif_nowcast.catalog import by_key
+
+    specs = by_key()
+    return [(k, specs[k].unit, specs[k].revised) for k in K2_CATALOG_KEYS]
 
 
 def build_design(kpif, comps, feats, contracts, se3, rb_fc, obs, with_catalog: bool = True) -> pd.DataFrame:
