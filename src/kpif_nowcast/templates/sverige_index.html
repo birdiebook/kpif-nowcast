@@ -220,6 +220,123 @@
     </div>
   </section>
 
+  <section id="kalender" class="sv-card">
+    <h2>Administrerade priser</h2>
+    <p class="sv-sub">Skatter, moms och offentliga avgifter flyttar KPIF i ett steg när de ändras, och modellen kan inte se dem i förväg. En ändring av prisnivån höjer eller sänker årstakten i tolv månader och faller sedan ur. Staplarna visar bidraget till KPIF:s årstakt från händelser som är beslutade per idag; ljusare staplar är kommande månader.</p>
+    <div class="sv-kpis" data-draw="adm-kpis" data-source="admin_upcoming"></div>
+    <div class="sv-chart tall" data-draw="adm-chart" data-source="admin_yy" id="adm-chart"></div>
+    <div class="sv-legend" data-draw="adm-legend" data-source="admin_yy"></div>
+    <p class="sv-note">Procentenheter i årstakt. Effekten på månadsförändringen räknas som effekt på årstakten (faktor ungefär 1). Källa: kalendern för administrerade priser (admin_calendar.py, docs/administrerade-priser.md), med SCB:s KS-beräkningar där de finns. Förslaget till justering används bara om Johannes beslutar det i månadsrutinen.</p>
+    <details class="sv-block">
+      <summary>Alla händelser i kalendern</summary>
+      <div class="sv-table-wrap">
+        <table data-source="admin_events" data-row-key="month,coicop" id="adm-table">
+          <thead><tr>
+            <th data-field="month">Månad</th>
+            <th data-field="group_label">Grupp</th>
+            <th data-field="label">Händelse</th>
+            <th class="num" data-field="pe">Effekt, pe m/m</th>
+            <th data-field="decided">Beslut senast</th>
+            <th data-field="status">Status idag</th>
+            <th data-field="source">Källa</th>
+          </tr></thead>
+          <tbody data-draw="adm-table-body"></tbody>
+        </table>
+      </div>
+    </details>
+  </section>
+
+  <section id="snabbkpi" class="sv-card">
+    <h2>Snabb-KPI mot utfall</h2>
+    <p class="sv-sub">SCB:s snabbskattning kommer ungefär åtta dagar efter månadens slut, före det slutliga utfallet. Skillnaden visar hur mycket av månadens inflation som återstår att veta när snabbsiffran är ute, och hur mycket en nowcast kan vinna på att komma före den.</p>
+    <div class="sv-kpis" data-draw="fl-kpis" data-source="snabbkpi"></div>
+    <div class="sv-grid2">
+      <div>
+        <h3>KPIF, årstakt: snabb och utfall</h3>
+        <div class="sv-chart short" data-draw="fl-yy" data-source="snabbkpi" id="fl-yy"></div>
+      </div>
+      <div>
+        <h3>Snabb minus utfall, procentenheter</h3>
+        <div class="sv-chart short" data-draw="fl-err" data-source="snabbkpi" id="fl-err"></div>
+      </div>
+    </div>
+    <p class="sv-note">Utfall = först publicerade siffra (SCB). Snabb-KPI för KPIF finns från september 2024.</p>
+  </section>
+
+  <section id="resor" class="sv-card">
+    <h2>Resor</h2>
+    <p class="sv-sub">Paketresor, flyg och logi står för ungefär tre fjärdedelar av variansen i prognosfelet för tjänster (K7). Priserna följer efterfrågan, och påskens placering flyttar säsongstoppen mellan mars och april, vilket ger stora utslag i årstakten de månaderna.</p>
+    <div class="sv-grid2">
+      <div>
+        <h3>KPIF-priser för resor, årstakt</h3>
+        <div class="sv-chart short" data-draw="tr-prices" data-source="resor" id="tr-prices"></div>
+        <p class="sv-note">SCB, KPIF per COICOP-post. Flyg svänger mest.</p>
+      </div>
+      <div>
+        <h3>Gästnätter, årsförändring</h3>
+        <div class="sv-chart short" data-draw="tr-guests" data-source="resor" id="tr-guests"></div>
+        <p class="sv-note">Tremånaderssumma mot samma tre månader året innan (Eurostat, hotell, stugbyar, vandrarhem och camping). Publiceras med ungefär tre månaders fördröjning.</p>
+      </div>
+    </div>
+    <div class="sv-block">
+      <h3>Påskens resefönster</h3>
+      <div class="sv-chart short" data-draw="tr-easter" data-source="resor" id="tr-easter"></div>
+      <p class="sv-note">Dagar av påskens resefönster (påskdagen −9 till +1, elva dagar) i mars och april per år. Påsken är känd långt i förväg.</p>
+    </div>
+  </section>
+
+  <section id="hyror" class="sv-card">
+    <h2>Hyror</h2>
+    <p class="sv-sub">Hyror är en av de största posterna i KPIF och ändras i stort sett en gång per år. Förhandlingsutfallet är känt innan det syns i KPI, så det säger i förväg ungefär hur mycket hyrorna lyfter årstakten.</p>
+    <div class="sv-chart short" data-draw="rent-chart" data-source="hyror" id="rent-chart"></div>
+    <p class="sv-note" data-draw="rent-note" data-source="hyror">—</p>
+  </section>
+
+  <section id="elmarknad" class="sv-card">
+    <h2>Elmarknaden</h2>
+    <p class="sv-sub">Ju fler hushåll som har rörligt elpris, desto snabbare slår spotpriset igenom i KPIF-el. Nätavgifterna ändras främst den 1 januari och är en del av januarieffekten i elpriset.</p>
+    <div class="sv-grid2">
+      <div>
+        <h3>Elavtal, andel av hushållens avtal</h3>
+        <div class="sv-chart short" data-draw="el-contracts" data-source="elmarknad" id="el-contracts"></div>
+        <p class="sv-note">SCB. Tim- och kvartspris redovisas separat från 2023-02.</p>
+      </div>
+      <div>
+        <h3>Elnätsavgift 1 januari, kr per år</h3>
+        <div class="sv-chart short" data-draw="el-grid" data-source="elmarknad" id="el-grid"></div>
+        <p class="sv-note">Median över nätområden, exkl. moms (Energimarknadsinspektionen). Elvärme: villa 20A, 20 000 kWh; villa: 16A, 5 000 kWh; lgh: 16A, 2 000 kWh. Ett år räknas som känt först vid årets slut.</p>
+      </div>
+      <div>
+        <h3>Andel nätområden som höjde avgiften</h3>
+        <div class="sv-chart short" data-draw="el-raise" data-source="elmarknad" id="el-raise"></div>
+        <p class="sv-note">Villa 16A, 5 000 kWh, jämfört med året innan.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="kronan" class="sv-card">
+    <h2>Kronan</h2>
+    <p class="sv-sub">En svagare krona gör importen dyrare. Det slår igenom i producent- och importpriserna först och i KPIF:s varor med några månaders till ett års fördröjning.</p>
+    <div class="sv-grid2">
+      <div>
+        <h3>Kronor per euro och per dollar</h3>
+        <div class="sv-chart short" data-draw="fx-level" data-source="kronan" id="fx-level"></div>
+      </div>
+      <div>
+        <h3>Årsförändring, % (plus = svagare krona)</h3>
+        <div class="sv-chart short" data-draw="fx-yoy" data-source="kronan" id="fx-yoy"></div>
+      </div>
+    </div>
+    <p class="sv-note">Månadsmedel (Riksbanken).</p>
+  </section>
+
+  <section id="prospera" class="sv-card">
+    <h2>Inflationsförväntningar</h2>
+    <p class="sv-sub">När förväntningarna om fem år ligger nära 2 % sprids tillfälliga prischocker mindre till löner och priser. En glidning uppåt brukar vara en varningssignal för Riksbanken.</p>
+    <div class="sv-chart" data-draw="pro-chart" data-source="prospera" id="pro-chart"></div>
+    <p class="sv-note">Penningmarknadens aktörer, förväntad inflation om fem år (serien skiljer inte på KPI och KPIF): medel och spannet mellan 25:e och 75:e percentilen (Prospera för Riksbanken). Streckad linje: målet 2 %.</p>
+  </section>
+
   <section id="arbetsformedlingen" class="sv-card">
     <h2>Arbetsförmedlingen</h2>
     <p class="sv-sub">Registerdata för hela riket, per månad. Varsel brukar föregå uppsägningar med några månader och är brusiga, därför visas också ett tremånadersmedel. Åldersgränsen för inskrivna ändrades 2023 och 2026, vilket ger små brott i nivån.</p>
@@ -335,6 +452,12 @@
     </div>
   </section>
 
+  <section id="utvardering" class="sv-card">
+    <h2>Utvärdering av de nya serierna</h2>
+    <p class="sv-sub">Ger de nya serierna bättre KPIF-prognoser? Körning 3 testar dem i en förregistrerad screening mot de bästa skuggmodellerna. Ett godkänt resultat betyder att serien klarade urvalsskärmen, inte att den slår modellen live.</p>
+    <div data-draw="v2-body" data-source="v2_eval">—</div>
+  </section>
+
   <section id="alla" class="sv-card">
     <h2>Alla serier</h2>
     <p class="sv-sub">Senaste värde, värdet för ett år sedan, tryck (standardavvikelser, + = mer inflationstryck) och starkaste samband med KPIF.</p>
@@ -361,14 +484,15 @@
   <details id="om">
     <summary>Så är siffrorna framtagna</summary>
     <ul>
-      <li>All data kommer från öppna källor (SCB, Riksbanken, Konjunkturinstitutet, Tillväxtanalys, Eurostat, FAO, FRED, NY Fed, JobTech) och hämtas med skript i projektet kpif-nowcast. Siffrorna är senaste publicerade version.</li>
+      <li>All data kommer från öppna källor (SCB, Riksbanken, Konjunkturinstitutet, Tillväxtanalys, Eurostat, FAO, FRED, NY Fed, JobTech, Energimarknadsinspektionen, Hyresgästföreningen) och hämtas med skript i projektet kpif-nowcast. Siffrorna är senaste publicerade version.</li>
       <li>Priser, index, löner och antal visas som förändring mot samma månad året innan. Räntor, andelar och enkätindikatorer visas som de publiceras.</li>
       <li>Tryck: seriens avvikelse från sitt snitt 2005–idag i standardavvikelser, med tecken efter hur serien brukar påverka inflationen. Områdets tryck är snittet av dess serier. Det är en beskrivning, inte en modell.</li>
       <li>Kvartalsserier ligger på kvartalets sista månad. Säsongsrensade serier (t.ex. Konjunkturinstitutets indikatorer, sparkvoten) revideras i efterhand.</li>
       <li>Prognoser: den skarpa prognosen är filen forecasts/&lt;månad&gt;.json. Skuggprognoserna (forecasts/shadow/) och K2-kandidaten körs bredvid och är valda på 2015–2026, så deras fel bakåt är urvalsevidens. Förklaringen är en exakt bokföring av den skarpa modellens prognos körd med dagens data, så den kan skilja några hundradelar från filen.</li>
       <li>Länen: Arbetsförmedlingen (inskrivna, varsel), SCB (AKU, småhuspriser, folkmängd) och Tillväxtanalys (konkurser). Det finns inga öppna länsgränser i projektet, därför en rutnätskarta. Varsel per län uppdateras inte efter 2026-03.</li>
       <li>AI-indikatorn räknas med J7:s metod på projektets observationstabell; uppdelningen per yrkesområde och produktivitet per bransch finns i docs/ai-indikator.md.</li>
-      <li>Saknas än: bostadsrättspriser per månad, varsel per län efter 2026-03.</li>
+      <li>Administrerade priser, snabb-KPI, resor, hyror, elmarknaden, kronan och inflationsförväntningarna (körning 3) visar bara värden som var kända på byggdagen enligt projektets publiceringskalender (known_from). Kalendern för administrerade priser är handkurerad med källa per händelse; bara beslutade händelser räknas in i staplarna och förslagen.</li>
+      <li>Saknas än: bostadsrättspriser per månad, varsel per län efter 2026-03, Tillväxtverkets gästnätter (Eurostat används), Prospera för 1 och 2 år och för andra grupper än penningmarknaden.</li>
     </ul>
   </details>
 </div>
@@ -1072,6 +1196,339 @@
     const part = d.find((r) => r.series === "ad_share_per_10k" && r.partial);
     el.textContent = "Per 10 000 publicerade annonser (JobTech, Platsbanken)." + (part ? " " + part.year + "* bygger på " + part.months + " månader och visas ljusare; det ingår inte i indikatorn." : "") +
       " Sökordet ”AI” har ett mätbrott 2025 (ändrad matchning hos JobTech) och används därför inte i indikatorn.";
+  });
+})();
+</script>
+
+<script>
+(function () {
+  // ---------- run 3 (L10): calendar, flash CPI, travel, rents, electricity market, krona, Prospera, V2
+  const { f1, f2, fs1, f0, parseM, monthName } = window.svFmt;
+  const { tipFor, showTip } = window.svKit;
+  const sv = d3.formatLocale({ decimal: ",", thousands: " ", grouping: [3], currency: ["", " kr"] });
+  const fs2 = sv.format("+,.2f");
+  const MONTHS = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"];
+  const monthLong = (p) => (p ? MONTHS[Number(p.slice(5, 7)) - 1] + " " + p.slice(0, 4) : "—");
+  const col = (i) => dash.colors[i % dash.colors.length] || dash.colors[0];
+  const has = (v) => v !== null && v !== undefined;
+  function rows(id) { const d = dash.data(id); return d.status === "ok" ? d.data : null; }
+  function failed(el, ids, msg) {
+    if (ids.some((id) => dash.data(id).status === "error")) { el.textContent = msg; return true; }
+    if (ids.some((id) => dash.data(id).status !== "ok")) { el.textContent = "—"; return true; }
+    return false;
+  }
+  const yearFmt = (t) => String(t.getUTCFullYear());
+  const SV_MON = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
+
+  // line chart for prepared series [{name, color, pts: [{t, v}]}]; opts.band = [{t, lo, hi}], opts.ref = y value
+  function lines(el, series, opts) {
+    el.replaceChildren();
+    series = series.filter((s) => s.pts.length);
+    const all = series.flatMap((s) => s.pts.map((p) => p.v)).concat((opts.band || []).flatMap((b) => [b.lo, b.hi]));
+    if (!all.length) { el.textContent = "Ingen data."; return; }
+    const ts = series.flatMap((s) => s.pts.map((p) => p.t));
+    let lo = d3.min(all), hi = d3.max(all);
+    if (has(opts.ref)) { lo = Math.min(lo, opts.ref); hi = Math.max(hi, opts.ref); }
+    if (opts.zero !== false) { lo = Math.min(0, lo); hi = Math.max(0, hi); }
+    const tick = opts.tick || (hi - lo >= 10 ? f0 : f1);
+    const W = el.clientWidth || 300, H = opts.h || 150, m = { l: 40, r: Math.min(opts.r || 96, Math.round(W * 0.38)), t: 8, b: 20 };
+    const y = d3.scaleLinear([lo, hi], [H - m.b, m.t]).nice();
+    m.l = Math.max(34, 14 + 7.2 * d3.max(y.ticks(3), (v) => (tick(v) + (opts.unit || "")).length));
+    const x = d3.scaleUtc(d3.extent(ts), [m.l, W - m.r]);
+    const svg = d3.select(el).append("svg").attr("width", "100%").attr("height", H).attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", opts.aria);
+    svg.append("g").attr("class", "grid").selectAll("line").data(y.ticks(3)).join("line").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y).attr("y2", y);
+    svg.append("g").selectAll("text").data(y.ticks(3)).join("text").attr("x", m.l - 6).attr("y", (v) => y(v) + 4).attr("text-anchor", "end").text((v) => tick(v) + (opts.unit || ""));
+    if (y.domain()[0] < 0 && y.domain()[1] > 0) svg.append("line").attr("class", "ref").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y(0)).attr("y2", y(0));
+    if (has(opts.ref)) svg.append("line").attr("class", "ref").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y(opts.ref)).attr("y2", y(opts.ref));
+    svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(Math.max(2, Math.floor((W - m.l - m.r) / 70))).tickSizeOuter(0)
+      .tickFormat((t) => (t.getUTCMonth() === 0 ? String(t.getUTCFullYear()) : SV_MON[t.getUTCMonth()])));
+    if (opts.band && opts.band.length)
+      svg.append("path").datum(opts.band).style("fill", series[0].color).attr("opacity", 0.18).attr("d", d3.area().x((b) => x(b.t)).y0((b) => y(b.lo)).y1((b) => y(b.hi)));
+    const labels = [];
+    for (const s of series) {
+      svg.append("path").datum(s.pts).attr("fill", "none").style("stroke", s.color).attr("stroke-width", 1.8).attr("d", d3.line().x((p) => x(p.t)).y((p) => y(p.v)));
+      if (opts.dots) svg.append("g").selectAll("circle").data(s.pts).join("circle").attr("cx", (p) => x(p.t)).attr("cy", (p) => y(p.v)).attr("r", 3).style("fill", s.color);
+      const last = s.pts[s.pts.length - 1];
+      labels.push({ y: y(last.v), x: x(last.t), s, last });
+    }
+    labels.sort((a, b) => a.y - b.y);
+    for (let i = 1; i < labels.length; i++) if (labels[i].y - labels[i - 1].y < 13) labels[i].y = labels[i - 1].y + 13;
+    for (const l of labels) svg.append("text").attr("x", l.x + 5).attr("y", l.y + 4).style("fill", l.s.color).text(l.s.name + " " + tick(l.last.v));
+    const tip = tipFor(el);
+    const bis = d3.bisector((p) => p.t).center;
+    svg.append("rect").attr("x", m.l).attr("y", m.t).attr("width", W - m.l - m.r).attr("height", H - m.t - m.b).attr("fill", "transparent")
+      .on("mousemove", (evt) => {
+        const t = x.invert(d3.pointer(evt)[0]);
+        const out = [];
+        for (const s of series) { const p = s.pts[bis(s.pts, t)]; if (!out.length) out.push((opts.fmt || monthName)(p.t)); out.push(s.name + ": " + tick(p.v) + (opts.unit || "")); }
+        if (opts.band && opts.band.length) { const b = opts.band[d3.bisector((q) => q.t).center(opts.band, t)]; out.push("P25–P75: " + f2(b.lo) + "–" + f2(b.hi)); }
+        showTip(el, tip, evt, out);
+      }).on("mouseleave", () => { tip.hidden = true; });
+  }
+  const pick = (rs, key, field, from) => rs.filter((r) => r.key === key && has(r[field || "value"]) && (!from || r.period >= from)).map((r) => ({ t: parseM(r.period), v: r[field || "value"] }));
+
+  // grouped bars per category (year): groups = [{name, color, get(row) -> value}], cats = rows with .cat
+  function groupedBars(el, cats, groups, opts) {
+    el.replaceChildren();
+    if (!cats.length) { el.textContent = "Ingen data."; return; }
+    const W = el.clientWidth || 300, H = opts.h || 160, m = { l: 44, r: 8, t: 22, b: 20 };
+    const x = d3.scaleBand(cats.map((c) => c.cat), [m.l, W - m.r]).padding(0.2);
+    const xi = d3.scaleBand(groups.map((g) => g.name), [0, x.bandwidth()]).padding(0.08);
+    const vals = cats.flatMap((c) => groups.map((g) => g.get(c))).filter(has);
+    const y = d3.scaleLinear([Math.min(0, d3.min(vals)), Math.max(0, d3.max(vals))], [H - m.b, m.t]).nice();
+    const svg = d3.select(el).append("svg").attr("width", "100%").attr("height", H).attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", opts.aria);
+    svg.append("g").attr("class", "grid").selectAll("line").data(y.ticks(3)).join("line").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y).attr("y2", y);
+    svg.append("g").selectAll("text").data(y.ticks(3)).join("text").attr("x", m.l - 6).attr("y", (v) => y(v) + 4).attr("text-anchor", "end").text((v) => f0(v) + (opts.unit || ""));
+    for (const g of groups) {
+      svg.append("g").selectAll("rect").data(cats.filter((c) => has(g.get(c)))).join("rect")
+        .attr("x", (c) => x(c.cat) + xi(g.name)).attr("width", xi.bandwidth())
+        .attr("y", (c) => Math.min(y(0), y(g.get(c)))).attr("height", (c) => Math.abs(y(g.get(c)) - y(0)))
+        .style("fill", g.color).attr("opacity", (c) => (c.light ? 0.45 : 1));
+    }
+    svg.append("line").attr("class", "ref").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y(0)).attr("y2", y(0));
+    const every = Math.ceil(cats.length / Math.max(1, Math.floor((W - m.l) / 36)));
+    svg.append("g").selectAll("text").data(cats.filter((_, i) => i % every === 0 || (i === cats.length - 1 && i % every >= every / 2))).join("text")
+      .attr("x", (c) => x(c.cat) + x.bandwidth() / 2).attr("y", H - 6).attr("text-anchor", "middle").text((c) => "’" + String(c.cat).slice(2) + (c.light ? "*" : ""));
+    let lx = m.l;
+    for (const g of groups) {
+      svg.append("rect").attr("x", lx).attr("y", 4).attr("width", 10).attr("height", 10).style("fill", g.color);
+      const t = svg.append("text").attr("x", lx + 14).attr("y", 13).text(g.name);
+      lx += 24 + (t.node().getComputedTextLength ? t.node().getComputedTextLength() : g.name.length * 6);
+    }
+    const tip = tipFor(el);
+    svg.append("rect").attr("x", m.l).attr("y", m.t).attr("width", W - m.l - m.r).attr("height", H - m.t - m.b).attr("fill", "transparent")
+      .on("mousemove", (evt) => {
+        const px = d3.pointer(evt)[0];
+        const c = cats.find((q) => px >= x(q.cat) - x.step() * x.padding() / 2 && px <= x(q.cat) + x.bandwidth() + x.step() * x.padding() / 2) || cats[cats.length - 1];
+        showTip(el, tip, evt, [String(c.cat) + (c.note ? " " + c.note : ""), ...groups.map((g) => g.name + ": " + (has(g.get(c)) ? (opts.tick || f1)(g.get(c)) + (opts.unit || "") : "–"))]);
+      }).on("mouseleave", () => { tip.hidden = true; });
+  }
+
+  function kpi(label, value, note, attrs) {
+    const d = document.createElement("div"); d.className = "sv-kpi";
+    const a = document.createElement("span"); a.className = "sv-kpi-label"; a.textContent = label;
+    const b = document.createElement("span"); b.className = "sv-big"; b.textContent = value;
+    for (const [k, v] of Object.entries(attrs || {})) b.setAttribute(k, v);
+    const c = document.createElement("span"); c.className = "sv-note"; c.textContent = note || "";
+    d.append(a, b, c); return d;
+  }
+
+  // ---------- administered prices
+  const ADM_ORDER = ["drivmedel", "el", "mat", "resor", "ovrigt"];
+  dash.draw("adm-kpis", (el) => {
+    el.replaceChildren();
+    if (failed(el, ["admin_upcoming"], "Kalendern kunde inte laddas.")) return;
+    const up = rows("admin_upcoming").filter((r) => r.n_used > 0 || r.n_not_used > 0).slice(0, 4);
+    if (!up.length) { el.textContent = "Inga kommande händelser i kalendern."; return; }
+    for (const r of up) {
+      const note = (r.n_used ? r.n_used + " beslutade" : "inga beslutade") + (r.n_not_used ? ", " + r.n_not_used + " ej med" : "") + ". Prognosens deadline " + r.deadline + ".";
+      el.appendChild(kpi("Förslag till justering, " + monthLong(r.month), fs2(r.adjust_yy) + " pe", note,
+        { "data-source": "admin_upcoming", "data-field": "adjust_yy", "data-where": "month=" + r.month }));
+    }
+  });
+  dash.draw("adm-legend", (el) => {
+    el.replaceChildren();
+    const d = rows("admin_yy"); if (!d) return;
+    const labels = new Map(d.map((r) => [r.group, r.group_label]));
+    ADM_ORDER.filter((g) => labels.has(g)).forEach((g, i) => {
+      const s = document.createElement("span"); s.style.display = "inline-flex"; s.style.alignItems = "center"; s.style.gap = "4px";
+      const sw = document.createElement("span"); sw.style.width = "10px"; sw.style.height = "10px"; sw.style.borderRadius = "2px"; sw.style.background = col(i);
+      s.append(sw, document.createTextNode(labels.get(g))); el.appendChild(s);
+    });
+    el.style.flexWrap = "wrap";
+  });
+  dash.draw("adm-chart", (el) => {
+    el.replaceChildren();
+    if (failed(el, ["admin_yy"], "Kalendern kunde inte laddas.")) return;
+    const d = rows("admin_yy");
+    const periods = [...new Set(d.map((r) => r.period))].sort();
+    const wide = periods.map((p) => { const o = { period: p, t: parseM(p) }; for (const r of d) if (r.period === p) { o[r.group] = r.pe; o.total = r.total_pe; o.future = r.future; } return o; });
+    const keys = ADM_ORDER.filter((g) => d.some((r) => r.group === g));
+    const stack = d3.stack().keys(keys).offset(d3.stackOffsetDiverging)(wide);
+    const W = el.clientWidth || 600, H = 280, m = { l: 44, r: 10, t: 10, b: 22 };
+    const x = d3.scaleBand(periods, [m.l, W - m.r]).paddingInner(0.15);
+    const lo = d3.min(stack, (s) => d3.min(s, (v) => v[0])), hi = d3.max(stack, (s) => d3.max(s, (v) => v[1]));
+    const y = d3.scaleLinear([Math.min(0, lo), Math.max(0, hi)], [H - m.b, m.t]).nice();
+    const svg = d3.select(el).append("svg").attr("width", "100%").attr("height", H).attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img")
+      .attr("aria-label", "Administrerade prisers bidrag till KPIF:s årstakt per månad 2016–2028, per grupp");
+    svg.append("g").attr("class", "grid").selectAll("line").data(y.ticks(5)).join("line").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y).attr("y2", y);
+    svg.append("g").selectAll("text").data(y.ticks(5)).join("text").attr("x", m.l - 6).attr("y", (v) => y(v) + 4).attr("text-anchor", "end").text((v) => f1(v));
+    const now = wide.findIndex((w) => w.future);
+    if (now > 0) {
+      const nx = x(periods[now]);
+      svg.append("line").attr("class", "ref").attr("x1", nx).attr("x2", nx).attr("y1", m.t).attr("y2", H - m.b);
+      const right = nx > W - 80;
+      svg.append("text").attr("x", right ? nx - 4 : nx + 4).attr("y", m.t + 10).attr("text-anchor", right ? "end" : "start").text("kommande");
+    }
+    stack.forEach((s, i) => {
+      svg.append("g").selectAll("rect").data(s.filter((v) => v[1] !== v[0])).join("rect")
+        .attr("x", (v) => x(v.data.period)).attr("width", Math.max(1, x.bandwidth()))
+        .attr("y", (v) => y(Math.max(v[0], v[1]))).attr("height", (v) => Math.abs(y(v[0]) - y(v[1])))
+        .style("fill", col(i)).attr("opacity", (v) => (v.data.future ? 0.45 : 1));
+    });
+    svg.append("line").attr("class", "ref").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y(0)).attr("y2", y(0));
+    const years = periods.filter((p) => p.endsWith("-01"));
+    const every = Math.ceil(years.length / Math.max(1, Math.floor((W - m.l) / 44)));
+    svg.append("g").selectAll("text").data(years.filter((_, i) => i % every === 0)).join("text")
+      .attr("x", (p) => x(p)).attr("y", H - 6).text((p) => p.slice(0, 4));
+    const tip = tipFor(el);
+    svg.append("rect").attr("x", m.l).attr("y", m.t).attr("width", W - m.l - m.r).attr("height", H - m.t - m.b).attr("fill", "transparent")
+      .on("mousemove", (evt) => {
+        const i = Math.max(0, Math.min(periods.length - 1, Math.floor((d3.pointer(evt)[0] - m.l) / x.step())));
+        const w = wide[i];
+        const lab = new Map(d.map((r) => [r.group, r.group_label]));
+        showTip(el, tip, evt, [monthName(w.t) + (w.future ? " (kommande)" : "") + ": " + fs2(w.total) + " pe",
+          ...keys.filter((k) => w[k]).map((k) => lab.get(k) + ": " + fs2(w[k]))]);
+      }).on("mouseleave", () => { tip.hidden = true; });
+  });
+  dash.draw("adm-table-body", (tb) => {
+    tb.replaceChildren();
+    const d = rows("admin_events"); if (!d) return;
+    for (const r of [...d].sort((a, b) => (a.month < b.month ? 1 : a.month > b.month ? -1 : 0))) {
+      const tr = document.createElement("tr");
+      tr.setAttribute("data-key", encodeURIComponent(r.month + "," + r.coicop));
+      const cells = [[r.month, ""], [r.group_label, ""], [r.label, "lbl"], [has(r.pe) ? fs2(r.pe) : "?", "num"], [r.decided || "–", ""], [r.status, ""]];
+      for (const [t, c] of cells) { const td = document.createElement("td"); if (c) td.className = c; td.textContent = t; tr.appendChild(td); }
+      const td = document.createElement("td");
+      if (r.source && /^https?:/.test(r.source)) { const a = document.createElement("a"); a.href = r.source; a.textContent = new URL(r.source).hostname.replace(/^www\./, ""); a.target = "_blank"; a.rel = "noopener"; td.appendChild(a); }
+      else td.textContent = r.source ? r.source.split("/").pop() : "–";
+      tr.appendChild(td); tb.appendChild(tr);
+    }
+  });
+
+  // ---------- flash CPI
+  dash.draw("fl-kpis", (el) => {
+    el.replaceChildren();
+    if (failed(el, ["snabbkpi"], "Snabb-KPI kunde inte laddas.")) return;
+    const d = rows("snabbkpi");
+    const last = [...d].filter((r) => has(r.flash_yy)).pop();
+    const errs = d.filter((r) => has(r.err_yy));
+    const mae = errs.length ? d3.mean(errs, (r) => Math.abs(r.err_yy)) : null;
+    const hit = errs.length ? errs.filter((r) => Math.abs(r.err_yy) < 0.05).length : 0;
+    if (last) el.appendChild(kpi("Snabb-KPI, KPIF årstakt " + monthLong(last.period), f1(last.flash_yy) + " %",
+      has(last.outcome_yy) ? "Utfall " + f1(last.outcome_yy) + " %" : "Utfallet är inte publicerat ännu",
+      { "data-source": "snabbkpi", "data-field": "flash_yy", "data-where": "period=" + last.period }));
+    el.appendChild(kpi("Genomsnittligt fel, årstakt", has(mae) ? f2(mae) + " pe" : "–", errs.length + " månader sedan " + (errs.length ? errs[0].period : "–")));
+    el.appendChild(kpi("Månader där snabb = utfall", errs.length ? hit + " av " + errs.length : "–", "Avrundat till en decimal, som SCB publicerar."));
+  });
+  dash.draw("fl-yy", (el) => {
+    if (failed(el, ["snabbkpi"], "Kunde inte laddas.")) return;
+    const d = rows("snabbkpi");
+    const s = (f) => d.filter((r) => has(r[f])).map((r) => ({ t: parseM(r.period), v: r[f] }));
+    lines(el, [{ name: "Snabb", color: col(0), pts: s("flash_yy") }, { name: "Utfall", color: col(1), pts: s("outcome_yy") }],
+      { unit: " %", dots: true, aria: "Snabb-KPI och utfall för KPIF, årstakt" });
+  });
+  dash.draw("fl-err", (el) => {
+    if (failed(el, ["snabbkpi"], "Kunde inte laddas.")) return;
+    const d = rows("snabbkpi");
+    const s = (f) => d.filter((r) => has(r[f])).map((r) => ({ t: parseM(r.period), v: r[f] }));
+    lines(el, [{ name: "KPIF", color: col(0), pts: s("err_yy") }, { name: "KPIF-XE", color: col(2), pts: s("xe_err_yy") }, { name: "m/m", color: col(3), pts: s("err_mm") }],
+      { dots: true, tick: sv.format("+,.2f"), aria: "Snabb-KPI minus utfall, procentenheter" });
+  });
+
+  // ---------- travel
+  dash.draw("tr-prices", (el) => {
+    if (failed(el, ["resor"], "Kunde inte laddas.")) return;
+    const d = rows("resor");
+    lines(el, [["kpif_package_holidays_index", "Paketresor"], ["kpif_air_transport_index", "Flyg"], ["kpif_accommodation_index", "Logi"]]
+      .map(([k, n], i) => ({ name: n, color: col(i), pts: pick(d, k, "value", "2018-01") })), { unit: " %", aria: "KPIF-priser för paketresor, flyg och logi, årstakt" });
+  });
+  dash.draw("tr-guests", (el) => {
+    if (failed(el, ["resor"], "Kunde inte laddas.")) return;
+    const d = rows("resor");
+    lines(el, [["guest_nights_domestic", "Svenska"], ["guest_nights_foreign", "Utländska"]]
+      .map(([k, n], i) => ({ name: n, color: col(i), pts: pick(d, k, "value", "2023-01") })), { unit: " %", aria: "Gästnätter, svenska och utländska gäster, årsförändring" });
+  });
+  dash.draw("tr-easter", (el) => {
+    if (failed(el, ["resor"], "Kunde inte laddas.")) return;
+    const cats = rows("resor").filter((r) => r.group === "easter").map((r) => ({ cat: r.year, mar: r.march_days, apr: r.april_days, note: "(påskdagen i " + r.easter_month + ")" }));
+    groupedBars(el, cats, [{ name: "Mars", color: col(0), get: (c) => c.mar }, { name: "April", color: col(1), get: (c) => c.apr }], { tick: f0, unit: "", aria: "Påskens resefönster: dagar i mars och april per år" });
+  });
+
+  // ---------- rents
+  dash.draw("rent-chart", (el) => {
+    if (failed(el, ["hyror"], "Kunde inte laddas.")) return;
+    const cats = rows("hyror").filter((r) => r.year >= 2012).map((r) => ({ cat: r.year, neg: r.negotiated_pct, kpi: r.kpi_rent_yy, light: r.kpi_partial, note: r.kpi_partial ? "(KPI t.o.m. " + r.kpi_period + ")" : "" }));
+    groupedBars(el, cats, [{ name: "Förhandlat", color: col(0), get: (c) => c.neg }, { name: "KPI-hyror, december", color: col(1), get: (c) => c.kpi }],
+      { unit: " %", tick: f1, aria: "Förhandlade hyreshöjningar per år mot KPI-hyrornas årsförändring" });
+  });
+  dash.draw("rent-note", (el) => {
+    const d = rows("hyror"); if (!d) { el.textContent = failed(el, ["hyror"], "Kunde inte laddas.") ? el.textContent : "—"; return; }
+    const last = [...d].filter((r) => has(r.negotiated_pct)).pop();
+    const first = d.find((r) => has(r.negotiated_pct));
+    el.textContent = "Förhandlat: Hyresgästföreningens vägda riksgenomsnitt" + (first ? " från " + first.year : "") +
+      (last ? "; " + last.year + " " + f1(last.negotiated_pct) + " %, känt " + last.negotiated_known_from : "") +
+      ". KPI-hyror: årsförändring i december (SCB, hyror för hyresgäster); innevarande år visas ljusare med senaste månaden.";
+  });
+
+  // ---------- electricity market
+  dash.draw("el-contracts", (el) => {
+    if (failed(el, ["elmarknad"], "Kunde inte laddas.")) return;
+    const d = rows("elmarknad");
+    lines(el, [["el_contract_spot_share", "Rörligt"], ["el_contract_fixed_share", "Fast"], ["el_contract_default_share", "Anvisat"], ["el_contract_hourly_share", "Tim/kvart"]]
+      .map(([k, n], i) => ({ name: n, color: col(i), pts: pick(d, k, "value", "2013-01") })), { unit: " %", aria: "Andel elavtal per avtalstyp" });
+  });
+  dash.draw("el-grid", (el) => {
+    if (failed(el, ["elmarknad"], "Kunde inte laddas.")) return;
+    const d = rows("elmarknad");
+    lines(el, [["ei_grid_fee_house_heat", "Elvärme"], ["ei_grid_fee_house", "Villa"], ["ei_grid_fee_flat", "Lgh"]]
+      .map(([k, n], i) => ({ name: n, color: col(i), pts: pick(d, k, "value", "2010-01") })), { dots: true, tick: f0, fmt: yearFmt, aria: "Elnätsavgift per år och typkund, kronor" });
+  });
+  dash.draw("el-raise", (el) => {
+    if (failed(el, ["elmarknad"], "Kunde inte laddas.")) return;
+    const cats = rows("elmarknad").filter((r) => r.key === "ei_grid_fee_raise_share" && r.year >= 2010).map((r) => ({ cat: r.year, v: r.value }));
+    groupedBars(el, cats, [{ name: "Andel som höjde", color: col(0), get: (c) => c.v }], { unit: " %", tick: f0, aria: "Andel nätområden som höjde elnätsavgiften per år" });
+  });
+
+  // ---------- krona
+  dash.draw("fx-level", (el) => {
+    if (failed(el, ["kronan"], "Kunde inte laddas.")) return;
+    const d = rows("kronan");
+    lines(el, [["sek_eur", "EUR"], ["sek_usd", "USD"]].map(([k, n], i) => ({ name: n, color: col(i), pts: pick(d, k, "value", "2015-01") })),
+      { zero: false, tick: f2, aria: "Kronor per euro och per dollar, månadsmedel" });
+  });
+  dash.draw("fx-yoy", (el) => {
+    if (failed(el, ["kronan"], "Kunde inte laddas.")) return;
+    const d = rows("kronan");
+    lines(el, [["sek_eur", "EUR"], ["sek_usd", "USD"]].map(([k, n], i) => ({ name: n, color: col(i), pts: pick(d, k, "yoy_pct", "2015-01") })),
+      { unit: " %", aria: "Kronans årsförändring mot euro och dollar" });
+  });
+
+  // ---------- Prospera
+  dash.draw("pro-chart", (el) => {
+    if (failed(el, ["prospera"], "Kunde inte laddas.")) return;
+    const d = rows("prospera");
+    const band = d.filter((r) => has(r.p25) && has(r.p75)).map((r) => ({ t: parseM(r.period), lo: r.p25, hi: r.p75 }));
+    lines(el, [{ name: "Medel", color: col(0), pts: d.map((r) => ({ t: parseM(r.period), v: r.mean })) }],
+      { h: 220, band, ref: 2, zero: false, tick: f2, unit: " %", aria: "Penningmarknadens inflationsförväntningar om fem år, medel och P25–P75, mot målet 2 %" });
+  });
+
+  // ---------- V2 evaluation
+  dash.draw("v2-body", (el) => {
+    el.replaceChildren();
+    if (failed(el, ["v2_eval"], "Utvärderingen kunde inte laddas.")) return;
+    const d = [...rows("v2_eval")].sort((a, b) => a.i - b.i);
+    if (d.length && d[0].kind === "status") {
+      const p = document.createElement("p"); p.className = "sv-note"; p.textContent = "Kommer. " + d[0].text; el.appendChild(p); return;
+    }
+    let ul = null, tbl = null;
+    for (const r of d) {
+      if (r.kind !== "bullet") ul = null;
+      if (r.kind !== "table_row") tbl = null;
+      if (r.kind === "heading") { const h = document.createElement("h3"); h.textContent = r.text; h.className = "sv-block"; el.appendChild(h); }
+      else if (r.kind === "paragraph") { const p = document.createElement("p"); p.className = "sv-sub"; p.textContent = r.text.replace(/\*\*|`/g, ""); el.appendChild(p); }
+      else if (r.kind === "bullet") {
+        if (!ul) { ul = document.createElement("ul"); ul.className = "sv-text"; el.appendChild(ul); }
+        const li = document.createElement("li"); li.textContent = r.text.replace(/\*\*|`/g, ""); ul.appendChild(li);
+      } else if (r.kind === "table_row") {
+        let head = false;
+        if (!tbl) { const w = document.createElement("div"); w.className = "sv-table-wrap"; tbl = document.createElement("table"); w.appendChild(tbl); el.appendChild(w); head = true; }
+        const tr = document.createElement("tr");
+        for (const c of r.cells || []) { const td = document.createElement(head ? "th" : "td"); td.textContent = c.replace(/\*\*|`/g, ""); tr.appendChild(td); }
+        tbl.appendChild(tr);
+      }
+    }
+    const p = document.createElement("p"); p.className = "sv-note"; p.textContent = "Källa: " + (d[0] ? d[0].source : "") + ". Urvalsevidens: serierna och testet valdes på samma period."; el.appendChild(p);
   });
 })();
 </script>
