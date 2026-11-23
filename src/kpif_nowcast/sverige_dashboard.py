@@ -24,6 +24,9 @@ target month (committed live forecast, shadows, benchmarks: `forecast`), champio
 K3's explanation (`explain_summary`, `explain_text`, `explain_components`). The page is
 templates/sverige_index.html, copied to outputs/sverige/index.html; outputs/sverige/MANIFEST.json lists
 every file to upload (asset + datasets/<id>). A failing v2 section is skipped with a warning.
+
+Run 3 (L10) adds the sections in sverige_sections.py (travel, rents, Prospera, electricity market, the krona,
+flash CPI vs outcome, the administered-price calendar and V2's evaluation), built from the rows known today.
 """
 
 from __future__ import annotations
@@ -37,6 +40,7 @@ import numpy as np
 import pandas as pd
 
 from kpif_nowcast import observations as obs
+from kpif_nowcast import sverige_sections as _sections
 from kpif_nowcast.catalog import AREAS, CATALOG
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -100,14 +104,15 @@ WRITTEN: dict[str, tuple[str, str]] = {}  # name -> (title, description) of ever
 
 
 def _write(name: str, df: pd.DataFrame, note: str, title: str = "", source: str | None = None,
-           out_dir: Path | None = None) -> None:
+           out_dir: Path | None = None, code_file: Path | None = None) -> None:
     out_dir = OUT_DIR if out_dir is None else out_dir
-    code = Path(__file__).read_text(encoding="utf-8")
+    code_file = Path(__file__) if code_file is None else code_file
+    code = code_file.read_text(encoding="utf-8")
     src = "data/observations.parquet (latest vintage per series), " if source is None else source + ", "
     payload = {
         "rows": [{k: _clean(v) for k, v in r.items()} for r in df.to_dict(orient="records")],
         "meta": [
-            {"label": "sverige_dashboard.py", "value": code, "type": "code", "lang": "python"},
+            {"label": code_file.name, "value": code, "type": "code", "lang": "python"},
             {"label": "Input", "value": src + note},
             {"label": "Exported", "value": datetime.now().isoformat(timespec="seconds")},
             {"label": "Repository", "value": "https://github.com/birdiebook/kpif-nowcast"},
@@ -251,6 +256,7 @@ DATASETS = {  # file name -> (title, description) for MANIFEST.json and the dash
                            "Prognosens månadsförändring per KPIF-komponent (trend, säsong, el, drivmedel) och bidraget "
                            "till förändringen i årstakt mot förra utfallet, i procentenheter."),
 }
+DATASETS.update(_sections.DATASETS)
 
 PRISLED_GROUPS = {
     "kpi": "KPIF och delar, årstakt %",
@@ -583,6 +589,31 @@ def main(out_dir: Path | None = None, with_k2: bool = True) -> list[str]:
                                         source=src, out_dir=out_dir))
 
     step("forecast", forecast_part)
+
+    def run3_part() -> None:  # L10: one step per dataset so one failing source does not hide the others
+        cutoff = _sections.cutoff_today()
+        events, index = _sections._admin_events(None)
+        builders = {
+            "resor": lambda: _sections.travel_rows(table, cutoff),
+            "hyror": lambda: _sections.rent_rows(table, cutoff),
+            "prospera": lambda: _sections.prospera_rows(table, cutoff),
+            "elmarknad": lambda: _sections.el_rows(table, cutoff),
+            "kronan": lambda: _sections.fx_rows(table, cutoff),
+            "snabbkpi": lambda: _sections.flash_rows(table, cutoff),
+            "admin_events": lambda: _sections.admin_event_rows(events, cutoff),
+            "admin_yy": lambda: _sections.admin_yy_rows(events, cutoff),
+            "admin_upcoming": lambda: _sections.admin_upcoming_rows(events, index, cutoff),
+        }
+        for name, fn in builders.items():
+            src = "src/kpif_nowcast/admin_calendar.py (L1 calendar)" if name.startswith("admin") else None
+            step(name, lambda name=name, fn=fn, src=src: _write(
+                name, fn(), f"sverige_sections ({name}), rows known_from <= {cutoff.date()}", source=src,
+                out_dir=out_dir, code_file=Path(_sections.__file__)))
+        step("v2_eval", lambda: _write("v2_eval", _sections.v2_rows(), "V2 result file if present, else 'kommer'",
+                                       source="docs/auto3/v2/resultat.md", out_dir=out_dir,
+                                       code_file=Path(_sections.__file__)))
+
+    step("run3", run3_part)
     write_page_and_manifest(out_dir)
 
     print("\nTop pressure now:")

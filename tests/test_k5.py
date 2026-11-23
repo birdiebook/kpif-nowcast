@@ -16,7 +16,10 @@ from kpif_nowcast.data import PROCESSED_DIR
 needs_data = pytest.mark.skipif(not obs.PATH.exists() or not (PROCESSED_DIR / "features.csv").exists(),
                                 reason="data/observations.parquet or data/processed missing")
 NEW = ["region", "af", "ai_indicator", "prisled", "forecast", "champion", "explain_summary", "explain_text",
-       "explain_components"]
+       "explain_components",
+       # run 3 (L10)
+       "resor", "hyror", "prospera", "elmarknad", "kronan", "snabbkpi", "admin_events", "admin_yy", "admin_upcoming",
+       "v2_eval"]
 
 
 @pytest.fixture(scope="module")
