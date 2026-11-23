@@ -15,6 +15,8 @@ from pathlib import Path
 import pandas as pd
 import requests
 
+from kpif_nowcast.sources import rawcache
+
 URL = "https://www.elprisetjustnu.se/api/v1/prices/{y}/{md}_{zone}.json"
 CACHE_DIR = Path(__file__).resolve().parents[3] / "data" / "raw" / "elpris"
 FIRST_DAY = date(2021, 11, 1)
@@ -24,6 +26,8 @@ def _fetch_day(day: date, zone: str, session: requests.Session) -> list[dict] | 
     path = CACHE_DIR / zone / f"{day:%Y-%m-%d}.json"
     if path.exists():
         return json.loads(path.read_text(encoding="utf-8"))
+    if rawcache.offline():  # offline: only the days already cached
+        return None
     resp = session.get(URL.format(y=day.year, md=f"{day:%m-%d}", zone=zone), timeout=30)
     if resp.status_code == 404:
         return None

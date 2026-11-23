@@ -10,6 +10,8 @@ from pathlib import Path
 import pandas as pd
 import requests
 
+from kpif_nowcast.sources import rawcache
+
 ROOT = "https://statistik.konj.se/PxWeb/api/v1/sv"
 BASE_URL = f"{ROOT}/KonjBar/ftgmanad"
 RAW_DIR = Path(__file__).resolve().parents[3] / "data" / "raw"
@@ -27,13 +29,15 @@ def fetch_px(url: str, selection: dict[str, str | list[str]], prefix: str = "px"
         ],
         "response": {"format": "json"},
     }
-    resp = requests.post(url, json=query, timeout=60)
-    resp.raise_for_status()
-    payload = resp.json()
-
-    RAW_DIR.mkdir(parents=True, exist_ok=True)
     tag = hashlib.md5(json.dumps([url, selection], sort_keys=True).encode()).hexdigest()[:8]
-    (RAW_DIR / f"{prefix}_{tag}_{date.today():%Y%m%d}.json").write_text(json.dumps(payload), encoding="utf-8")
+    if rawcache.offline():
+        payload = json.loads(rawcache.require(RAW_DIR, f"{prefix}_{tag}").read_text(encoding="utf-8"))
+    else:
+        resp = requests.post(url, json=query, timeout=60)
+        resp.raise_for_status()
+        payload = resp.json()
+        RAW_DIR.mkdir(parents=True, exist_ok=True)
+        (RAW_DIR / f"{prefix}_{tag}_{date.today():%Y%m%d}.json").write_text(json.dumps(payload), encoding="utf-8")
 
     cols = [c["code"] for c in payload["columns"] if c.get("type") != "c"]
     rows = []

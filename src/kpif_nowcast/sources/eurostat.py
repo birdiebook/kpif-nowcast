@@ -11,19 +11,27 @@ from pathlib import Path
 import pandas as pd
 import requests
 
+from kpif_nowcast.sources import rawcache
+
 BASE_URL = "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data"
 RAW_DIR = Path(__file__).resolve().parents[3] / "data" / "raw"
 
 
 def fetch(dataset: str, **filters: str) -> pd.DataFrame:
     """Long DataFrame (one column per dimension + 'value') for a filtered dataset."""
+    tag = hashlib.md5(json.dumps([dataset, filters], sort_keys=True).encode()).hexdigest()[:6]
+    if rawcache.offline():
+        payload = json.loads(rawcache.require(RAW_DIR, f"eurostat_{dataset}_{tag}").read_text(encoding="utf-8"))
+        return _frame(payload)
     resp = requests.get(f"{BASE_URL}/{dataset}", params={"format": "JSON", "lang": "EN", **filters}, timeout=90)
     resp.raise_for_status()
     payload = resp.json()
     RAW_DIR.mkdir(parents=True, exist_ok=True)
-    tag = hashlib.md5(json.dumps([dataset, filters], sort_keys=True).encode()).hexdigest()[:6]
     (RAW_DIR / f"eurostat_{dataset}_{tag}_{date.today():%Y%m%d}.json").write_text(json.dumps(payload), encoding="utf-8")
+    return _frame(payload)
 
+
+def _frame(payload: dict) -> pd.DataFrame:
     dims = payload["id"]
     codes = []
     for d in dims:

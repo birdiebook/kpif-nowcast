@@ -1,0 +1,25 @@
+{
+  "target_month": "2026-11",
+  "model": "j2_el_dev",
+  "description": "J2 V2: el deviation from same month earlier years, 2012-",
+  "status": "PRELIMINARY",
+  "deadline": "2026-12-04",
+  "forecast_yy": 1.86,
+  "forecast_yy_rounded": 1.9,
+  "forecast_mm_pp": 0.48,
+  "last_known": {
+    "month": "2026-10",
+    "yy": 1.1
+  },
+  "inputs": {
+    "el_days": 22,
+    "fuel_last_day": "2026-11-17",
+    "el_chg": 0.9574,
+    "fuel_chg": -0.2702
+  },
+  "run": {
+    "made_at": "2026-11-23T09:33:15",
+    "code_commit": "42b717b",
+    "as_of": "2026-11-23"
+  }
+}
