@@ -139,6 +139,24 @@ Resor (`catalog_travel.py`). Gästnätter via Eurostat, eftersom Tillväxtverket
 | `kpif_package_holidays_index` | 15 | ja | 12 (okt 2026 → 2026-11-12) | SCB PxWeb v2 `updated` TAB6613 (2026-11-12) | OK; gräns för läckage ≥ 32 d. Rev.: COICOP 2018-omräkning före 2026 |
 | `kpif_air_transport_index` | 15 | ja | 12 (okt 2026 → 2026-11-12) | SCB PxWeb v2 `updated` TAB6613 (2026-11-12) | OK; som ovan |
 | `kpif_accommodation_index` | 15 | ja | 12 (okt 2026 → 2026-11-12) | SCB PxWeb v2 `updated` TAB6613 (2026-11-12) | OK; som ovan |
+## Körning 3: L2b Tillväxtverkets portal
+
+Inga nya serier: portalen har inget öppet, maskinläsbart gränssnitt (BLOCKED, se [auto3/l2b/resultat.md](auto3/l2b/resultat.md)). Tabellen belägger Tillväxtverkets egen publiceringsfördröjning för inkvarteringsstatistiken (NV1701), som underlag om en öppen väg kommer, och som jämförelse med Eurostat-vägen (80 d) i avsnittet L2 ovan.
+
+| Referensmånad | Publicering | Fördröjning (d) | Belägg |
+|---|---|---|---|
+| 2026-08 | 2026-09-29 | 29 | Tillväxtverkets nyhet "Stark sommar för svensk turism", publicerad 29 september 2026 (juni–aug 2026) |
+| 2026-09 | 2026-10-29 | 29 | Statistikportalens `load-date-text` "Data uppdaterad: 2026-10-29 09:33:57", `end-month` 2026-09 (hämtat 2026-11-23); L2:s publiceringsplan |
+| 2026-10 | 2026-11-26 | 26 | SCB:s publiceringskalender, NV1701, "Publiceras hos Tillväxtverket", databas (hämtat 2026-11-23) |
+| 2026-11 | 2026-12-22 | 22 | som ovan |
+| 2026-12 | 2027-01-28 | 28 | som ovan |
+| 2027-01 | 2027-02-26 | 26 | som ovan |
+| 2027-02 | 2027-03-30 | 30 | som ovan |
+| 2027-03 | 2027-04-29 | 29 | som ovan |
+| 2026 (år, slutlig) | 2027-03-30 | 89 efter årets slut | som ovan; referenstid "2026" |
+
+Dom: 22–30 d bekräftat för åtta månader (L2:s uppgift stämmer). Alla belagda publiceringar ligger i månaden efter referensmånaden, så vid deadline dag 1–4 i månaden efter prognosmånaden t är månad t−1 publicerad, mot t−3 via Eurostat. En framtida serie bör ha fördröjning 30 d (största belagda). Det ger known_from senast dag 2 i t+1 även när t är februari, alltså fortfarande t−1 vid deadline dag 2–4. Större fördröjning än ca 29–32 d (antal dagar i t plus 1) flyttar t−1 förbi deadline. Revised: **ja**. Den månatliga statistiken är preliminär, anläggningarna kan revidera sina uppgifter fram till mars året efter, och Tillväxtverket fastställer slutlig statistik vid marspubliceringen (2025: slutlig ca 2 % lägre än preliminär efter registerkontroll; Tillväxtverkets sida "Inkvartering", frågor och svar, och PM "Inkvartering 2025").
+
 ## Körning 3: L3 Hyror
 
 `rent_negotiated` ligger på december i hyresåret (katalogens konvention för årsserier), så fördröjning −184 d ger known_from = 30 juni samma år. Underlag och jämförelse: [auto3/l3/resultat.md](auto3/l3/resultat.md).
