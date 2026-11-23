@@ -320,3 +320,11 @@ Detaljer: [docs/auto/j5/resultat.md](auto/j5/resultat.md).
 (1996–), riket, månad, fördröjning 15 dagar. **Brott:** åldersgränsen höjs 2023 och 2026, men brottet syns inte
 i januariförändringarna; varsel tas bara som riket totalt, så SNI-byten spelar ingen roll. Varsel är reviderad
 (2025-06-30 från 2019-11). Ingen modellvariant. Detaljer: [docs/auto/j6/kvalitet.md](auto/j6/kvalitet.md).
+
+## 2026-11-22 – J7 Svensk AI-indikator
+**Vad:** AI-spridning = z-snitt av maskininlärningsandelen i platsannonser (JobTech) och andelen företag som
+använder AI (Eurostat). Produktivitet per bransch (Eurostat nama_10_lp_a21) visas bredvid som utfall.
+**Val efter resultat:** huvudserien skulle enligt planen vara "AI" (bredaste godkända termen), men den har ett
+mätbrott 2025 i JobTech:s matchning (×10 på ett år). Därför används "maskininlärning". **Resultat:** spridningen
+är 2025 den högsta i perioden; Sverige före EU i företagens AI-användning (35 mot 20 %); produktiviteten i
+svensk IT och kommunikation +28 % 2023→2025 (EU +5 %), utan orsaksslutsats. Detaljer: [docs/ai-indikator.md](ai-indikator.md).
