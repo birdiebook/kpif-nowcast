@@ -71,5 +71,5 @@ efter varje körning. Tumreglerna överst justeras när siffrorna ändras.
 | 2026-11-23 | 3 | L9 Månadsrutinen | drift + text | 44 + 38 rättn. | 150 | 632 | kalender i `pipeline monthly`, snabb-KPI i SCORECARD |
 | 2026-11-23 | 3 | L10 Dashboards | frontend | 58 | 164 | 570 | 10 dataset |
 | 2026-11-23 | 3 | L2b Tillväxtverket | data | 7 + 63 rättn. (pytest-timeout) | 132 | 496 | BLOCKED (sessionsbunden RPC), fördröjning belagd |
-| 2026-11-23 | 3 | L1b Källkontroll | granskning (många källor) | 66 | 149 | 740 | 35 händelser kontrollerade, 4 datum rättade |
+| 2026-11-23 | 3 | L1b Källkontroll | granskning (många källor) | 66 | 149 | 740 | 36 händelser kontrollerade, 4 datum rättade |
 | 2026-11-23 | 3 | V2 Gemensam utvärdering | utvärdering | 7 prereg + 106 + 149 granskn./slut | 229 | 1298 | 2 varianter, negativt |

@@ -488,9 +488,9 @@ Pages blir aktuell av sig själv. Bara aggregerad öppen data som redan finns i 
 (Settings → Pages → Source: GitHub Actions). Detaljer: [docs/auto2/k10/resultat.md](auto2/k10/resultat.md).
 
 ## 2026-11-23 – Körning 3: svensk data där överraskningarna sitter
-**Vad:** 35 nya serier i sju katalogmoduler (resor, hyror, Prospera, el, kronan, snabb-KPI) med fördröjning och
-revised-flagga låsta i publiceringskalendern. Kalender för administrerade priser (`admin_calendar.py`, 35 händelser,
-primärkällkontrollerad i L1b: 25 verifierade, 4 delvis, 6 overifierade) som steg i `pipeline monthly` och i månadsbrevet.
+**Vad:** 35 nya serier i sex katalogmoduler (resor, hyror, Prospera, el, kronan, snabb-KPI) med fördröjning och
+revised-flagga låsta i publiceringskalendern. Kalender för administrerade priser (`admin_calendar.py`, 36 händelser,
+primärkällkontrollerad i L1b: 26 verifierade, 4 delvis, 6 overifierade) som steg i `pipeline monthly` och i månadsbrevet.
 Snabb-KPI som referens i SCORECARD och brev. Sverigeläget och Pages fick tio nya dataset (L10).
 **Dom V2 (urvalsevidens, projektet totalt 53 varianter):** ingen variant klarade urvalsskärmen. 0 BH-överlevare
 av 10 serier per bas. Bästa var flygpriserna: `v2_a_corr` Holm p 0,064, globalt justerat p 0,477. Inget fryses

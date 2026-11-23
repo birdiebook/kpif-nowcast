@@ -99,7 +99,7 @@ till main. Den väntar inte på godkännande för det som går att verifiera med
   prisled, regional data, ML på residualen (`k2_avg_ridge_l`/`k2_avg_ens_s` som skuggor), förklaringar,
   publiceringskalender (`publication.py`), skattekalender (`docs/skattekalender.md`), månadsbrev.
 - **Körning 3** – svensk data där överraskningarna sitter ✅ (L1–L10, V2; slutrapport i `docs/auto3/STATUS.md`
-  på `auto/status`): 35 serier (resor, hyror, Prospera, el, kronan, snabb-KPI), kalender för administrerade
+  på `auto/status`): 35 serier (resor, hyror, Prospera, el, kronan, snabb-KPI) i sex katalogmoduler, kalender för administrerade
   priser (`admin_calendar.py`, förslag till `--adjust` i månadsrutinen), V2 negativ (inget klarade skärmen,
   53 varianter totalt), testsvit ca 15 min (`-n 3`).
 - **Fas 6** – drift oberoende av egen dator, delvis ✅: GitHub Actions (veckohämtning, skuggprognoser,
