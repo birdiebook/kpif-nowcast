@@ -146,7 +146,7 @@ def v1_datasets(table: pd.DataFrame, out_dir: Path | None = None) -> pd.DataFram
     overview, long_rows, pressure_cols = [], [], {}
 
     for spec in CATALOG:
-        if spec.key in SKIP:
+        if spec.key in SKIP or spec.lag_days < 0:  # lag < 0: known calendars (Easter), not indicators
             continue
         raw = obs.as_of(spec.key, LATEST, table)
         if raw.empty:

@@ -123,3 +123,19 @@ Granskning, metod och dom: [auto2/k11/granskning.md](auto2/k11/granskning.md). L
 | `freight_ppi_deepsea` | 2025-10 | 2026-01-14 | BLS, historical release dates for the PPI |
 | `freight_ppi_deepsea` | 2025-11 | 2026-01-14 | BLS, historical release dates for the PPI |
 | `freight_ppi_deepsea` | 2025-12 | 2026-01-30 | BLS, historical release dates for the PPI |
+
+## Körning 3: L2
+
+Resor (`catalog_travel.py`). Gästnätter via Eurostat, eftersom Tillväxtverkets statistikportal inte nås från driftmiljön. Tillväxtverket själv publicerar med 22–30 dagars fördröjning, men den vägen är BLOCKED (se [auto3/l2/resultat.md](auto3/l2/resultat.md)). Påskserierna har negativ fördröjning: kalendern är känd i förväg och värdet lagras som känt ett år före månadens slut (lagret tillåter negativ fördröjning). De har ett fast slutår (2050) så att alla perioder kommer in i första backfill och inga nya perioder senare skrivs som `fetch` med hämtdatum.
+
+| Nyckel | Fördröjning | Rev. | Belagd fördröjning (d) | Belägg | Dom |
+|---|---|---|---|---|---|
+| `guest_nights_total` | 80 | ja | > 54 (sep 2026 saknades 2026-11-23, datasetet uppdaterat 2026-11-16); ≤ 77 (aug 2026 fanns 2026-11-16); regelverket ≤ ca 73 (sändning inom 6 veckor + publicering 1 dag–1 månad) | Eurostat tour_occ_nim `updated`, ESMS tour_occ 14.1–14.2 (förordning 692/2011); Tillväxtverkets publiceringsplan 2025–2027 (sep 2026 → 2026-10-29) | OK; 67–93 d ger alltid exakt t−3 vid deadline, läckage för t−3 först om verklig fördröjning > 93 d. Sexveckorsregeln gäller från 2020; historiken 1990–2019 vilar på att SCB själv publicerade samma månader (~t+35), inte på Eurostats fördröjning. Uppföljning: första förekomst av SE 2026-09, -10, -11 i fetch-raderna ska alla vara ≤ 80 d. Rev.: preliminär till slutlig årsstatistik; SCB producent t.o.m. 2024, Tillväxtverket från 2025 (möjligt brott) |
+| `guest_nights_domestic` | 80 | ja | som `guest_nights_total` | som `guest_nights_total` | OK; beräknad som totalt minus utländska |
+| `guest_nights_foreign` | 80 | ja | som `guest_nights_total` | som `guest_nights_total` | OK |
+| `guest_nights_hotel` | 80 | ja | som `guest_nights_total` | som `guest_nights_total` | OK |
+| `easter_window_days` | -366 | nej | känd i förväg (deterministisk kalender) | gregoriansk påskberäkning, `j4_detail.easter` | OK; ingen publicering, inget läckage |
+| `easter_sunday_in_month` | -366 | nej | känd i förväg (deterministisk kalender) | gregoriansk påskberäkning, `j4_detail.easter` | OK; ingen publicering, inget läckage |
+| `kpif_package_holidays_index` | 15 | ja | 12 (okt 2026 → 2026-11-12) | SCB PxWeb v2 `updated` TAB6613 (2026-11-12) | OK; gräns för läckage ≥ 32 d. Rev.: COICOP 2018-omräkning före 2026 |
+| `kpif_air_transport_index` | 15 | ja | 12 (okt 2026 → 2026-11-12) | SCB PxWeb v2 `updated` TAB6613 (2026-11-12) | OK; som ovan |
+| `kpif_accommodation_index` | 15 | ja | 12 (okt 2026 → 2026-11-12) | SCB PxWeb v2 `updated` TAB6613 (2026-11-12) | OK; som ovan |

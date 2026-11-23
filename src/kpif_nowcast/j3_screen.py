@@ -24,7 +24,8 @@ NO_LOG_UNITS = ("%", "nettotal", "std", "100 = normalt")
 def screen_keys() -> list[str]:
     from kpif_nowcast.catalog import CATALOG
 
-    return [s.key for s in CATALOG if s.freq == "M" and s.key not in EXCLUDE]
+    # lag_days < 0: deterministic calendars (L2 Easter), not indicators to screen
+    return [s.key for s in CATALOG if s.freq == "M" and s.key not in EXCLUDE and s.lag_days >= 0]
 
 
 def is_growth(key: str, unit: str) -> bool:

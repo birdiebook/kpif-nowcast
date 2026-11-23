@@ -1,6 +1,6 @@
 # Datakatalog
 
-337 serier: 96 nationella och 241 länsserier. Genererad av `python -m kpif_nowcast.catalog`.
+346 serier: 105 nationella och 241 länsserier. Genererad av `python -m kpif_nowcast.catalog`.
 
 ## Inflation
 
@@ -11,6 +11,11 @@
 | `kpif_xe_index` | KPIF exkl. energi (KPIF-XE), index | M | 1987-01–2026-10 | 15 d | nej | SCB TAB6593 | Underliggande inflation utan energipriser. |
 | `kpif_goods_index` | KPIF varor, index | M | 1987-01–2026-10 | 15 d | ja | SCB TAB6627 | Varudelen av KPIF, påverkas av import- och producentpriser. |
 | `kpif_services_index` | KPIF tjänster, index | M | 1987-01–2026-10 | 15 d | ja | SCB TAB6627 | Tjänstedelen av KPIF, driven av löner och hyror. |
+| `easter_window_days` | Påskens resefönster: dagar i månaden | M | 2000-01–2050-12 | -366 d | nej | Kalender (gregoriansk påsk) | Påskresor höjer priset på paketresor, flyg och logi; K7: ≈ 0,01 pe KPIF per dag. |
+| `easter_sunday_in_month` | Påskdagen infaller i månaden | M | 2000-01–2050-12 | -366 d | nej | Kalender (gregoriansk påsk) | Skiljer tidig påsk (mars) från sen (april). |
+| `kpif_package_holidays_index` | KPIF paketresor (COICOP 09.8), index | M | 1989-01–2026-10 | 15 d | ja | SCB TAB6613 (09.8) | Resekomponenterna som står för största delen av tjänstefelet (K7). |
+| `kpif_air_transport_index` | KPIF persontransport med flyg (COICOP 07.3.3), index | M | 1987-01–2026-10 | 15 d | ja | SCB TAB6613 (07.3.3) | Resekomponenterna som står för största delen av tjänstefelet (K7). |
+| `kpif_accommodation_index` | KPIF logitjänster (COICOP 11.2), index | M | 1987-01–2026-10 | 15 d | ja | SCB TAB6613 (11.2) | Resekomponenterna som står för största delen av tjänstefelet (K7). |
 
 ## Prisleden: producent-, import- och planerade priser
 
@@ -65,6 +70,10 @@
 | `hh_price_exp_net` | Hushållens prisförväntningar 12 mån (nettotal) | M | 1996-01–2026-10 | 3 d | nej | KI | Lång serie (1996) för förväntningar. |
 | `hh_saving_rate` | Hushållens sparkvot (säsongsrensad) | Q | 1993-03–2026-06 | 60 d | ja | SCB TAB4591 | Högt sparande = svagare konsumtion framåt. |
 | `nier_conf_households` | Hushållens konfidensindikator | M | 1996-01–2026-10 | 3 d | ja | KI | Hushållens framtidstro → konsumtion. |
+| `guest_nights_total` | Gästnätter totalt (hotell, stugbyar, vandrarhem, camping) | M | 2001-01–2026-08 | 80 d | ja | Eurostat tour_occ_nim (TOTAL, I551-I553) | Efterfrågan på resor och logi; logi och paketresor är en stor del av tjänstefelet. |
+| `guest_nights_domestic` | Gästnätter, svenska gäster | M | 2001-01–2026-08 | 80 d | ja | Eurostat tour_occ_nim (DOM, I551-I553) | Efterfrågan på resor och logi; logi och paketresor är en stor del av tjänstefelet. |
+| `guest_nights_foreign` | Gästnätter, utländska gäster | M | 2001-01–2026-08 | 80 d | ja | Eurostat tour_occ_nim (FOR, I551-I553) | Efterfrågan på resor och logi; logi och paketresor är en stor del av tjänstefelet. |
+| `guest_nights_hotel` | Gästnätter på hotell | M | 1990-01–2026-08 | 80 d | ja | Eurostat tour_occ_nim (TOTAL, I551) | Efterfrågan på resor och logi; logi och paketresor är en stor del av tjänstefelet. |
 
 ## Bostäder och krediter
 
