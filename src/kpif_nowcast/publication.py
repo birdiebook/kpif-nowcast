@@ -21,7 +21,7 @@ import pandas as pd
 EA_FLASH_KEYS = ("ea_flash_total", "ea_flash_energy", "ea_flash_food", "ea_flash_goods", "ea_flash_services")
 
 # Euro area HICP flash released after day 4 of the following month (Eurostat euro-indicator release codes,
-# 2-DDMMYYYY-ap). Every other month 2017-08..2026-10 was released on or before day 4.
+# 2-DDMMYYYY-ap). Every other month 2017-08..2026-10 was released on or before day 4 (K11 probe of days 5-7).
 EA_FLASH_LATE = {
     "2017-12": "2018-01-05",
     "2019-12": "2020-01-07",

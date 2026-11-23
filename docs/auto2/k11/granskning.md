@@ -1,6 +1,13 @@
 # K11 Oberoende granskning av publiceringsfördröjningar och datakvalitet
 
-**Dom: fel som påverkar.** <!--DOM-->
+**Dom: fel som påverkar.** Fyra serier hade för kort publiceringsfördröjning, så att K2:s backtest såg data
+före publicering: BNP-indikatorn (`gdp_ind_yy`), hushållens konsumtionsindikator (`hh_consumption_yy`),
+euroområdets decemberflash (`ea_flash_*`, också i `ea_news`) och BLS frakt-PPI under shutdown 2025
+(`freight_ppi_deepsea`). Rättat i grenen. Omkörning av K2:s frysta varianter: MAE +0,001 för alla tre;
+`k2_avg_ridge_l` (Holm 0,018) och `k2_avg_ens_s` (Holm 0,082) klarar fortfarande urvalsskärmen,
+**`k2_avg_ridge_s` (Holm 0,132) gör det inte längre.** Dessutom var K2:s feature-mängd L inte fryst i koden
+(växte 43 → 72 serier när K0 mergades); nu fryst. Två fördröjningar var för korta men ofarliga och två
+revised-flaggor (AKU) var fel; båda rättade.
 
 Granskat 2026-11-23 av en agent som inte skrev katalogen. 0 modellvarianter (omkörningen av K2 är en rättning).
 Låsning: [docs/publiceringskalender.md](../../publiceringskalender.md) + `tests/test_publication_calendar.py`.
@@ -20,7 +27,7 @@ och `as_of` tar med värden med `known_from <= deadline`. Därför spelar en fö
 För varje serie jämfördes antagen fördröjning med belagd fördröjning från officiella källor: SCB PxWeb v2
 `updated`/`lastPeriod` (senaste publiceringen, en per tabell), SCB:s statistiknyheter (historiska datum),
 KI:s publikationslista (34 barometrar 2024–2026), Eurostats euro-indikatorer (releasekoden `2-DDMMYYYY-ap`
-innehåller datumet; alla flashmånader 2017-08..2026-10 provades för dag 4–7), FAO:s releasekalender 2026, BLS
+innehåller datumet; för alla flashmånader 2017-08..2026-10 provades dag 5–7 i månaden efter, en träff räknas bara om titeln är inflation), FAO:s releasekalender 2026, BLS
 historiska releasedatum för PPI, FRED-sidor och Riksbankens beslutsdatum. Inga stora hämtningar (råfiler i
 `data/raw/k11/`, inte i git).
 
@@ -33,7 +40,7 @@ Alla fyra ingår i K2:s feature-mängd L; euroområdets flash ingår även i `ea
 |---|---|---|---|---|
 | `gdp_ind_yy` (BNP-indikatorn) | 35 d | 38–41 d vanliga månader, 28–30 d kvartalets sista månad | SCB statistiknyheter: nov 2022 → 2023-01-10, jul 2023 → 2023-09-08, jan 2024 → 2024-03-08, feb 2024 → 2024-04-10, apr 2024 → 2024-06-10, okt 2024 → 2024-12-10, feb 2025 → 2025-04-10, maj 2025 → 2025-07-10, aug 2025 → 2025-10-10, jul 2026 → 2026-09-10, aug 2026 → 2026-10-09; kvartalsslut: jun 2022 → 07-28, sep 2023 → 10-30, dec 2023 → 01-29, mar 2024 → 04-29, sep 2025 → 10-29, sep 2026 → 10-29 | mars, maj, augusti, december (35 d når dag 4 bara efter en 31-dagarsmånad; då sågs t−1 som i själva verket kom dag 8–10) |
 | `hh_consumption_yy` (hushållens konsumtionsindikator, TAB6932) | 15 d | ny metod 10–13 d från 2026; den gamla indikatorn ca 40 d | SCB: maj 2026 → 2026-06-10, okt 2026 → 2026-11-11/13 (PxWeb `updated`); SCB 2026-05: månads- och veckoindikatorn slås ihop med ny metod (moms- och kortdata), serierna börjar 2019; den gamla indikatorn publicerades med BNP-indikatorn (aug 2025 → 2025-10-10) | alla månader 2019–2026-05: t−1 sågs, i verkligheten fanns bara t−2 (och då med gammal metod) |
-| `ea_flash_*` (5 serier) | 2 d | −1 till +7 d; **december 4–7 d** | Eurostat releasekoder: dec 2017 → 2018-01-05, dec 2018 → 2019-01-04, dec 2019 → 2020-01-07, dec 2020 → 2021-01-07, dec 2021 → 2022-01-07, dec 2022 → 2023-01-06, dec 2023 → 2024-01-05, dec 2024 → 2025-01-07, dec 2025 → 2026-01-07; övriga månader <!--EAOVR--> | december 2017, 2019–2025 (8 månader): decemberflash användes för december fast den kom 1–3 dagar efter deadline |
+| `ea_flash_*` (5 serier) | 2 d | −1 till +7 d; **december 4–7 d** | Eurostat releasekoder: dec 2017 → 2018-01-05, dec 2018 → 2019-01-04, dec 2019 → 2020-01-07, dec 2020 → 2021-01-07, dec 2021 → 2022-01-07, dec 2022 → 2023-01-06, dec 2023 → 2024-01-05, dec 2024 → 2025-01-07, dec 2025 → 2026-01-07; övriga 103 månader 2017-08..2026-10 hade ingen flash dag 5–7 (385 releasekoder provade, 65 träffar var andra euro-indikatorer, t.ex. BNP och sparkvot) | december 2017, 2019–2025 (8 månader): decemberflash användes för december fast den kom 1–3 dagar efter deadline |
 | `freight_ppi_deepsea` (BLS PPI via FRED) | 15 d | 8–20 d normalt; 30–75 d sep–dec 2025 | BLS *Historical release dates for the PPI*: normala releaser dag 8–20 (januari ofta 13–20); not 8–11: sep 2025 → 2025-11-25, okt 2025 → 2026-01-14, nov 2025 → 2026-01-14, dec 2025 → 2026-01-30 | 2025-10, 2025-11, 2025-12 (shutdown) |
 
 Rättning: `gdp_ind_yy` och `hh_consumption_yy` 45 d (avrundat mot senare; kvartalsslutens snabbare BNP-indikator
