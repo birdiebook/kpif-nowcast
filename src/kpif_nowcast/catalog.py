@@ -29,6 +29,7 @@ AREAS = {
     "omvarld": "Omvärlden",
     "ai_produktivitet": "AI och produktivitet",
     "penningpolitik": "Penningpolitik och krona",
+    "region": "Regionalt: län",
 }
 
 
@@ -391,8 +392,16 @@ from kpif_nowcast import catalog_prices  # noqa: E402
 
 CATALOG += catalog_prices.specs()
 
+# County series (K4): in the observation table and the docs, but kept out of CATALOG so that the national
+# candidate lists (j3_screen, k2_ml) and the national dashboard do not change.
+from kpif_nowcast import catalog_region  # noqa: E402
+
+REGIONAL = catalog_region.specs()
+ALL = CATALOG + REGIONAL
+
+
 def by_key() -> dict[str, Spec]:
-    return {s.key: s for s in CATALOG}
+    return {s.key: s for s in ALL}
 
 
 def to_markdown(table: pd.DataFrame | None = None) -> str:
