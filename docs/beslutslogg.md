@@ -404,3 +404,7 @@ kandidatlistorna i J3/K2 och den nationella dashboarden. `by_key`, `refresh` och
 241 serier, 11 mått (AF-andel och antal, varsel, BAS, AKU, småhuspris, FPI, konkurser, folkmängd), bara deskriptivt.
 Inga modellvarianter. Länskarta BLOCKED (inget öppet länslager utan konto eller nytt GIS-paket), rutnätskarta i stället.
 Detaljer: [docs/auto2/k4/resultat.md](auto2/k4/resultat.md), [kvalitet](auto2/k4/kvalitet.md), [läget](auto2/k4/lage.md).
+
+## 2026-11-23 – K9 Längre horisont 3–12 mån (förregistrering)
+Korrektion/krympning av Riksbankens prognos, 4 varianter (k9_ridge_h3, k9_ridge_h12, k9_shrink_h12, k9_miss_h6): [docs/auto2/k9/hypotes.md](auto2/k9/hypotes.md).
+**Resultat (4 varianter, ingen klarade urvalsskärmen, alla Holm p = 1,00):** MAE 2015–2026 mot Riksbanken: h=3 ridge 0,471 mot 0,489 (rå p 0,33), h=6 miss 0,833 mot 0,814, h=12 krympning mot 2 % 1,485 och ridge 1,945 mot 1,388. Effektivt n ≈ 46/23/11. Riksbanken och "2 %" lika på h=12 (1,388/1,385). Ingen frysning; Riksbanken förblir referens på längre sikt. Detaljer: [docs/auto2/k9/resultat.md](auto2/k9/resultat.md).
