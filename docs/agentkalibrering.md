@@ -3,7 +3,7 @@
 Mätdata för storleksbedömning (se CLAUDE.md, "Storleksbedömning"). En rad per spår, fylls på
 efter varje körning. Tumreglerna överst justeras när siffrorna ändras.
 
-## Tumregler (senast justerade 2026-11-23, körning 2)
+## Tumregler (senast justerade 2026-11-23, körning 2; tillägg från körning 3 nedan)
 
 - Ett väl avgränsat spår med tester: **ca 13–18 min, 40–60 verktygsanrop och 180–200k tokens**.
 - Det gäller oavsett typ (data, drift, ML, förklaring). Typen verkar spela mindre roll än avgränsningen.
@@ -23,6 +23,22 @@ efter varje körning. Tumreglerna överst justeras när siffrorna ändras.
 - **Körning 2 totalt:** 17 spår på ca 3,5 h väggtid. Modellspåren var de snabbaste (10–22 min). Med 6
   parallella spår blev orkestrerarens merge och pytest på main (2–15 min per merge, växer med sviten) en ny
   flaskhals. Nästa gång: merga i omgångar och kör pytest en gång per omgång.
+
+## Tillägg efter körning 3 (2026-11-23)
+
+- **CPU är flaskhalsen i en molncontainer med 4 kärnor**, inte agenterna. När 4–6 spår körde hela pytest-sviten
+  samtidigt (HGB i K2:s nästlade CV) låg load på 25–35, och spårens väggtid blev 3–10 gånger byggtiden.
+  Regel: **spår kör bara riktade tester**; orkestreraren kör hela sviten en gång per merge-omgång.
+- **Trådgränsen** `OMP_NUM_THREADS=1` (tests/conftest.py, L8) tog en nästlad HGB-anpassning från > 12 min till 2 s
+  under last. Sviten tar nu ca 15 min med `-n 3`–`-n 4`.
+- **Bygg → oberoende granskning → rättning** per spår kostar ungefär 2–3 gånger bygget i anrop och tokens, men
+  hittade 1 läcka och 15 wrong-fynd i körning 3. Behåll det för dataspår.
+- **Dataspår med en källa** (våg 1): 6–16 min bygg, 55–130 anrop och 420–750k tokens inklusive granskning och rättning.
+- **Merge i omgångar** fungerade: två omgångar (7 + 5 spår), en pytest per omgång, konflikter bara i registerfiler
+  (catalog.py, publication.py, publiceringskalendern) och lösta med union.
+- Användning: drygt 50 % av 5-timmarsfönstret efter ca 1,5 h (våg 1 med 20 agenter plus hämtning från tomt läge).
+- Tokens för körning 3 nedan är summan av max kontext + utdata per agent, över bygg, granskning och rättning.
+  Körning 2 mätte bara bygget, så siffrorna är inte direkt jämförbara.
 
 ## Mätningar
 
@@ -44,3 +60,16 @@ efter varje körning. Tumreglerna överst justeras när siffrorna ändras.
 | 2026-11-23 | 2 | K5 Sverigeläget v2 | frontend + text | 31,7 | 102 | 315 | 9 dataset, sida, månadsbrev |
 | 2026-11-23 | 2 | K2b Granskning + onlinerepro | granskning + drift | 74,2 | 132 | 262 | läckage hittat; ~50 min väntan på nätbaserad hämtning |
 | 2026-11-23 | 2 | K11 Publiceringskalender | granskning (många källor) | 74,4 | 170 | 309 | 4 läckor hittade; Eurostat 429 gjorde det långsamt |
+| 2026-11-23 | 3 | L1 Administrerade priser | data + kalender | 16 bygg | 121 | 753 | 26 händelser, förslag `--adjust`; 6 fynd rättade |
+| 2026-11-23 | 3 | L2 Resor | data | 9 bygg | 132 | 647 | 9 serier, 2 källor BLOCKED |
+| 2026-11-23 | 3 | L3 Hyror | data | 9 bygg | 106 | 635 | 2 serier, källa per år |
+| 2026-11-23 | 3 | L4 Prospera | data (xlsx) | 9 bygg | 78 | 417 | 3 serier, PDF-delar BLOCKED |
+| 2026-11-23 | 3 | L5 El | data | 12 bygg | 106 | 618 | 12 serier; granskningen hittade 1 läcka |
+| 2026-11-23 | 3 | L6 Kronan | data | 6 bygg | 54 | 421 | 2 serier |
+| 2026-11-23 | 3 | L7 Snabb-KPI | data | 7 bygg | 79 | 534 | 7 serier |
+| 2026-11-23 | 3 | L8 Testsvit | drift | 74 (under last) | 120 | 447 | > 40 → 15 min, OMP-trådar |
+| 2026-11-23 | 3 | L9 Månadsrutinen | drift + text | 44 + 38 rättn. | 150 | 632 | kalender i `pipeline monthly`, snabb-KPI i SCORECARD |
+| 2026-11-23 | 3 | L10 Dashboards | frontend | 58 | 164 | 570 | 10 dataset |
+| 2026-11-23 | 3 | L2b Tillväxtverket | data | 7 + 63 rättn. (pytest-timeout) | 132 | 496 | BLOCKED (sessionsbunden RPC), fördröjning belagd |
+| 2026-11-23 | 3 | L1b Källkontroll | granskning (många källor) | 66 | 149 | 740 | 35 händelser kontrollerade, 4 datum rättade |
+| 2026-11-23 | 3 | V2 Gemensam utvärdering | utvärdering | 7 prereg + 106 + 149 granskn./slut | 229 | 1298 | 2 varianter, negativt |

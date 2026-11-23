@@ -486,3 +486,18 @@ liten shim (`templates/dash-shim.js`) ersätter de fyra delar av `dash`-API:t so
 varje lyckad veckohämtning och månadskörning, från samma Actions-cache. Varför: Claude Data kräver manuell uppladdning,
 Pages blir aktuell av sig själv. Bara aggregerad öppen data som redan finns i dashboarden. Pages måste slås på en gång
 (Settings → Pages → Source: GitHub Actions). Detaljer: [docs/auto2/k10/resultat.md](auto2/k10/resultat.md).
+
+## 2026-11-23 – Körning 3: svensk data där överraskningarna sitter
+**Vad:** 35 nya serier i sju katalogmoduler (resor, hyror, Prospera, el, kronan, snabb-KPI) med fördröjning och
+revised-flagga låsta i publiceringskalendern. Kalender för administrerade priser (`admin_calendar.py`, 35 händelser,
+primärkällkontrollerad i L1b: 25 verifierade, 4 delvis, 6 overifierade) som steg i `pipeline monthly` och i månadsbrevet.
+Snabb-KPI som referens i SCORECARD och brev. Sverigeläget och Pages fick tio nya dataset (L10).
+**Dom V2 (urvalsevidens, projektet totalt 53 varianter):** ingen variant klarade urvalsskärmen. 0 BH-överlevare
+av 10 serier per bas. Bästa var flygpriserna: `v2_a_corr` Holm p 0,064, globalt justerat p 0,477. Inget fryses
+som skugga. 4 av körningens 6 varianter används inte (Johannes).
+**Förslag till Johannes (inte beslutat):** decemberrutinen `--adjust 0.52` (CO2-skattesänkningen upphör +0,40,
+månadskorten tillbaka +0,12; månadskortsraden bara delvis verifierad). Användningen beslutar Johannes.
+**Drift:** testsviten gick från > 40 min till ca 15 min (`OMP_NUM_THREADS=1` i tests/conftest.py; HGB-trådar slogs
+om 4 kärnor). Öppet: samma trådgräns i `monthly-shadow.yml`, och K13:s varianter ska in i `k12_global`:s universum
+före nästa globala test. BLOCKED: Tillväxtverkets portal (bara sessionsbunden RPC), Prospera 1/2 år (Origo-PDF),
+regionala månadskort och elnät 2027 (ingen samlad källa). Slutrapport: `docs/auto3/STATUS.md` på `auto/status`.

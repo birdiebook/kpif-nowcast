@@ -107,6 +107,8 @@ def test_break_rule():
 from kpif_nowcast.data import PROCESSED_DIR  # noqa: E402
 
 needs_data = pytest.mark.skipif(not (PROCESSED_DIR / "kpif.csv").exists(), reason="data/processed missing")
+needs_contracts = pytest.mark.skipif(not (PROCESSED_DIR / "el_contracts.csv").exists(),
+                                     reason="el_contracts.csv missing (run python -m kpif_nowcast.data)")
 MONTHS = [pd.Period(m, "M") for m in ["2018-03", "2021-07", "2023-03", "2024-01", "2026-10"]]
 IDX = pd.period_range("2015-01", "2026-10", freq="M")
 
@@ -182,6 +184,7 @@ SINGLES = sorted(set(COMBO) | {"kpif_package_holidays_index"} | {k for v in (v2.
 
 
 @needs_data
+@needs_contracts
 def test_correction_uses_only_deadline_data(table, xs_full):
     """x(t) and the corrected forecast for t are identical when the observation table is cut at deadline(t)
     and outcomes from t on are removed; both bases, single candidates and a three-series combination."""
@@ -223,6 +226,7 @@ def _cut_inputs(inp: dict, t: pd.Period) -> dict:
 
 
 @needs_data
+@needs_contracts
 def test_v2_a_corr_end_to_end_on_cut_inputs():
     """Review fix (V2 granskning): base A is recomputed from inputs cut at deadline(t), the chosen series' x from
     the cut observation table, and the correction is refitted; v2_a_corr(t) equals the full-sample value."""

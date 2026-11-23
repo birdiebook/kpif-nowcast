@@ -98,6 +98,10 @@ till main. Den väntar inte på godkännande för det som går att verifiera med
 - **Körning 2** – Sverige på djupet ✅ (17 spår K0–K13, slutrapport i `docs/auto2/STATUS.md` på `auto/status`):
   prisled, regional data, ML på residualen (`k2_avg_ridge_l`/`k2_avg_ens_s` som skuggor), förklaringar,
   publiceringskalender (`publication.py`), skattekalender (`docs/skattekalender.md`), månadsbrev.
+- **Körning 3** – svensk data där överraskningarna sitter ✅ (L1–L10, V2; slutrapport i `docs/auto3/STATUS.md`
+  på `auto/status`): 35 serier (resor, hyror, Prospera, el, kronan, snabb-KPI), kalender för administrerade
+  priser (`admin_calendar.py`, förslag till `--adjust` i månadsrutinen), V2 negativ (inget klarade skärmen,
+  53 varianter totalt), testsvit ca 15 min (`-n 3`).
 - **Fas 6** – drift oberoende av egen dator, delvis ✅: GitHub Actions (veckohämtning, skuggprognoser,
   Pages), DuckDB-datatester, champion/challenger i SCORECARD. Kvar: objektlagring, MLflow,
   revisionsversioner (vintages) i observationstabellen.
@@ -110,7 +114,8 @@ Uppdatera listan när en fas är klar.
    Status ska bli FINAL (hel månad el, drivmedel till minst den 20:e).
 2. Kolla om stora beslutade engångshändelser träffar månaden (moms, skatter, avgifter,
    t.ex. om tillfälligt sänkt drivmedelsskatt löper ut). Justera i så fall med
-   `--adjust <pe> --note "<varför>"` och ange källa i noten.
+   `--adjust <pe> --note "<varför>"` och ange källa i noten. Förslag med källor:
+   `python -m kpif_nowcast.admin_calendar <månad>` (skrivs också av `pipeline monthly`); det är ett förslag, Johannes beslutar.
 3. Committa och pusha `forecasts/<månad>.json` direkt – tidsstämpeln är beviset.
 4. Efter SCB:s slutliga siffra (~12–15:e): `python -m kpif_nowcast.data` och
    `python -m kpif_nowcast.scorecard`, committa `forecasts/SCORECARD.md`.
