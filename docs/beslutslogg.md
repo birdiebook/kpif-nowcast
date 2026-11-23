@@ -333,3 +333,7 @@ svensk IT och kommunikation +28 % 2023→2025 (EU +5 %), utan orsaksslutsats. De
 **Beslut (Johannes):** även J3 (katalogtest, negativt), J4 (detaljnivå, obekräftad), J5 (EWMA-band,
 förslag, ej aktiverat i `forecast.py`), J6 (Arbetsförmedlingen) och J7 (AI-indikator) mergas, så att
 körning 2 ([autonom-korning-2.md](autonom-korning-2.md)) kan bygga på dem. Huvudmodellen är oförändrad.
+
+## 2026-11-23 – K2 ML-spåret (förregistrering)
+Hypotes, gissning och exakt variantlista (8 av K2:s 10): [docs/auto2/k2/hypotes.md](auto2/k2/hypotes.md).
+Ridge/lasso/boosting på residualen mot 50/50, rb_updated och J2 V2, nästlad tidsserie-CV inom varje fönster.
