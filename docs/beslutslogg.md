@@ -387,3 +387,6 @@ EWMA-band som osäkerhet (förslag). Efter utfall delas felet per komponent. Ste
 **Resultat:** tjänster står för 37 % av kvadratfelet 2015–2026 och energi för 21 % (energi dominerade bara
 2022–2023). Den skarpa modellens energifel 2024–2026 är 0,242 pe mot J2 V2:s 0,128 (använd period).
 Detaljer: [docs/auto2/k3/resultat.md](auto2/k3/resultat.md).
+
+## 2026-11-23 – K6 Bara om det är lätt (förregistrering)
+Vintagekontroll för TAB6613 (0 varianter) och J2:s elmetod på dansk och finsk HIKP (N1, N2): [docs/auto2/k6/hypotes.md](auto2/k6/hypotes.md).
