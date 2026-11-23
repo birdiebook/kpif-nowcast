@@ -299,3 +299,10 @@ Protokoll, gissning och kombinationsregel: [docs/auto/j3/hypotes.md](auto/j3/hyp
 **Resultat (urvalsevidens, 14/50 varianter):** ingen av 45 serier överlever Benjamini-Hochberg på h=1, 3
 eller 12. Kombinationen av de tre bästa h=1-serierna gav MAE 0,279 mot rb_updated 0,281 (p = 0,43).
 Inget håller; behåll ingen serie. Detaljer: [docs/auto/j3/resultat.md](auto/j3/resultat.md).
+
+## 2026-11-22 – J4 KPIF underifrån på detaljnivå (förregistrering)
+Hypotes, gissning och varianter D1–D3: [docs/auto/j4/hypotes.md](auto/j4/hypotes.md). TAB6613 är omräknad → revised.
+**Resultat (urvalsevidens, 17/50 varianter, obekräftat p.g.a. omräknad TAB6613):** D2 (el och drivmedel
+på rätt delindex) MAE 0,243 mot comp_fuel 0,316, Holm p = 0,010. Bara grupper utan korrektion (D1) är sämre
+(0,335). Påsken gav inget. Vinsten är densamma som J2 V2 utan detaljdata, så J2 V2 föredras. Kvarvarande fel:
+paketresor, livsmedel, persontransporter. Detaljer: [docs/auto/j4/resultat.md](auto/j4/resultat.md).
