@@ -337,3 +337,8 @@ körning 2 ([autonom-korning-2.md](autonom-korning-2.md)) kan bygga på dem. Huv
 ## 2026-11-23 – K2 ML-spåret (förregistrering)
 Hypotes, gissning och exakt variantlista (8 av K2:s 10): [docs/auto2/k2/hypotes.md](auto2/k2/hypotes.md).
 Ridge/lasso/boosting på residualen mot 50/50, rb_updated och J2 V2, nästlad tidsserie-CV inom varje fönster.
+**Resultat (urvalsevidens, 9 av K2:s 10 varianter, varav 1 diagnostik efter resultat):** tre varianter med
+50/50 som bas klarade urvalsskärmen mot 50/50 (MAE 0,217): ridge på S + katalog 0,199 (Holm p = 0,014),
+ensemble ridge+boosting på S 0,201 (Holm 0,055), ridge på S 0,206 (Holm 0,083). Vinsten kommer 2020–2025,
+inte från reviderade serier; 2026 är något sämre. Gissningen innan (ingen klarar) var fel. Frysta vid 415ba6f;
+föreslagen K1-kandidat `k2_avg_ens_s`. Detaljer: [docs/auto2/k2/resultat.md](auto2/k2/resultat.md).

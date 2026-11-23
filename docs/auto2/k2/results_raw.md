@@ -222,3 +222,17 @@
 Feature set L: 57 features, of which revised=True: cat_aku_unemp_sa, cat_gdp_ind_yy, cat_wage_private_nonmanual, cat_wage_private_manual_hourly, cat_wage_municipal_yy, cat_labour_cost_salaried_yy, cat_labour_cost_workers_yy, cat_hh_consumption_yy, cat_retail_volume_yy, cat_ea_hicp_total, cat_fao_food_idx, cat_fao_cereals, cat_fao_dairy, cat_gas_eu_usd, cat_wheat_usd, cat_gscpi, cat_freight_ppi_deepsea, cat_nier_barometer, cat_nier_conf_services, cat_nier_conf_trade, cat_nier_conf_households, cat_ipi_yy, cat_service_prod_idx, cat_industry_orders_yy
 
 Run log: `20261123T083753Z_k2_ml.csv`
+
+## Post-hoc (added after results): k2_avg_ridge_lnr = k2_avg_ridge_l without revised series
+
+|                            |   2015-02..2026-10 |   2024-01..2026-10 (used) |
+|:---------------------------|-------------------:|--------------------------:|
+| n                          |            141.000 |                    34.000 |
+| MAE avg_5050               |              0.217 |                     0.246 |
+| MAE rb_updated             |              0.256 |                     0.267 |
+| MAE k2_avg_ridge_l         |              0.199 |                     0.229 |
+| MAE k2_avg_ridge_lnr       |              0.199 |                     0.231 |
+| p1 lnr vs 50/50            |              0.001 |                     0.111 |
+| p two-sided lnr vs ridge_l |              0.817 |                     0.402 |
+
+Run log: `20261123T083943Z_k2_ml_posthoc.csv`
