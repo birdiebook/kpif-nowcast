@@ -416,3 +416,14 @@ sämre, inte bättre (m/m-MAE 0,157 → 0,160–0,162 2015–2026; 0,067 → 0,0
 Totalt T1–T4 −0,001 till +0,003 mot 50/50 (Holm 1), T5 +0,010 mot `k2_avg_ens_s`. Påskeffekten finns (≈ 0,01 pe per dag)
 men är liten. Tjänstefelet är resor och går inte att förutse med data vi har vid deadline. Ingen frysning.
 Detaljer: [docs/auto2/k7/resultat.md](auto2/k7/resultat.md).
+
+## 2026-11-23 – K12 Globalt test över alla varianter
+
+Inga nya varianter (0 förbrukade). Alla 31 registrerade h=1-varianter med fel 2015–2026 (J1–J4, K0, K2, K7) plus
+referenserna, gemensamt urval n = 141: Hansens SPA, Romano–Wolf StepM och Model Confidence Set med stationär bootstrap
+(medelblock 3 mån; känslighet 1, 6, 12). **`k2_avg_ridge_l` håller även globalt**: SPA p 0,035 mot rb_updated och
+0,018 mot 50/50 (högst 0,083 resp. 0,040 för block 3–6), StepM pekar ut den mot båda. Men marginalen mot 50/50
+(0,018 pe) är mindre än den råa urvalsbiasen (förväntat bästa under H0 0,022 pe); den håller för att korrektionen är
+liten och stabil (studentiserat). MCS (90 %) behåller 32 av 34 modeller: datan räcker inte för att rangordna de flesta.
+Omkörbart: `python -m kpif_nowcast.k12_global` (K8 tas med automatiskt). Detaljer:
+[docs/auto2/k12/resultat.md](auto2/k12/resultat.md).
