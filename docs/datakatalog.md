@@ -1,6 +1,6 @@
 # Datakatalog
 
-337 serier: 96 nationella och 241 länsserier. Genererad av `python -m kpif_nowcast.catalog`.
+339 serier: 98 nationella och 241 länsserier. Genererad av `python -m kpif_nowcast.catalog`.
 
 ## Inflation
 
@@ -11,6 +11,7 @@
 | `kpif_xe_index` | KPIF exkl. energi (KPIF-XE), index | M | 1987-01–2026-10 | 15 d | nej | SCB TAB6593 | Underliggande inflation utan energipriser. |
 | `kpif_goods_index` | KPIF varor, index | M | 1987-01–2026-10 | 15 d | ja | SCB TAB6627 | Varudelen av KPIF, påverkas av import- och producentpriser. |
 | `kpif_services_index` | KPIF tjänster, index | M | 1987-01–2026-10 | 15 d | ja | SCB TAB6627 | Tjänstedelen av KPIF, driven av löner och hyror. |
+| `kpi_rent_index` | KPIF-post hyror för hyresgäster (COICOP 04.1.1), index | M | 1980-01–2026-10 | 15 d | ja | SCB TAB6598 | Hyresposten i KPIF; tar upp förhandlingsutfallet med fördröjning. |
 
 ## Prisleden: producent-, import- och planerade priser
 
@@ -76,6 +77,7 @@
 | `nfc_lending_growth` | Utlåning till icke-finansiella företag, årstakt | M | 2006-01–2026-09 | 30 d | nej | SCB TAB4514 | Investeringar och kreditvillkor. |
 | `housing_starts` | Påbörjade bostäder (fler- och småhus) | Q | 1975-03–2026-06 | 60 d | ja | SCB TAB4572 | Byggcykeln och byggkostnadstryck. |
 | `rent_change` | Hyresförändring, hyresrätter | A | 1969-12–2026-12 | -60 d | nej | SCB TAB6051 | Hyror är en stor och trög del av KPIF. Förhandlas i förväg. |
+| `rent_negotiated` | Hyresförhandlingarnas utfall, vägt riksgenomsnitt | A | 2016-12–2026-12 | -184 d | ja | Hyresgästföreningen (handkurerad tabell) | Förhandlad hyreshöjning slår igenom i KPIF:s hyrespost, mest jan–apr samma år. |
 
 ## Företagen
 

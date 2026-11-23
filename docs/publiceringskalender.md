@@ -123,3 +123,12 @@ Granskning, metod och dom: [auto2/k11/granskning.md](auto2/k11/granskning.md). L
 | `freight_ppi_deepsea` | 2025-10 | 2026-01-14 | BLS, historical release dates for the PPI |
 | `freight_ppi_deepsea` | 2025-11 | 2026-01-14 | BLS, historical release dates for the PPI |
 | `freight_ppi_deepsea` | 2025-12 | 2026-01-30 | BLS, historical release dates for the PPI |
+
+## Körning 3: L3 Hyror
+
+`rent_negotiated` ligger på december i hyresåret (katalogens konvention för årsserier), så fördröjning −184 d ger known_from = 30 juni samma år. Underlag och jämförelse: [auto3/l3/resultat.md](auto3/l3/resultat.md).
+
+| Nyckel | Fördröjning | Rev. | Belagd fördröjning (d) | Belägg | Dom |
+|---|---|---|---|---|---|
+| `rent_negotiated` | -184 | ja | −304 till −255: preliminärt riksgenomsnitt offentligt i mars–april (2020 → mitten av mars, 60 % klart; 2022 → 2022-04-20, 83 % klart; 2025 → TT 2025-03-21; 2026 → TT 2026-03-02). Slutligt vägt snitt först i verksamhetsberättelsen året efter | Hyresgästföreningens verksamhetsberättelser 2018–2019 och 2022, hyresforhandling_2027-sidan; TT-datum ur sökträffar (tv4.se ej nåbar härifrån) | Konservativt (≥ 2 mån marginal) för belagda år; 2016–2019, 2021, 2023–2024 saknar eget datum men samma förhandlingsprocess. Rev. ja: vårens siffra ≠ slutligt snitt (2020: 1,93 → 1,92) |
+| `kpi_rent_index` | 15 | ja | 12 (okt 2026 → 2026-11-12) | SCB PxWeb v2 `updated` TAB6598 (samma release som TAB6590) | OK; rev. ja eftersom värden före 2026 är SCB:s omräkning till COICOP 2018 |
