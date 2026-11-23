@@ -361,15 +361,9 @@ def posthoc() -> None:
     from pathlib import Path
 
     out = Path(__file__).resolve().parents[2] / "docs" / "auto2" / "k2" / "results_raw.md"
-    out.write_text(out.read_text(encoding="utf-8") + f"
-## Post-hoc (added after results): k2_avg_ridge_lnr = "
-                   f"k2_avg_ridge_l without revised series
-
-{tab.to_markdown(floatfmt='.3f')}
-
-Run log: `{path.name}`
-",
-                   encoding="utf-8")
+    section = (f"\n## Post-hoc (added after results): k2_avg_ridge_lnr = k2_avg_ridge_l without revised series\n\n"
+               f"{tab.to_markdown(floatfmt='.3f')}\n\nRun log: `{path.name}`\n")
+    out.write_text(out.read_text(encoding="utf-8") + section, encoding="utf-8")
 
 
 if __name__ == "__main__":
