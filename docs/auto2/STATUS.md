@@ -1,8 +1,8 @@
 # Status: autonom körning 2 (Sverige på djupet)
 
-**Lås:** orkestrerare 2026-11-23T09:52Z · heartbeat 2026-11-23T09:52Z
+**Lås:** orkestrerare 2026-11-23T10:26Z · heartbeat 2026-11-23T10:26Z
 **Start:** 2026-11-23 · **Bas:** main @ 42b717b
-**Varianter i körningen:** 26/30 (projektet totalt 23 + 26 = 49) · **main:** 80bc02f · **parallellt:** 6 (höjt från 3)
+**Varianter i körningen:** 28/30 (projektet totalt 23 + 28 = 51) · **main:** 5f91077 · **parallellt:** 6 (höjt från 3)
 **Merge:** klara spår mergas till main av orkestreraren (ändrat 2026-11-23) · **Brief:** [BRIEF.md](BRIEF.md) · regler: `docs/autonom-korning-2.md` på main
 
 ## Spår
@@ -12,17 +12,17 @@
 | K0 Prisleden | auto2/k0 | k0 | **KLAR, mergad** (25a6a6e) | 2/2 | d1a2a2f | 29 serier (PPI, KPIF-XE, varor/tjänster, KI prisplaner, FRED-råvaror, räntor/SWESTR). Screening: 0/29 överlever BH. K0-C2 på 50/50: 0,226 mot 0,232, Holm 0,097, obekräftad (revisionsläckage möjligt) → inte fryst. **Inget håller.** BLOCKED: Medlingsinstitutet (PDF/sessionsproxy), Swedavia (403), hotellnätter (slutar 2021). |
 | K1 Drift | auto2/k1 | k1 | **KLAR, mergad** (a6fe532) | – | 3d376c1 | pipeline.py, shadow.py, 2 workflows (schedule/dispatch, nu aktiva på main), DuckDB + 12 datatester, champion/challenger i SCORECARD. Offline-repro identisk. Onlinerepro → K2b. |
 | K2 ML | auto2/k2 | k2 | **KLAR, mergad** (806e943) | 9/10 | 4ef395e | Urvalsevidens (34 varianter totalt): k2_avg_ridge_l 0,199 (Holm 0,014), k2_avg_ens_s 0,201 (0,055), k2_avg_ridge_s 0,206 (0,083) mot 50/50 0,217 → **klarade urvalsskärmen**. Granskas oberoende i K2b innan skugga. |
-| K2b Granskning + K2-skugga + onlinerepro | auto2/k2b | k2b | pågår | 0 | 25a6a6e | – |
+| K2b Granskning + K2-skugga + onlinerepro | auto2/k2b | k2b | **KLAR, mergad** (75b6ac3) | 0 | 1190e04 | **Håller med förbehåll.** Verkligt läckage hittat och rättat: Eurostats flash publiceras efter dag 4 för alla december (+ 2018-03, 2026-01). Efter rättelse: k2_avg_ridge_l 0,200 (Holm 0,025), k2_avg_ens_s 0,202 (0,083) klarar skärmen; k2_avg_ridge_s 0,207 (0,19) klarar inte. Båda registrerade som skuggor (2026-11: 1,63 / 1,66). Onlinerepro från tom data GRÖN, skuggor identiska. |
 | K3 Förklaring | auto2/k3 | k3 | **KLAR, mergad** (52191e2) | 0 | 4f7a154 | explain.py: bidrag per komponent, nyhetsdekomposition, felet per komponent, EWMA-band. 2026-11: 2,05 % (el +0,91, drivmedel −0,32). Fel 2015–26: tjänster 37 % av kvadratfelet, energi 21, varor 20, livsmedel 20. Inkopplat i pipeline monthly. |
 | K4 Regionalt | auto2/k4 | k4 | **KLAR, mergad** (f74d2bb) | 0 | d60864c | 241 länsserier (AF andel/antal/varsel, SCB BAS/AKU/småhuspris/FPI/folkmängd, Tillväxtanalys konkurser), kvalitet grön (AF-länssumma = riket alla 370 mån). Skåne 8,2 % / Norrbotten 3,4 %, lägre än i fjol i alla län. BLOCKED: varsel per län efter 2026-03 (AF slutade med fil), GeoJSON (konto/GIS), FPI per kvartal. |
-| K5 Sverigeläget v2 | auto2/k5 | k5 | pågår (dashboard v2, månadsbrev) | – | f74d2bb | – |
+| K5 Sverigeläget v2 | auto2/k5 | k5 | **KLAR, mergad** (657d712), **uppladdad** | 0 | 9f39131 | 9 nya dataset (region, af, ai_indicator, prisled, forecast, champion, explain×3) + ny sida. Månadsbrev `docs/manadsbrev/2026-11.md` av skript. Sidans check i Claude Data ej körd ännu (ingen har sidan öppen). |
 | K6 Om lätt | auto2/k6 | k6 | **KLAR, mergad**  | 2/4 | 0734d09 | Vintages TAB6613 BLOCKED (finns inte); ersatt med kontroll gammal/ny HIKP: el och drivmedel identiska (r 1,000) → J4 D2:s vinst är ingen revisionseffekt. Nordisk el: FI −0,011 (Holm 0,58), DK +0,002 (0,86), klarade inte skärmen; el-HIKP i FI/DK följer spot med en månads lagg, metoden är SCB-specifik. |
 | K7 Tjänster | auto2/k7 | k7 | **KLAR, mergad** (11e0c8f) | 5/5 | 89a6db2 | Ingen klarade skärmen (bäst −0,001 mot 50/50). 77 % av tjänstefelet är resor (paketresor, flyg, logi); säsong+trend går knappt att slå med fri data. |
 | K8 Livsmedel | auto2/k8 | k8 | **KLAR, mergad** (bf36a1c) | 4/4 | d366a3c | Ingen klarade skärmen (bäst 0,214 mot 0,217, Holm 0,41). Livsmedelsbidragets eget fel −10 % (2022–23 −35 %), men drunknar i totalen. Fynd: momssänkningen 2026-04 ligger kvar i trend/säsong → K13. |
-| K13 Skatterensad bas | auto2/k13 | k13 | pågår | 0/2 | 80bc02f | – |
+| K13 Skatterensad bas | auto2/k13 | k13 | **KLAR, mergad** (5f91077) | 2/2 | d3cbf9e | Ingen klarade skärmen. Men: skarp 2026-11 blir +0,13 pe med rensad bas (2,05 → 2,18); förslag `--adjust 0.15` (inkl. månadskort i 5 län). **December: CO2-skattesänkningen upphör → +0,40 pe**, månadskort +0,15. Johannes beslutar. |
 | K9 Horisont 3–12 | auto2/k9 | k9 | **KLAR, mergad** (7bbd5f3) | 4/4 | eecfbd4 | Ingen klarade skärmen. Riksbanken kvar som ribba på 3–12 mån; "2 %" lika bra på 12 mån. Effektivt n 46/23/11 för litet för korrektioner. |
 | K10 Pages-dashboard (fas 6) | – | – | väntar (K5) | – | – | – |
-| K12 Globalt test (SPA/MCS) | auto2/k12 | k12 | pågår | 0 | 11e0c8f | – |
+| K12 Globalt test (SPA/MCS) | auto2/k12 | k12 | **KLAR, mergad** (05a9abc); omkörning pågår | 0 | 2a3dc6e | **Bästa håller globalt** över 31 varianter: k2_avg_ridge_l SPA p 0,035 mot rb_updated, 0,018 mot 50/50 (blocklängd 12: 0,12/0,076). Urvalsbias ~0,022 pe. Omkörs med K2b-rättelse och K8. |
 | K11 Granskning publiceringsdatum | auto2/k11 | k11 | pågår | 0 | 51fa62f | – |
 
 ## Källlås
@@ -30,6 +30,7 @@
 - Riksbanken, KI, Eurostat: K6 (K2b får göra en liten onlinerepro mot SCB)
 
 ## Logg
+- 2026-11-23T10:26Z: K2b, K12, K13, K5 mergade (137 passed på main). Huvudcheckoutens data uppdaterad från k5 (backup observations.20261123.bak.parquet). Sverigeläget v2 uppladdad (14 dokument). K12 omkörs.
 - 2026-11-23T09:52Z: K8 klar (negativ), mergad; test_k8_food skippar nu utan K0-data (80bc02f, 108 passed). K13 skatterensad bas startad (2 av 4 reservvarianter).
 - 2026-11-23T09:41Z: K9 och K7 klara (negativa), mergade (107 passed). K12 globalt test startat.
 - 2026-11-23T09:25Z: Johannes: K0–K6 använde ~20 % av ett 5-timmarsfönster. Parallellitet höjd till 6 och backloggen utökad med K7 tjänster (37 % av felet), K8 livsmedel, K9 horisont 3–12, K10 Pages (efter K5) och K11 granskning av publiceringsfördröjningar. Variantbudget: K7 5, K8 4, K9 4 → max 26/30.

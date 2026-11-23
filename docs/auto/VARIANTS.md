@@ -32,4 +32,6 @@ J3:s screening räknas inte.
 
 | 46–49 | K8 | k8_fixed, k8_ridge, k8_ridge_nr, k8_ens_ridge (förreg. 1bc8e84) | 711f3bd | bäst 0,214 mot 0,217 (Holm 0,41) |
 
-**Löpande total: 49 (körning 2: 26/30)**
+| 50–51 | K13 | k13_j2_clean, k13_ens_clean | d3cbf9e | −0,004 (Holm 0,54); +0,002 (0,73) |
+
+**Löpande total: 51 (körning 2: 28/30)**
