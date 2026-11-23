@@ -1,8 +1,8 @@
 # Status: autonom körning 2 (Sverige på djupet)
 
-**Lås:** orkestrerare 2026-11-23T09:22Z · heartbeat 2026-11-23T09:22Z
+**Lås:** orkestrerare 2026-11-23T09:25Z · heartbeat 2026-11-23T09:25Z
 **Start:** 2026-11-23 · **Bas:** main @ 42b717b
-**Varianter i körningen:** 13/30 (projektet totalt 23 + 13 = 36) · **main:** f74d2bb
+**Varianter i körningen:** 13/30 (projektet totalt 23 + 13 = 36) · **main:** 51fa62f · **parallellt:** 6 (höjt från 3)
 **Merge:** klara spår mergas till main av orkestreraren (ändrat 2026-11-23) · **Brief:** [BRIEF.md](BRIEF.md) · regler: `docs/autonom-korning-2.md` på main
 
 ## Spår
@@ -17,12 +17,18 @@
 | K4 Regionalt | auto2/k4 | k4 | **KLAR, mergad** (f74d2bb) | 0 | d60864c | 241 länsserier (AF andel/antal/varsel, SCB BAS/AKU/småhuspris/FPI/folkmängd, Tillväxtanalys konkurser), kvalitet grön (AF-länssumma = riket alla 370 mån). Skåne 8,2 % / Norrbotten 3,4 %, lägre än i fjol i alla län. BLOCKED: varsel per län efter 2026-03 (AF slutade med fil), GeoJSON (konto/GIS), FPI per kvartal. |
 | K5 Sverigeläget v2 | auto2/k5 | k5 | pågår (dashboard v2, månadsbrev) | – | f74d2bb | – |
 | K6 Om lätt | auto2/k6 | k6 | **KLAR, mergad**  | 2/4 | 0734d09 | Vintages TAB6613 BLOCKED (finns inte); ersatt med kontroll gammal/ny HIKP: el och drivmedel identiska (r 1,000) → J4 D2:s vinst är ingen revisionseffekt. Nordisk el: FI −0,011 (Holm 0,58), DK +0,002 (0,86), klarade inte skärmen; el-HIKP i FI/DK följer spot med en månads lagg, metoden är SCB-specifik. |
+| K7 Tjänster | auto2/k7 | k7 | pågår | 0/5 | 51fa62f | – |
+| K8 Livsmedel | auto2/k8 | k8 | pågår | 0/4 | 51fa62f | – |
+| K9 Horisont 3–12 | auto2/k9 | k9 | pågår | 0/4 | 51fa62f | – |
+| K10 Pages-dashboard (fas 6) | – | – | väntar (K5) | – | – | – |
+| K11 Granskning publiceringsdatum | auto2/k11 | k11 | pågår | 0 | 51fa62f | – |
 
 ## Källlås
 - SCB (regional), Arbetsförmedlingen: K4
 - Riksbanken, KI, Eurostat: K6 (K2b får göra en liten onlinerepro mot SCB)
 
 ## Logg
+- 2026-11-23T09:25Z: Johannes: K0–K6 använde ~20 % av ett 5-timmarsfönster. Parallellitet höjd till 6 och backloggen utökad med K7 tjänster (37 % av felet), K8 livsmedel, K9 horisont 3–12, K10 Pages (efter K5) och K11 granskning av publiceringsfördröjningar. Variantbudget: K7 5, K8 4, K9 4 → max 26/30.
 - 2026-11-23T09:22Z: K6 och K4 klara, mergade (96 passed på main f74d2bb). K5 startad. Kalibrering uppdaterad.
 - 2026-11-23T09:05Z: K3 klar, mergad (87 passed på main). K6 startad. CLAUDE.md fick "Storleksbedömning" och docs/agentkalibrering.md (564c508).
 - 2026-11-23T08:49Z: K2, K1, K0 klara; pytest grönt på sammanslaget main (74 passed); mergade och pushade. K3, K4, K2b startade från 25a6a6e.
