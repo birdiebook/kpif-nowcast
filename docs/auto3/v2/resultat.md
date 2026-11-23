@@ -1,5 +1,28 @@
 # V2 Gemensam screening av körning 3:s nya serier: resultat
 
+## Urvalsevidens (sammanfattning efter granskning)
+
+All evidens nedan är urvalsevidens på 2015–2026, samma period som modellerna valdes på. Projektet har totalt
+**53 varianter** (51 före körning 3, plus V2:s två). Körning 3 har förbrukat 2 av 6.
+
+- **Ingen variant klarade urvalsskärmen, och inget fryses som skuggprognos.** Det gäller också efter granskningen.
+  Ingen läcka hittades, så inga siffror ändrades.
+- Screeningen av 10 serier per bas gav 0 BH-överlevare (q = 0,10). Lägsta råa p var 0,143 mot skuggan och 0,032
+  mot 50/50, båda för `kpif_air_transport_index`. Screeningen räknas inte mot taket.
+- `v2_r_corr` (nr 52, flygpriser på skuggan av `k2_avg_ridge_l`): MAE 0,2072 mot 0,2113. Rå p 0,143 (projektet
+  totalt 53 varianter), Holm p 0,143 (projektet totalt 53 varianter), globalt justerat p 0,790 (40 modeller i U1 +
+  V2; projektet totalt 53 varianter).
+- `v2_a_corr` (nr 53, flygpriser på 50/50): MAE 0,2241 mot 0,2320. Rå p 0,032 (projektet totalt 53 varianter),
+  Holm p 0,064 (projektet totalt 53 varianter), globalt justerat p 0,477 (40 modeller i U1 + V2; projektet totalt
+  53 varianter). Rå p är samma tal som det lägsta av de 20 screenade p-värdena, eftersom bara en serie valdes.
+  Holm över två varianter tar inte hänsyn till screeningen. Knappt hälften av vinsten (48 %) ligger i 2021. Utan
+  2021 är rå p 0,134 (projektet totalt 53 varianter).
+- Med K13:s två varianter i universumet (som saknades i K12:s U1) blir det justerade p:t 0,486 och 0,793. SPA mot
+  skuggan, consistent: 0,625 (projektet totalt 53 varianter). Mot 50/50: 0,023. Det senare beror på K2-familjen,
+  som i K12.
+- Flygindexets revision (COICOP 2018) ändrar inte utfallet. Med gammal årgång blir p 0,036 för `v2_a_corr` och
+  0,174 för `v2_r_corr` (projektet totalt 53 varianter).
+
 Förregistrering: [hypotes.md](hypotes.md) (commit c3f7670). Kod: `python -m kpif_nowcast.v2_screen`
 (`src/kpif_nowcast/v2_screen.py`), tester `tests/test_v2_screen.py`. Rådata med alla tabeller:
 [results_raw.md](results_raw.md), kontrollerna före screeningen: [checks_raw.md](checks_raw.md).
@@ -20,9 +43,11 @@ utanför urvalet.
 - Båda förregistrerade varianterna kördes en gång. Projektet har nu **53 varianter** (51 + `v2_r_corr` = nr 52 +
   `v2_a_corr` = nr 53). Körningens tak är 6, och V2 förbrukade 2.
   - `v2_r_corr`: MAE 0,2072 mot skuggan 0,2113 (diff −0,0041), rå p 0,143 · Holm p 0,143 (projektet totalt 53
-    varianter) · globalt justerat p 0,790 (projektet totalt 53 varianter). Klarade inte villkor 1 och 2.
+    varianter) · globalt justerat p 0,790 (40 modeller i U1 + V2; projektet totalt 53 varianter). Klarade inte
+    villkor 1 och 2.
   - `v2_a_corr`: MAE 0,2241 mot 50/50 0,2320 (diff −0,0079), rå p 0,032 · Holm p 0,064 (projektet totalt 53
-    varianter) · globalt justerat p 0,477 (projektet totalt 53 varianter). Klarade villkor 1 och 3, inte villkor 2.
+    varianter) · globalt justerat p 0,477 (40 modeller i U1 + V2; projektet totalt 53 varianter). Klarade villkor 1
+    och 3, inte villkor 2.
 
 Gissningen innan stämde: 0 överlevare, och ingen variant klarade skärmen. Den gissade storleken (−0,006 till +0,002 pe)
 stämde för bas R (−0,004) men inte riktigt för bas A (−0,008). Fel serie var gissad: paketresor och påsk var
@@ -191,8 +216,12 @@ under H0. Därför faller villkor 2 även när Holm över två varianter klarar 
 - Den enda signalen är **flygpriser som återgår**: koefficienten är negativ (b ≈ −0,005 pe per enhet x, korrelation
   med missen ≈ −0,2). Ett säsongsrensat hopp i flygindex i t−1 följs av en lägre KPIF-miss i t än basen väntar sig.
   Mekanismen är rimlig, eftersom flygpriserna är volatila och mätningen brusig. Effekten är liten och ojämn mellan
-  åren. Störst vinst 2017, 2021 (mot 50/50, pandemin) och 2024–25. Försämring mot skuggan 2018, 2019, 2023 och 2026,
-  och mot 50/50 2019 och 2026.
+  åren. Mot 50/50 ligger 48 % av nettovinsten i 2021 (pandemins flygpriser). Därefter kommer 2017 (22 %), 2024
+  (13 %) och 2022 (12 %). Utan 2021 är diff −0,0046 och p 0,134, och utan 2020–21 är p 0,183. Mot skuggan står
+  de fem bästa månaderna för 132 % av nettovinsten, och utan 2017 är p 0,251. Vinståren är 2017, 2020, 2021, 2022,
+  2024 och 2025, och förlustår 2018, 2019, 2023 och 2026. Mot 50/50 är förluståren 2019 och 2026. Förlustdifferensen
+  har nästan ingen autokorrelation (lag 1–3 mellan −0,15 och 0,03), så det effektiva n är ungefär 117. Alla p-värden
+  i den här punkten gäller med projektet totalt 53 varianter.
 - Påsken bidrar inte utöver baserna (diff +0,0008 mot skuggan och −0,0003 mot 50/50). Det stämmer med K7.
 - Kronan i säsongsdifferentierad månadsform ger ingenting utöver K2:s `kix` och `brent_sek`, och inte heller
   mot 50/50.
@@ -204,8 +233,9 @@ under H0. Därför faller villkor 2 även när Holm över två varianter klarar 
 - `v2_a_corr`:s Holm p 0,064 är det närmaste ett positivt resultat. Det är fortfarande "bäst av 10 serier × 2 baser"
   i en screening som inte räknas i det globala universumet. BH-q för serien är 0,32, och det globala justerade p:t
   är 0,477. Vi bedömer att det är förenligt med slump.
-- `kpif_air_transport_index` har revised=True: historiken före 2026 är SCB:s omräkning till COICOP 2018. Även ett
-  godkänt resultat hade märkts "obekräftad (revisionsläckage möjligt)".
+- `kpif_air_transport_index` har revised=True: historiken före 2026 är SCB:s omräkning till COICOP 2018. Efter
+  granskningen är revisionsrisken kontrollerad för just den här serien (se avsnitt 11, fynd A2). Den gamla årgången
+  ger samma utfall. För de övriga fem reviderade kandidaterna är den inte kontrollerad.
 - n = 117 (primärt) och 34 (2024–2026). Styrkan räcker inte för att upptäcka förbättringar på 0,005 pe. Ett negativt
   utfall betyder "inte påvisbart", inte "noll".
 - Basen R avviker 0,0003 pe från det förregistrerade referensvärdet av skäl utanför körning 3 (avsnitt 7, punkt 1).
@@ -218,3 +248,25 @@ under H0. Därför faller villkor 2 även när Holm över två varianter klarar 
 - Varianttal: projektet 53, körning 3 har förbrukat 2 av 6. 4 är kvar i reserv.
 - `kpif_air_transport_index` kan följas i skuggornas utfall som beskrivning, men inte som modell utan en ny
   förregistrering.
+
+## 11. Granskning
+
+Två oberoende granskare, båda med domen "håller, med förbehåll". **Ingen läcka hittades.** Inga varianter kördes
+om, och ingen siffra i avsnitt 1–10 ändrades av granskningen. Varje fynd är bedömt mot koden och datan nedan.
+Projektets varianttal är 53 i alla p-värden.
+
+| # | Fynd | Bedömning | Åtgärd |
+|---|---|---|---|
+| A1 | Läckagetestet i pytest täcker inte den valda serien (`COMBO` saknade `kpif_air_transport_index`), och baserna räknas inte om på kapad data. | **Håller.** Granskaren räknade om x(t) och korrektionen för hand, och bas A och bas R på kapade indata (2018-03, 2020-04, 2021-07, 2024-07, 2026-10). Allt var identiskt. p\*(t) = t−1 i alla 142 månader, med minst 17 dagars marginal. Ingen läcka, men testet var svagare än det borde vara. | **Rättat** i `tests/test_v2_screen.py`. `COMBO` innehåller nu flygindexet, och testet täcker varje serie i `V2_CHOSEN` både en och en och som den valda kombinationen per bas. Nytt test `test_v2_a_corr_end_to_end_on_cut_inputs` kapar alla indata vid deadline(t): KPIF och komponenter t.o.m. t−1, el och drivmedel t.o.m. t, Riksbankens prognoser publicerade före deadline och observationer kända vid deadline. Testet räknar sedan om 50/50-panelen, x och korrektionen, och kontrollerar att `v2_a_corr`(t) är identisk med helperiodsvärdet vid 2018-03, 2021-07, 2024-07 och 2026-10. Det är grönt. Bas R räknas inte om i pytest, eftersom en körning av skuggan tar minuter. Granskarens omräkning på kapad data (2020-04: 0,068742, 2024-07: 1,626432, 2026-10: 1,742914) står som verifiering. |
+| A2 | Revisionsrisken för flygindexet (revised=True) markerades som "går inte att verifiera", men den går att verifiera. | **Håller.** Jag körde granskarens jämförelse på hans nedladdade fil ur SCB:s frysta tabell KPI19Bas1980, produktgrupperna 6305 och 6311 viktade. Mot TAB6613 07.3.3 2015–2025 är korrelationen 0,9989 för månadsförändringen och 0,9945 för J3-transformen x. Med gammal årgång t.o.m. mål 2026-01 blir `v2_a_corr` MAE 0,2244 och p 0,036 (i stället för 0,2241 och 0,032), och `v2_r_corr` MAE 0,2076 och p 0,174 (i stället för 0,2072 och 0,143). | **Rättat** i avsnitt 9 och i sammanfattningen. Revisionen ändrar inte utfallet för flygindexet. Det negativa beslutet står sig oavsett årgång. De andra fem reviderade kandidaterna är fortfarande inte kontrollerade. |
+| A3 / B1 | Stoppregeln i kontroll 7 åsidosattes (0,1993 mot förregistrerat 0,200). B1 påpekar dessutom att undantaget lades in i koden (`v2_screen.py` rad 416–417, commit 8e0ad8e) efter förregistreringen men före screeningen. | **Håller som avvikelse, inte som läcka.** B körde 129bbb0 rent på samma data och fick 0,19934561392435557, alltså identiskt med grenens bas R. Avvikelsen kommer inte från körning 3. Ändringen committades 14:33, före screeningen 14:34:21, och den beror inte på några resultat. Det förregistrerade referensvärdet hade bara tre decimaler och var självt fel med ungefär 0,0003. | **Avvisat som fel i genomförandet. Redovisas oförändrat i avsnitt 7.1.** Lärdom till nästa förregistrering: ange referensvärdet med fyra decimaler och med kod- och dataversion, eller som "reproduceras mot main på samma data", och skriv i förväg vad som gäller om det reproduceras på koden före körningen men avviker från det angivna talet. |
+| B2 | Kontroll 8 reproducerar inte K12:s tabell exakt. Det har inte separerats om orsaken är K11 eller dataårgången. | **Håller som öppen fråga.** B räknade om alla K12-familjer utan cache och fick som största skillnad 1,78·10⁻¹⁵ mot referensen före körning 3. Körning 3 har alltså inte ändrat någon registrerad variant. | **Inte rättat, eftersom det inte behövs för V2.** Separeringen kräver en omräkning av K12 på K12:s egen commit med dagens data. Den tas om någon behöver K12:s exakta tal. |
+| B3 | Det "gemensamma testet" gav inget nytt belägg för `v2_a_corr`. Bara en serie valdes, så varianten är exakt screeningsprognosen. Rå p 0,032 är det lägsta av 20 screenade p-värden, och Holm över två varianter bortser från screeningen. Villkor 1 uppfylls bara nominellt: BH-q är 0,32, och Bonferroni över 20 hade gett 0,64. | **Håller.** Det stämmer exakt: i `screen_A.csv` har flygindexet MAE 0,224095 och p 0,03196, samma som i det gemensamma testet. Protokollet följdes. Det är en svaghet i protokollets utformning, och villkor 2 (globalt p 0,477) är det spärrande skyddet. | **Rättat i texten** (sammanfattningen överst). Lärdom till nästa förregistrering: kräv BH-överlevnad innan en ensam serie går till det gemensamma testet, eller räkna de screenade serierna i Holm-familjen. Behåll villkor 2 som spärr. |
+| B4 | Det globala universumet täcker inte alla projektets varianter. K13:s `k13_j2_clean` och `k13_ens_clean` (nr 50–51) saknas i U1, liksom de 20 screenade serierna. Formuleringen "projektet totalt 53 varianter" bredvid det globala p:t antyder en justering över 53 varianter, men universumet har 40 modeller. | **Håller.** K12:s U1 förregistrerades, så protokollet följdes, men formuleringen var missvisande. Jag lade in K13:s två varianter i universumet som känslighetskörning (block 3, B = 9 999, seed 20261123, samma gemensamma urval n = 141, 42 modeller). Justerat p blev 0,486 för `v2_a_corr` (före: 0,477) och 0,793 för `v2_r_corr` (före: 0,790). SPA consistent blev 0,024 mot 50/50, 0,630 mot skuggan och 0,030 mot rb_updated. Beslutet ändras inte. | **Rättat.** Formuleringen lyder nu "globalt justerat p (40 modeller i U1 + V2; projektet totalt 53 varianter)", och K13-känsligheten står i sammanfattningen. `k12_global` är **inte** ändrat, eftersom V2:s förregistrerade universum är K12:s U1. Att lägga till K13 som familj i `k12_global` är en åtgärd inför nästa globala test, och orkestreraren bör göra det i nästa förregistrering. |
+| B5 | Förregistreringen kallar det justerade p:t "Hansen-recentrerat", men `k12_global.spa_test` använder övre recentrering (db − dbar), alltså det konservativa valet. | **Håller.** Med Hansen-konsistent recentrering får B 0,414 för `v2_a_corr` och 0,625 för `v2_r_corr`. Båda ligger långt över 0,10, och t-statistikorna är desamma (1,789 och 1,028). | **Rättat i den här texten.** Det justerade p:t i avsnitt 4 och 5 är **upper-recentrerat, alltså konservativt**. `hypotes.md` rörs inte, eftersom det är förregistreringen. Beslutet ändras inte. |
+| B6 | Texten om var vinsten ligger kvantifieras inte, och 2022 saknas. | **Håller.** Jag räknade om det på `outputs/v2/variants.csv`. För `v2_a_corr` står 2021 för 48 % av nettovinsten. Utan 2021 är diff −0,0046 och p 0,134, och utan 2020–21 är p 0,183. För `v2_r_corr` står de fem bästa månaderna för 132 % av nettovinsten, och utan 2017 är p 0,251. Summerat 2022 är −0,103 mot skuggan, och ACF lag 1–3 ligger mellan −0,15 och 0,03. | **Rättat** i avsnitt 8. |
+
+**Efter granskningen:** ingen variant klarar urvalsskärmen enligt `hypotes.md` avsnitt 5. Villkor 2 faller för båda,
+oavsett blocklängd, recentrering och om K13 är med. **Inget fryses som skuggprognos.** `shadow.SHADOW_MODELS`, `forecast.py`,
+`MODEL_NAME`, `forecasts/` och de skarpa prognoserna är orörda. Projektet har totalt 53 varianter, och körning 3
+har 4 av 6 kvar.

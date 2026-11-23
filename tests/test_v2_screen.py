@@ -177,7 +177,8 @@ def _bases(table):
     return out
 
 
-COMBO = ["kpif_package_holidays_index", "kpi_rent_index", "sek_eur"]
+COMBO = ["kpif_air_transport_index", "kpi_rent_index", "sek_eur"]  # includes the series chosen for both bases
+SINGLES = sorted(set(COMBO) | {"kpif_package_holidays_index"} | {k for v in (v2.V2_CHOSEN or {}).values() for k in v})
 
 
 @needs_data
@@ -190,19 +191,63 @@ def test_correction_uses_only_deadline_data(table, xs_full):
     xs, _ = xs_full
     bases = _bases(table)
     for b, f in bases.items():
-        full_single = {k: correct(f["base"], f["actual"], xs[k].reindex(f.index), h1_usable(f.index)) for k in COMBO}
-        full_combo = combined_h1(f, xs, COMBO)
+        full_single = {k: correct(f["base"], f["actual"], xs[k].reindex(f.index), h1_usable(f.index)) for k in SINGLES}
+        combos = {"combo": COMBO, **({"chosen": v2.V2_CHOSEN[b]} if v2.V2_CHOSEN and v2.V2_CHOSEN.get(b) else {})}
+        full_combo = {c: combined_h1(f, xs, ks) for c, ks in combos.items()}
         for t in MONTHS:
             cut = table[table["known_from"] <= deadline(t)]
             fl = f.loc[:t].copy()
             fl.loc[t, "actual"] = np.nan
-            xl, _ = v2.features(cut, fl.index, COMBO)
-            for k in COMBO:
+            xl, _ = v2.features(cut, fl.index, SINGLES)
+            for k in SINGLES:
                 live = correct(fl["base"], fl["actual"], xl[k].reindex(fl.index), h1_usable(fl.index))
                 assert np.isclose(live[t], full_single[k][t], rtol=0, atol=1e-10), (b, k, t)
-            assert np.isclose(combined_h1(fl, xl, COMBO)[t], full_combo[t], rtol=0, atol=1e-10), (b, t)
+            for c, ks in combos.items():
+                assert np.isclose(combined_h1(fl, xl, ks)[t], full_combo[c][t], rtol=0, atol=1e-10), (b, c, t)
     if "R" not in bases:
         pytest.skip("base R cache missing (run python -m kpif_nowcast.v2_screen); only base A checked")
+
+
+def _cut_inputs(inp: dict, t: pd.Period) -> dict:
+    """Every input of the 50/50 panel as it was at deadline(t): outcomes and components up to t-1, el/fuel
+    features up to t, Riksbank forecasts published before the deadline, observations known by the deadline."""
+    from kpif_nowcast.riksbank_benchmark import deadline
+
+    d = deadline(t)
+    month = lambda df: pd.PeriodIndex(df["month"].astype(str), freq="M")  # noqa: E731
+    return dict(inp,
+                kpif=inp["kpif"].loc[:t - 1], comps=inp["comps"][month(inp["comps"]) <= t - 1],
+                feats=inp["feats"].loc[:t], contracts=inp["contracts"][month(inp["contracts"]) <= t],
+                se3=inp["se3"].loc[:t], rb_fc=inp["rb_fc"][pd.to_datetime(inp["rb_fc"]["published"]) < d],
+                obs=inp["obs"][inp["obs"]["known_from"] <= d])
+
+
+@needs_data
+def test_v2_a_corr_end_to_end_on_cut_inputs():
+    """Review fix (V2 granskning): base A is recomputed from inputs cut at deadline(t), the chosen series' x from
+    the cut observation table, and the correction is refitted; v2_a_corr(t) equals the full-sample value."""
+    from kpif_nowcast.j1_hybrid import j1_forecast
+    from kpif_nowcast.j3_screen import combined_h1
+    from kpif_nowcast.k12_global import _panel
+
+    if not (v2.V2_CHOSEN and v2.V2_CHOSEN.get("A")):
+        pytest.skip("V2 not run yet")
+    keys = v2.V2_CHOSEN["A"]
+    inp = v2._inputs()
+    fa = v2.restrict(v2.base_a(inp))
+    xs, _ = v2.features(inp["obs"], fa.index, keys)
+    full = combined_h1(fa, xs, keys)
+    for t in [pd.Period(m, "M") for m in ["2018-03", "2021-07", "2024-07", "2026-10"]]:
+        ci = _cut_inputs(inp, t)
+        p = _panel(ci)
+        if t not in p.index:
+            p = p.reindex(p.index.union(pd.PeriodIndex([t])))
+        fl = v2.restrict(pd.DataFrame({"base": j1_forecast(p, "j1_comb_equal"), "actual": p["actual"]})).loc[:t]
+        assert np.isclose(fl.loc[t, "base"], fa.loc[t, "base"], rtol=0, atol=1e-10), t
+        assert np.isnan(fl.loc[t, "actual"]) or t not in ci["kpif"].index
+        fl.loc[t, "actual"] = np.nan
+        xl, _ = v2.features(ci["obs"], fl.index, keys)
+        assert np.isclose(combined_h1(fl, xl, keys)[t], full[t], rtol=0, atol=1e-10), t
 
 
 @needs_data
