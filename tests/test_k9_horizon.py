@@ -33,10 +33,21 @@ def data():
     return table[table["series"].isin(k9.SERIES)], load_riksbank_forecasts()
 
 
+class _Designs(dict):
+    """Design per horizon, built on first use (with pytest-xdist each worker builds only the horizons it tests)."""
+
+    def __init__(self, table, rb):
+        super().__init__()
+        self.args = (table, rb)
+
+    def __missing__(self, h):
+        self[h] = k9.build_design(h, *self.args)
+        return self[h]
+
+
 @pytest.fixture(scope="module")
 def designs(data):
-    table, rb = data
-    return {h: k9.build_design(h, table, rb) for h in (3, 6, 12)}
+    return _Designs(*data)
 
 
 @pytest.mark.parametrize("name", list(k9.VARIANTS))
