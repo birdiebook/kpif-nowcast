@@ -1,6 +1,6 @@
 # Datakatalog
 
-346 serier: 105 nationella och 241 länsserier. Genererad av `python -m kpif_nowcast.catalog`.
+372 serier: 131 nationella och 241 länsserier. Genererad av `python -m kpif_nowcast.catalog`.
 
 ## Inflation
 
@@ -16,6 +16,14 @@
 | `kpif_package_holidays_index` | KPIF paketresor (COICOP 09.8), index | M | 1989-01–2026-10 | 15 d | ja | SCB TAB6613 (09.8) | Resekomponenterna som står för största delen av tjänstefelet (K7). |
 | `kpif_air_transport_index` | KPIF persontransport med flyg (COICOP 07.3.3), index | M | 1987-01–2026-10 | 15 d | ja | SCB TAB6613 (07.3.3) | Resekomponenterna som står för största delen av tjänstefelet (K7). |
 | `kpif_accommodation_index` | KPIF logitjänster (COICOP 11.2), index | M | 1987-01–2026-10 | 15 d | ja | SCB TAB6613 (11.2) | Resekomponenterna som står för största delen av tjänstefelet (K7). |
+| `kpi_rent_index` | KPIF-post hyror för hyresgäster (COICOP 04.1.1), index | M | 1980-01–2026-10 | 15 d | ja | SCB TAB6598 | Hyresposten i KPIF; tar upp förhandlingsutfallet med fördröjning. |
+| `kpif_flash_yy` | Snabb-KPI: KPIF, årstakt | M | 2024-09–2026-10 | 8 d | nej | SCB TAB6445 (Snabb-KPI) | SCB:s snabbestimat, en vecka före utfallet: referens för nowcasten. |
+| `kpif_flash_mm` | Snabb-KPI: KPIF, månadsförändring | M | 2024-09–2026-10 | 8 d | nej | SCB TAB6445 (Snabb-KPI) | SCB:s snabbestimat, en vecka före utfallet: referens för nowcasten. |
+| `kpif_xe_flash_yy` | Snabb-KPI: KPIF-XE, årstakt | M | 2024-09–2026-10 | 8 d | nej | SCB TAB6445 (Snabb-KPI) | SCB:s snabbestimat, en vecka före utfallet: referens för nowcasten. |
+| `kpif_xe_flash_mm` | Snabb-KPI: KPIF-XE, månadsförändring | M | 2024-09–2026-10 | 8 d | nej | SCB TAB6445 (Snabb-KPI) | SCB:s snabbestimat, en vecka före utfallet: referens för nowcasten. |
+| `kpif_flash_err_yy` | Snabb-KPI minus utfall: KPIF, årstakt | M | 2024-09–2026-10 | 20 d | nej | SCB TAB6445 minus TAB5919/TAB6590 | Hur mycket snabbestimatet missar det slutliga utfallet. |
+| `kpif_flash_err_mm` | Snabb-KPI minus utfall: KPIF, månadsförändring | M | 2024-09–2026-10 | 20 d | nej | SCB TAB6445 minus TAB5919/TAB6590 | Hur mycket snabbestimatet missar det slutliga utfallet. |
+| `kpif_xe_flash_err_yy` | Snabb-KPI minus utfall: KPIF-XE, årstakt | M | 2024-09–2026-10 | 20 d | nej | SCB TAB6445 minus TAB5918/TAB6593 | Hur mycket snabbestimatet missar det slutliga utfallet. |
 
 ## Prisleden: producent-, import- och planerade priser
 
@@ -40,6 +48,18 @@
 |---|---|---|---|---|---|---|---|
 | `brent_sek` | Brent i kronor (dag 1–25) | M | 2000-01–2026-10 | 1 d | nej | FRED + Riksbanken | Drivmedelspriser samma månad. |
 | `gas_eu_usd` | Naturgas Europa (TTF) | M | 1992-01–2026-09 | 60 d | ja | IMF via FRED | Gas → elpris och industrins kostnader. |
+| `el_contract_spot_share` | Andel elavtal med rörligt pris (månads-, tim- och kvartspris), riket | M | 2013-04–2026-09 | 28 d | ja | SCB TAB3571 | Rörliga avtal för över spotpriset direkt till KPIF-el; fasta avtal prissätts om när de löper ut (ofta i januari). |
+| `el_contract_hourly_share` | Andel elavtal med tim- eller kvartspris, riket | M | 2023-02–2026-09 | 28 d | ja | SCB TAB3571 | Rörliga avtal för över spotpriset direkt till KPIF-el; fasta avtal prissätts om när de löper ut (ofta i januari). |
+| `el_contract_fixed_share` | Andel elavtal med fast pris (1–3 år), riket | M | 2013-04–2026-09 | 28 d | ja | SCB TAB3571 | Rörliga avtal för över spotpriset direkt till KPIF-el; fasta avtal prissätts om när de löper ut (ofta i januari). |
+| `el_contract_default_share` | Andel anvisade elavtal (tillsvidarepris), riket | M | 2013-04–2026-09 | 28 d | ja | SCB TAB3571 | Rörliga avtal för över spotpriset direkt till KPIF-el; fasta avtal prissätts om när de löper ut (ofta i januari). |
+| `el_grid_price_flat` | Elnätspris 1 januari, lägenhet (viktat) | A | 2015-12–2026-12 | 0 d | nej | SCB TAB3950 | Nätavgiften ändras oftast 1 januari och är en del av januarieffekten i KPIF-el. |
+| `el_grid_price_house` | Elnätspris 1 januari, villa utan elvärme (viktat) | A | 2015-12–2026-12 | 0 d | nej | SCB TAB3950 | Nätavgiften ändras oftast 1 januari och är en del av januarieffekten i KPIF-el. |
+| `el_grid_price_house_heat` | Elnätspris 1 januari, villa med elvärme (viktat) | A | 2015-12–2026-12 | 0 d | nej | SCB TAB3950 | Nätavgiften ändras oftast 1 januari och är en del av januarieffekten i KPIF-el. |
+| `el_grid_price_house_heat_unw` | Elnätspris 1 januari, villa med elvärme (oviktat, lång serie) | A | 1996-12–2026-12 | 0 d | nej | SCB TAB3950 | Nätavgiften ändras oftast 1 januari och är en del av januarieffekten i KPIF-el. |
+| `ei_grid_fee_flat` | Elnätsavgift 1 januari, lägenhet 16A 2 000 kWh, median över nätområden | A | 1999-12–2026-12 | 0 d | ja | Energimarknadsinspektionen nätavgifter NT1600 | Nätbolagens egna tariffer: hur bred och hur stor januarihöjningen av nätavgiften är. |
+| `ei_grid_fee_house` | Elnätsavgift 1 januari, villa 16A 5 000 kWh, median över nätområden | A | 1999-12–2026-12 | 0 d | ja | Energimarknadsinspektionen nätavgifter NT2000 | Nätbolagens egna tariffer: hur bred och hur stor januarihöjningen av nätavgiften är. |
+| `ei_grid_fee_house_heat` | Elnätsavgift 1 januari, villa 20A 20 000 kWh (elvärme), median över nätområden | A | 1999-12–2026-12 | 0 d | ja | Energimarknadsinspektionen nätavgifter NT4000 | Nätbolagens egna tariffer: hur bred och hur stor januarihöjningen av nätavgiften är. |
+| `ei_grid_fee_raise_share` | Andel nätområden som höjt elnätsavgiften 1 januari (villa 16A 5 000 kWh) | A | 2000-12–2026-12 | 0 d | ja | Energimarknadsinspektionen nätavgifter NT2000 | Nätbolagens egna tariffer: hur bred och hur stor januarihöjningen av nätavgiften är. |
 
 ## Arbetsmarknad och löner
 
@@ -83,8 +103,9 @@
 | `mortgage_rate_new` | Bolåneränta, nya avtal (alla bindningstider) | M | 2005-09–2026-09 | 30 d | nej | SCB TAB5783 | Penningpolitikens genomslag på hushållen. |
 | `hh_lending_growth` | Utlåning till hushåll, årstakt | M | 2006-01–2026-09 | 30 d | nej | SCB TAB4514 | Kreditcykel → efterfrågan. |
 | `nfc_lending_growth` | Utlåning till icke-finansiella företag, årstakt | M | 2006-01–2026-09 | 30 d | nej | SCB TAB4514 | Investeringar och kreditvillkor. |
-| `housing_starts` | Påbörjade bostäder (fler- och småhus) | Q | 1975-03–2026-06 | 60 d | ja | SCB TAB4572 | Byggcykeln och byggkostnadstryck. |
+| `housing_starts` | Påbörjade bostäder (fler- och småhus) | Q | 1975-03–2026-09 | 60 d | ja | SCB TAB4572 | Byggcykeln och byggkostnadstryck. |
 | `rent_change` | Hyresförändring, hyresrätter | A | 1969-12–2026-12 | -60 d | nej | SCB TAB6051 | Hyror är en stor och trög del av KPIF. Förhandlas i förväg. |
+| `rent_negotiated` | Hyresförhandlingarnas utfall, vägt riksgenomsnitt | A | 2016-12–2026-12 | -184 d | ja | Hyresgästföreningen (handkurerad tabell) | Förhandlad hyreshöjning slår igenom i KPIF:s hyrespost, mest jan–apr samma år. |
 
 ## Företagen
 
@@ -156,6 +177,11 @@
 | `gvb_5y` | Statsobligationsränta 5 år | M | 1987-01–2026-10 | 1 d | nej | Riksbanken SWEA SEGVB5YC | Marknadens ränteförväntningar och finansiella villkor. |
 | `gvb_10y` | Statsobligationsränta 10 år | M | 1987-01–2026-10 | 1 d | nej | Riksbanken SWEA SEGVB10YC | Marknadens ränteförväntningar och finansiella villkor. |
 | `swestr` | SWESTR (dagslåneränta) | M | 2021-09–2026-10 | 1 d | nej | Riksbanken SWESTR API | Kortränta som styrräntan styr; från 2021-09. |
+| `prospera_mm_5y_mean` | Penningmarknadens inflationsförväntningar 5 år, medel (Prospera/Origo) | M | 2019-01–2026-09 | 3 d | ja | Riksbanken sifferunderlag PPR (Origo/Prospera) | Förankring av inflationsförväntningarna på lång sikt; spridningen visar hur fast ankaret sitter. |
+| `prospera_mm_5y_p25` | Penningmarknadens inflationsförväntningar 5 år, 25:e percentil | M | 2019-01–2026-09 | 3 d | ja | Riksbanken sifferunderlag PPR (Origo/Prospera) | Förankring av inflationsförväntningarna på lång sikt; spridningen visar hur fast ankaret sitter. |
+| `prospera_mm_5y_p75` | Penningmarknadens inflationsförväntningar 5 år, 75:e percentil | M | 2019-01–2026-09 | 3 d | ja | Riksbanken sifferunderlag PPR (Origo/Prospera) | Förankring av inflationsförväntningarna på lång sikt; spridningen visar hur fast ankaret sitter. |
+| `sek_eur` | EUR/SEK (kronor per euro) | M | 1993-01–2026-10 | 1 d | nej | Riksbanken SWEA SEKEURPMI | Euroområdet är största importkällan: svagare krona mot euron → dyrare importvaror och livsmedel. |
+| `sek_usd` | USD/SEK (kronor per dollar) | M | 1993-01–2026-10 | 1 d | nej | Riksbanken SWEA SEKUSDPMI | Olja, drivmedel och de flesta råvaror prissätts i dollar: snabbt genomslag på energi. |
 
 ## Regionalt: län
 
