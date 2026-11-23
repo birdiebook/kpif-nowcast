@@ -1,7 +1,8 @@
 """The steps the GitHub Actions workflows run, as one command per job so they run the same locally.
 
     python -m kpif_nowcast.pipeline weekly   [--offline]   # Sunday: fetch everything + data tests
-    python -m kpif_nowcast.pipeline monthly  [--offline]   # day 1-4: fetch forecast inputs, shadows, scorecard
+    python -m kpif_nowcast.pipeline monthly  [--offline]   # day 1-4: fetch forecast inputs, shadows, scorecard, explain
+    python -m kpif_nowcast.pipeline explain  [--offline]   # K3: explanations to outputs/explain/ (not committed)
     python -m kpif_nowcast.pipeline fetch    [--offline] [--no-observations]
     python -m kpif_nowcast.pipeline shadow   [--offline] [--as-of YYYY-MM-DD] [--force]
     python -m kpif_nowcast.pipeline check                  # data tests (pytest, DuckDB)
@@ -73,6 +74,21 @@ def shadow(as_of: str | None = None, force: bool = False) -> None:
     shadow_mod.run(as_of, force)
 
 
+def explain(strict: bool = True) -> None:
+    """K3 explanations of the live forecast (last 24 months + target) to outputs/explain/. Writes no committed file.
+
+    In `monthly` it is not fatal: a failure here must not stop the shadow forecasts from being committed.
+    """
+    from kpif_nowcast import explain as explain_mod
+
+    try:
+        explain_mod.run(months=24)
+    except Exception as exc:
+        if strict:
+            raise
+        print(f"WARNING: explanation failed, shadows and scorecard unaffected: {exc!r}", flush=True)
+
+
 def scorecard() -> None:
     from kpif_nowcast import scorecard as sc
 
@@ -81,7 +97,7 @@ def scorecard() -> None:
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("command", choices=["weekly", "monthly", "fetch", "shadow", "check", "scorecard", "prune"])
+    parser.add_argument("command", choices=["weekly", "monthly", "fetch", "shadow", "check", "scorecard", "explain", "prune"])
     parser.add_argument("--offline", action="store_true")
     parser.add_argument("--no-observations", action="store_true", help="fetch: skip the observation table")
     parser.add_argument("--as-of", help="shadow: date for FINAL/PRELIMINARY/LATE (default today)")
@@ -98,6 +114,9 @@ def main(argv: list[str] | None = None) -> None:
         fetch(observations=False)
         shadow(args.as_of, args.force)
         scorecard()
+        explain(strict=False)
+    elif args.command == "explain":
+        explain()
     elif args.command == "fetch":
         fetch(observations=not args.no_observations)
     elif args.command == "shadow":
