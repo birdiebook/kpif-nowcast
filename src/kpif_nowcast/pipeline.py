@@ -9,6 +9,7 @@
     python -m kpif_nowcast.pipeline check                  # data tests (pytest, DuckDB)
     python -m kpif_nowcast.pipeline scorecard
     python -m kpif_nowcast.pipeline prune --keep 4         # CI cache: drop older raw responses
+    python -m kpif_nowcast.pipeline site     [--offline]   # K10: Sverigeläget as a static site in site/ (GitHub Pages)
 
 --offline (or KPIF_OFFLINE=1): every source reads its latest saved raw response in data/raw/ and any
 other network call fails. Used to rebuild everything from a raw cache and to run the workflow
@@ -131,7 +132,7 @@ def scorecard() -> None:
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("command", choices=["weekly", "monthly", "fetch", "shadow", "check", "scorecard", "explain", "manadsbrev", "prune"])
+    parser.add_argument("command", choices=["weekly", "monthly", "fetch", "shadow", "check", "scorecard", "explain", "manadsbrev", "prune", "site"])
     parser.add_argument("--offline", action="store_true")
     parser.add_argument("--no-observations", action="store_true", help="fetch: skip the observation table")
     parser.add_argument("--as-of", help="shadow: date for FINAL/PRELIMINARY/LATE (default today)")
@@ -164,6 +165,12 @@ def main(argv: list[str] | None = None) -> None:
         check()
     elif args.command == "scorecard":
         scorecard()
+    elif args.command == "site":
+        from kpif_nowcast import pages
+
+        record = pages.main()
+        if not record["datasets"]:
+            raise SystemExit("site: no dataset written")
     elif args.command == "prune":
         from kpif_nowcast.sources import rawcache
         from kpif_nowcast.sources.scb import RAW_DIR

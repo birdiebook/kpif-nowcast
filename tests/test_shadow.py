@@ -134,7 +134,11 @@ def test_workflows_exist_and_only_run_on_schedule_or_by_hand():
         text = p.read_text(encoding="utf-8")
         on_block = re.search(r"^on:\n((?:[ \t]+.*\n|\n)+)", text, re.M).group(1)
         triggers = set(re.findall(r"^  (\w+):", on_block, re.M))
-        assert triggers <= {"schedule", "workflow_dispatch"}, f"{p.name}: triggers {triggers}"
+        # workflow_run (K10 pages.yml) only follows this repo's own scheduled workflows: still no push/PR trigger
+        assert triggers <= {"schedule", "workflow_dispatch", "workflow_run"}, f"{p.name}: triggers {triggers}"
+        if "workflow_run" in triggers:
+            names = set(re.findall(r'"([^"]+)"', re.search(r"workflows:\s*\[([^\]]*)\]", on_block).group(1)))
+            assert names <= {"Weekly data fetch", "Monthly shadow forecasts"}, f"{p.name}: follows {names}"
         assert "secrets." not in text, f"{p.name} must not need secrets"
 
 

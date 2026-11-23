@@ -477,3 +477,12 @@ gäller utan ombyggd parquet. Fördröjningar och revised-flaggor låses mot `do
 K2:s L frystes till 43 serier (hade vuxit till 72 med K0). K2 omkörd: ridge_l 0,200 (Holm 0,018), ens_s 0,202
 (Holm 0,082), ridge_s 0,207 (Holm 0,132, klarar inte längre skärmen). 0 varianter.
 Detaljer: [docs/auto2/k11/granskning.md](auto2/k11/granskning.md).
+
+## 2026-11-23 – K10 Sverigeläget på GitHub Pages
+
+Samma sida som i Claude Data (`templates/sverige_index.html`) publiceras också som statisk sida på GitHub Pages. En
+liten shim (`templates/dash-shim.js`) ersätter de fyra delar av `dash`-API:t som sidan använder och läser `data/<id>.json`.
+`python -m kpif_nowcast.pipeline site` bygger `site/` (gitignorerat), och `.github/workflows/pages.yml` publicerar efter
+varje lyckad veckohämtning och månadskörning, från samma Actions-cache. Varför: Claude Data kräver manuell uppladdning,
+Pages blir aktuell av sig själv. Bara aggregerad öppen data som redan finns i dashboarden. Pages måste slås på en gång
+(Settings → Pages → Source: GitHub Actions). Detaljer: [docs/auto2/k10/resultat.md](auto2/k10/resultat.md).

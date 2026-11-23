@@ -30,3 +30,6 @@ Thumbs.db
 
 # Lokala Claude-anteckningar (privata länkar m.m.)
 CLAUDE.local.md
+
+# Static site (K10), built in CI by .github/workflows/pages.yml
+site/

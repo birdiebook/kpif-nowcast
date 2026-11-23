@@ -19,7 +19,7 @@
   .sv .sv-chip.warm { color: var(--color-warn); border-color: var(--color-warn); }
   .sv .sv-chip.cool { color: var(--color-ok); border-color: var(--color-ok); }
   .sv .sv-area ul { margin: 0; padding: 0; list-style: none; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); display: grid; gap: 2px; }
-  .sv .sv-area li { display: flex; justify-content: space-between; gap: var(--cds-gap-sm); }
+  .sv .sv-area li { display: flex; justify-content: space-between; gap: var(--cds-gap-sm); min-width: 0; }
   .sv .sv-area li span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
   .sv .sv-row { display: flex; flex-wrap: wrap; gap: var(--cds-gap-md); align-items: center; }
   .sv .sv-grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--cds-gap-md); }
@@ -451,7 +451,9 @@
 
     const W = el.clientWidth || 600;
     const tmp = d3.select(el).append("svg").attr("width", 10).attr("height", 10);
-    const wl = d3.max(areaRows, (a) => { const t = tmp.append("text").text(labelOf[a]); const w = t.node().getComputedTextLength(); t.remove(); return w; }) || 120;
+    const widest = (lab) => d3.max(areaRows, (a) => { const t = tmp.append("text").text(lab(a)); const w = t.node().getComputedTextLength(); t.remove(); return w; }) || 120;
+    let rowLabel = (a) => labelOf[a], wl = widest(rowLabel);
+    if (wl + 10 > W * 0.38) { rowLabel = (a) => labelOf[a].split(":")[0]; wl = widest(rowLabel); }  // narrow screens: short names
     tmp.remove();
     const m = { l: Math.ceil(wl) + 10, r: 8, t: 6, b: 22 };
     const lineH = 90, cellH = 22;
@@ -470,7 +472,7 @@
     const top = m.t + lineH + 10;
     const byKey = new Map(rows.map((r) => [r.area + "|" + r.period, r]));
     areaRows.forEach((a, i) => {
-      svg.append("text").attr("x", m.l - 6).attr("y", top + i * cellH + cellH / 2 + 4).attr("text-anchor", "end").text(labelOf[a]);
+      svg.append("text").attr("x", m.l - 6).attr("y", top + i * cellH + cellH / 2 + 4).attr("text-anchor", "end").text(rowLabel(a));
     });
     const cells = [];
     for (const a of areaRows) for (const p of months) { const r = byKey.get(a + "|" + p); if (r) cells.push(r); }
