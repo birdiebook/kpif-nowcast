@@ -334,7 +334,7 @@
     <h2>Inflationsförväntningar</h2>
     <p class="sv-sub">När förväntningarna om fem år ligger nära 2 % sprids tillfälliga prischocker mindre till löner och priser. En glidning uppåt brukar vara en varningssignal för Riksbanken.</p>
     <div class="sv-chart" data-draw="pro-chart" data-source="prospera" id="pro-chart"></div>
-    <p class="sv-note">Penningmarknadens aktörer, förväntad KPIF-inflation om fem år: medel och spannet mellan 25:e och 75:e percentilen (Prospera för Riksbanken). Streckad linje: målet 2 %.</p>
+    <p class="sv-note">Penningmarknadens aktörer, förväntad inflation om fem år (serien skiljer inte på KPI och KPIF): medel och spannet mellan 25:e och 75:e percentilen (Prospera för Riksbanken). Streckad linje: målet 2 %.</p>
   </section>
 
   <section id="arbetsformedlingen" class="sv-card">
@@ -1357,7 +1357,8 @@
     if (now > 0) {
       const nx = x(periods[now]);
       svg.append("line").attr("class", "ref").attr("x1", nx).attr("x2", nx).attr("y1", m.t).attr("y2", H - m.b);
-      svg.append("text").attr("x", nx + 4).attr("y", m.t + 10).text("kommande");
+      const right = nx > W - 80;
+      svg.append("text").attr("x", right ? nx - 4 : nx + 4).attr("y", m.t + 10).attr("text-anchor", right ? "end" : "start").text("kommande");
     }
     stack.forEach((s, i) => {
       svg.append("g").selectAll("rect").data(s.filter((v) => v[1] !== v[0])).join("rect")
