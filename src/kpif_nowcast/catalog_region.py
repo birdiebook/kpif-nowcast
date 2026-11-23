@@ -482,6 +482,8 @@ def latest_by_county(table: pd.DataFrame | None = None) -> list[dict]:
     change: 'pp' = difference in percentage points, 'pct' = % change vs the same period a year earlier.
     Derived measure 'konkurser_per_10k': bankruptcies over the last 12 months per 10 000 inhabitants.
     rank: 1 = highest value among the counties (the national total is not ranked).
+    period is per county; behind_national = the county's latest period is older than the national one.
+    tile: (column, row) in TILE_GRID for a tile-grid map (no open county boundaries, see kvalitet.md).
     """
     from kpif_nowcast import observations as obs
 
@@ -521,6 +523,9 @@ def _rows(key, label, unit, freq, change, w: pd.DataFrame) -> list[dict]:
                      "value_year_ago": None if ch is None else round(float(prev), 4),
                      "change": None if ch is None else round(ch, 4), "change_kind": change,
                      "tile": list(TILE_GRID[code]) if code in TILE_GRID else None})
+    nat = next((r["period"] for r in rows if r["code"] == NATIONAL), None)
+    for r in rows:  # e.g. LFS cells SCB suppressed in the latest quarter: the county shows an older period
+        r["behind_national"] = nat is not None and r["period"] < nat
     counties = [r for r in rows if r["code"] != NATIONAL]
     for i, r in enumerate(sorted(counties, key=lambda r: -r["value"])):
         r["rank"] = i + 1

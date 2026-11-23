@@ -378,3 +378,12 @@ Nya serier i `catalog_prices.py`, screening enligt J3:s protokoll och variantern
 K0-C2 (samma på 50/50-snittet) MAE 0,226 mot 0,232, Holm p = 0,097: klarade urvalsskärmen formellt men
 obekräftad (revisionsläckage möjligt), bara aktiv 25 månader, alla i använda 2024–26. Inget håller; ingen
 frysning. Serierna behålls i katalogen. Detaljer: [docs/auto2/k0/resultat.md](auto2/k0/resultat.md).
+
+## 2026-11-23 – K4 Regionala Sverige: en serie per mått och län
+**Val:** länsdata lagras i den befintliga observationstabellen som en serie per mått och län,
+`region_<mått>_<länskod>` (`00` = riket). Ingen ny kolumn behövs, och `as_of`, known_from och K1:s datatester
+fungerar som för andra serier. Serierna ligger i `catalog.REGIONAL`, inte i `CATALOG`. Därför ändras inte
+kandidatlistorna i J3/K2 och den nationella dashboarden. `by_key`, `refresh` och `warehouse` använder `catalog.ALL`.
+241 serier, 11 mått (AF-andel och antal, varsel, BAS, AKU, småhuspris, FPI, konkurser, folkmängd), bara deskriptivt.
+Inga modellvarianter. Länskarta BLOCKED (inget öppet länslager utan konto eller nytt GIS-paket), rutnätskarta i stället.
+Detaljer: [docs/auto2/k4/resultat.md](auto2/k4/resultat.md), [kvalitet](auto2/k4/kvalitet.md), [läget](auto2/k4/lage.md).

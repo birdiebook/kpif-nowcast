@@ -409,8 +409,12 @@ def to_markdown(table: pd.DataFrame | None = None) -> str:
     from kpif_nowcast import observations as obs
 
     table = obs.load() if table is None else table
-    lines = ["# Datakatalog", "", f"{len(CATALOG)} serier. Genererad av `python -m kpif_nowcast.catalog`.", ""]
+    lines = ["# Datakatalog", "",
+             f"{len(ALL)} serier: {len(CATALOG)} nationella och {len(REGIONAL)} länsserier. "
+             "Genererad av `python -m kpif_nowcast.catalog`.", ""]
     for area, title in AREAS.items():
+        if area == "region":
+            continue
         specs = [s for s in CATALOG if s.area == area]
         if not specs:
             continue
@@ -422,7 +426,34 @@ def to_markdown(table: pd.DataFrame | None = None) -> str:
             lines.append(f"| `{s.key}` | {s.label} | {s.freq} | {span} | {s.lag_days} d | "
                          f"{'ja' if s.revised else 'nej'} | {s.source} | {s.link} |")
         lines.append("")
-    return "\n".join(lines)
+    return "\n".join(lines + _regional_markdown(table))
+
+
+def _regional_markdown(table: pd.DataFrame) -> list[str]:
+    """County series: one row per measure, then every county series and its span."""
+    from kpif_nowcast.catalog_region import MEASURES, NAMES, NATIONAL, series_key
+
+    lines = [f"## {AREAS['region']}", "",
+             "En serie per mått och län: `region_<mått>_<länskod>` (01 Stockholm … 25 Norrbotten, 00 riket). "
+             "Bara deskriptivt, ingår inte i de nationella kandidatlistorna. Kvalitet: `docs/auto2/k4/kvalitet.md`.", "",
+             "| Mått | Serie | Frekv. | Från–till (riket) | Län | Fördröjning | Rev. | Källa | Anmärkning |",
+             "|---|---|---|---|---|---|---|---|---|"]
+    spans = {}
+    for s in REGIONAL:
+        t = table[table["series"] == s.key]["period"]
+        spans[s.key] = f"{t.min()}–{t.max()}" if len(t) else "–"
+    for m in MEASURES:
+        n = sum(1 for c in m.codes if c != NATIONAL and spans[series_key(m.key, c)] != "–")
+        lines.append(f"| `region_{m.key}_*` | {m.label} | {m.freq} | {spans[series_key(m.key, NATIONAL)]} | {n} | "
+                     f"{m.lag_days} d | {'ja' if m.revised else 'nej'} | {m.source} | {m.note} |")
+    lines += ["", "### Länsserier: täckning per län", "",
+              "| Kod | Län | " + " | ".join(f"`{m.key}`" for m in MEASURES) + " |",
+              "|---|---|" + "---|" * len(MEASURES)]
+    for c in NAMES:
+        cells = [spans[series_key(m.key, c)] if c in m.codes else "" for m in MEASURES]
+        lines.append(f"| {c} | {NAMES[c]} | " + " | ".join(cells) + " |")
+    lines.append("")
+    return lines
 
 
 if __name__ == "__main__":

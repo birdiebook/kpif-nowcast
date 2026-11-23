@@ -94,6 +94,7 @@ def test_latest_by_county_synthetic():
     assert andel["01"]["change"] == pytest.approx(-1.0) and andel["01"]["change_kind"] == "pp"
     assert andel["01"]["rank"] == 1 and andel["03"]["rank"] == 2 and "rank" not in andel["00"]
     assert andel["01"]["tile"] == list(cr.TILE_GRID["01"]) and andel["00"]["tile"] is None
+    assert not any(r["behind_national"] for r in andel.values())
     per = {r["code"]: r for r in out if r["measure"] == "konkurser_per_10k"}
     assert per["01"]["value"] == pytest.approx(100.0) and per["01"]["period"] == "2026-10"
     import json
