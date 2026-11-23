@@ -293,3 +293,9 @@ följa 50/50-snittet live. Detaljer: [docs/auto/j1/resultat.md](auto/j1/resultat
 J2:s V2 och 50/50-snittet av rb_updated och V2 följs som skuggprognoser från 2026-12; byte av
 huvudmodell avgörs av live-utfallet. Övriga auto/*-grenar (J3–J7) ligger kvar omergade.
 **Inriktning framåt:** fokus på Sverige. Andra länder bara om datan går lätt att få fram.
+
+## 2026-11-22 – J3 Prognostest av datakatalogen (förregistrering)
+Protokoll, gissning och kombinationsregel: [docs/auto/j3/hypotes.md](auto/j3/hypotes.md). Bas rb_updated (h=1), Riksbanken (h=3, 12).
+**Resultat (urvalsevidens, 14/50 varianter):** ingen av 45 serier överlever Benjamini-Hochberg på h=1, 3
+eller 12. Kombinationen av de tre bästa h=1-serierna gav MAE 0,279 mot rb_updated 0,281 (p = 0,43).
+Inget håller; behåll ingen serie. Detaljer: [docs/auto/j3/resultat.md](auto/j3/resultat.md).
