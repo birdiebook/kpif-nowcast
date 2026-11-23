@@ -1,6 +1,6 @@
 # Datakatalog
 
-337 serier: 96 nationella och 241 länsserier. Genererad av `python -m kpif_nowcast.catalog`.
+349 serier: 108 nationella och 241 länsserier. Genererad av `python -m kpif_nowcast.catalog`.
 
 ## Inflation
 
@@ -35,6 +35,18 @@
 |---|---|---|---|---|---|---|---|
 | `brent_sek` | Brent i kronor (dag 1–25) | M | 2000-01–2026-10 | 1 d | nej | FRED + Riksbanken | Drivmedelspriser samma månad. |
 | `gas_eu_usd` | Naturgas Europa (TTF) | M | 1992-01–2026-09 | 60 d | ja | IMF via FRED | Gas → elpris och industrins kostnader. |
+| `el_contract_spot_share` | Andel elavtal med rörligt pris (månads-, tim- och kvartspris), riket | M | 2013-04–2026-09 | 28 d | ja | SCB TAB3571 | Rörliga avtal för över spotpriset direkt till KPIF-el; fasta avtal prissätts om när de löper ut (ofta i januari). |
+| `el_contract_hourly_share` | Andel elavtal med tim- eller kvartspris, riket | M | 2023-02–2026-09 | 28 d | ja | SCB TAB3571 | Rörliga avtal för över spotpriset direkt till KPIF-el; fasta avtal prissätts om när de löper ut (ofta i januari). |
+| `el_contract_fixed_share` | Andel elavtal med fast pris (1–3 år), riket | M | 2013-04–2026-09 | 28 d | ja | SCB TAB3571 | Rörliga avtal för över spotpriset direkt till KPIF-el; fasta avtal prissätts om när de löper ut (ofta i januari). |
+| `el_contract_default_share` | Andel anvisade elavtal (tillsvidarepris), riket | M | 2013-04–2026-09 | 28 d | ja | SCB TAB3571 | Rörliga avtal för över spotpriset direkt till KPIF-el; fasta avtal prissätts om när de löper ut (ofta i januari). |
+| `el_grid_price_flat` | Elnätspris 1 januari, lägenhet (viktat) | A | 2015-12–2026-12 | -180 d | nej | SCB TAB3950 | Nätavgiften ändras oftast 1 januari och är en del av januarieffekten i KPIF-el. |
+| `el_grid_price_house` | Elnätspris 1 januari, villa utan elvärme (viktat) | A | 2015-12–2026-12 | -180 d | nej | SCB TAB3950 | Nätavgiften ändras oftast 1 januari och är en del av januarieffekten i KPIF-el. |
+| `el_grid_price_house_heat` | Elnätspris 1 januari, villa med elvärme (viktat) | A | 2015-12–2026-12 | -180 d | nej | SCB TAB3950 | Nätavgiften ändras oftast 1 januari och är en del av januarieffekten i KPIF-el. |
+| `el_grid_price_house_heat_unw` | Elnätspris 1 januari, villa med elvärme (oviktat, lång serie) | A | 1996-12–2026-12 | -180 d | nej | SCB TAB3950 | Nätavgiften ändras oftast 1 januari och är en del av januarieffekten i KPIF-el. |
+| `ei_grid_fee_flat` | Elnätsavgift 1 januari, lägenhet 16A 2 000 kWh, median över nätområden | A | 1999-12–2026-12 | -180 d | ja | Energimarknadsinspektionen nätavgifter NT1600 | Nätbolagens egna tariffer: hur bred och hur stor januarihöjningen av nätavgiften är. |
+| `ei_grid_fee_house` | Elnätsavgift 1 januari, villa 16A 5 000 kWh, median över nätområden | A | 1999-12–2026-12 | -180 d | ja | Energimarknadsinspektionen nätavgifter NT2000 | Nätbolagens egna tariffer: hur bred och hur stor januarihöjningen av nätavgiften är. |
+| `ei_grid_fee_house_heat` | Elnätsavgift 1 januari, villa 20A 20 000 kWh (elvärme), median över nätområden | A | 1999-12–2026-12 | -180 d | ja | Energimarknadsinspektionen nätavgifter NT4000 | Nätbolagens egna tariffer: hur bred och hur stor januarihöjningen av nätavgiften är. |
+| `ei_grid_fee_raise_share` | Andel nätområden som höjt elnätsavgiften 1 januari (villa 16A 5 000 kWh) | A | 2000-12–2026-12 | -180 d | ja | Energimarknadsinspektionen nätavgifter NT2000 | Nätbolagens egna tariffer: hur bred och hur stor januarihöjningen av nätavgiften är. |
 
 ## Arbetsmarknad och löner
 
