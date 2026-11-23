@@ -10,14 +10,17 @@ Two series:
 
 The table is read from this module, not from the web: the national figures sit in Hyresgaestfoereningen's
 annual reports (PDF, one sentence per year) and on its negotiation page, so a scraper would be fragile
-for 11 numbers. `fetch` writes a dated copy of the table to data/raw/l3/ so the raw-data convention holds.
+for 11 numbers. `negotiated()` (the Spec's fetch callable) writes a dated copy of the table to
+data/raw/l3/ so the raw-data convention holds.
 
 Publication lag (docs/publiceringskalender.md, section "Koerning 3: L3 Hyror"):
-- rent_negotiated: -184 days -> known_from = 30 June of the rent year. Negotiations start in the autumn
-  and finish in the spring; the preliminary national average is public by March-April (documented for
-  2020, 2022, 2025, 2026). 30 June leaves at least two months of margin. The stored value is the final
-  weighted average from the annual report (published the year after), which differs slightly from the
-  spring figure (2020: 1.93 in March vs 1.92 final) -> revised=True.
+- rent_negotiated: -184 days -> known_from = 30 June of the rent year, but only for years where a dated
+  spring publication of the national figure is verified (`public_by`: 2023, 2025, 2026). For every other
+  year the value is known from `released`, the upload date (HTTP Last-Modified) of the report it is
+  taken from, via publication.LATE_RELEASES (RELEASES below). Review of L3: status dates inside reports
+  published later (2020, 2022) are not publication dates. Each stored value is the one in its source at
+  that source's release date, so the backfill shows no figure before it was public. Spring and final
+  figures differ slightly (2020: 1.93 in spring vs 1.92 final; 2024: 5.2 TT vs 5.15) -> revised=True.
 - kpi_rent_index: 15 days (same as kpif_index). Values before 2026 are SCB's back-calculation to
   COICOP 2018 ("to some extent model estimated") -> revised=True.
 
@@ -54,37 +57,42 @@ class Outcome:
     year: int
     pct: float  # weighted average rent increase, %
     scope: str  # which parties / coverage
-    public_by: str  # earliest documented date the national figure was public ("" = only the annual report)
+    public_by: str  # verified date a dated publication gave this national figure ("" = not verified)
     source: str  # link
     note: str = ""
+    released: str = ""  # upload date (HTTP Last-Modified) of `source`; known_from when public_by is ""
 
 
 NEGOTIATIONS: list[Outcome] = [
     Outcome(2016, 0.64, "Alla förhandlade hyresrätter (allmännyttan + privata), vägt", "",
             f"{HGF}/dokument/verksamhetsberattelser/verksamhetsberattelse-2017-med-arsredovisning.pdf",
-            "Anges som jämförelse i verksamhetsberättelsen 2017."),
+            "Anges som jämförelse i verksamhetsberättelsen 2017.", "2019-01-21"),
     Outcome(2017, 0.71, "Alla förhandlade hyresrätter (allmännyttan + privata), vägt", "",
             f"{HGF}/dokument/verksamhetsberattelser/verksamhetsberattelse-2017-med-arsredovisning.pdf",
-            "7,04 kr/kvm."),
+            "7,04 kr/kvm.", "2019-01-21"),
     Outcome(2018, 0.98, "Alla förhandlade hyresrätter (allmännyttan + privata), vägt", "",
-            f"{HGF}/bostadsfakta/rapporter/2019/verksamhetsberattelse_2018_2019-_16_dec_2020.pdf"),
+            f"{HGF}/bostadsfakta/rapporter/2019/verksamhetsberattelse_2018_2019-_16_dec_2020.pdf", "", "2020-12-17"),
     Outcome(2019, 1.91, "Alla förhandlade hyresrätter (allmännyttan + privata), vägt", "",
-            f"{HGF}/bostadsfakta/rapporter/2019/verksamhetsberattelse_2018_2019-_16_dec_2020.pdf"),
-    Outcome(2020, 1.92, "Alla förhandlade hyresrätter (allmännyttan + privata), vägt", "2020-03-15",
+            f"{HGF}/bostadsfakta/rapporter/2019/verksamhetsberattelse_2018_2019-_16_dec_2020.pdf", "", "2020-12-17"),
+    Outcome(2020, 1.92, "Alla förhandlade hyresrätter (allmännyttan + privata), vägt", "",
             f"{HGF}/bostadsfakta/rapporter/2021/verksamhetsberattelse-med-arsredovisning-2020.pdf",
             "Preliminärt 1,93 % i mitten av mars 2020 när 60 % av förhandlingarna var klara "
-            "(verksamhetsberättelse 2018–2019)."),
+            "(statusdatum i verksamhetsberättelse 2018–2019, uppladdad 2020-12-17; ej publiceringsdatum).",
+            "2021-09-08"),
     Outcome(2021, 1.32, "Alla förhandlade hyresrätter (allmännyttan + privata), vägt", "",
-            f"{HGF}/om-oss/var-organisation/verksamhetsberattelse-2021.pdf"),
-    Outcome(2022, 1.71, "Alla förhandlade hyresrätter; privata fick samma höjning som allmännyttan", "2022-04-20",
+            f"{HGF}/om-oss/var-organisation/verksamhetsberattelse-2021.pdf", "", "2022-06-21"),
+    Outcome(2022, 1.71, "Alla förhandlade hyresrätter; privata fick samma höjning som allmännyttan", "",
             f"{HGF}/policy-och-styrdokument/verksamhetsberattelse-2022.pdf",
-            "Läge per 2022-04-20 när 83 % av förhandlingarna var klara; slutligt värde inte angivet."),
-    Outcome(2023, 4.0, "Alla förhandlade hyresrätter (allmännyttan + privata)", "",
-            f"{HGF}/dokument/verksamhetsberattelser/verksamhetsberattelse_2023.pdf",
-            "Avrundat: \"landade hyreshöjningarna i genomsnitt på fyra procent\"."),
+            "Läge per 2022-04-20 när 83 % av förhandlingarna var klara (statusdatum i rapporten, ej "
+            "publiceringsdatum); slutligt värde inte angivet. TT-tabell 2025-03-21: 1,7.", "2024-02-19"),
+    Outcome(2023, 4.16, "Alla förhandlade, vägt; allmännyttan 4,10 %, privata 4,27 % (52 % klart)", "2023-04-13",
+            f"{HGF}/bostadsfakta/rapporter/lagesrapport/2023/lagesrapport_var_2023.pdf",
+            "Hyresgästernas lägesrapport våren 2023 (PDF skapad och uppladdad 2023-04-13). Verksamhetsberättelse "
+            "2023 avrundar: \"i genomsnitt på fyra procent\"; TT-tabell 2025-03-21: 4,2."),
     Outcome(2024, 5.15, "Alla förhandlade; allmännyttan 5,16 %, privata 5,13 %", "",
             f"{HGF}/policy-och-styrdokument/verksamhetsberattelse-hyresgastforeningen-2024.pdf",
-            "Webbsidan säger \"cirka 5 procent\"; yrkande 9,59 %."),
+            "Webbsidan säger \"cirka 5 procent\"; yrkande 9,59 %. TT-tabell 2025-03-21: 5,2. Ingen daterad "
+            "nationell vårsiffra 2024 hittad.", "2025-06-24"),
     Outcome(2025, 4.8, "Alla förhandlade hyresrätter (allmännyttan + privata)", "2025-03-21",
             f"{HGF}/om-oss/var-organisation/verksamhetsberattelse-hyresgastforeningen-2025-.pdf",
             "Yrkanden: privata 11,2 %, allmännyttan 7,7 %. Tidig siffra: TT 2025-03-21 (ej nåbar härifrån)."),
@@ -94,6 +102,10 @@ NEGOTIATIONS: list[Outcome] = [
 ]
 
 MISSING_YEARS = list(range(2010, 2016)) + [2027]
+
+# Release date (period -> date) for years without a verified spring publication: publication.LATE_RELEASES
+# moves known_from from 30 June to the upload date of the report the value is taken from.
+RELEASES: dict[str, str] = {f"{o.year}-12": o.released for o in NEGOTIATIONS if not o.public_by}
 
 # 2027: no national average yet (2026-11-23). Local outcomes for 1 January 2027 known so far.
 NEGOTIATIONS_2027_PARTIAL = [
@@ -196,7 +208,7 @@ def specs() -> list:
         Spec("rent_negotiated", "bostad_kredit", "Hyresförhandlingarnas utfall, vägt riksgenomsnitt", "% per år", "A",
              "Hyresgästföreningen (handkurerad tabell)", negotiated, LAG_NEGOTIATED, revised=True,
              link="Förhandlad hyreshöjning slår igenom i KPIF:s hyrespost, mest jan–apr samma år.",
-             note="2016–2026; saknas 2010–2015 och 2027 (pågår). Vårens preliminära siffra revideras."),
+             note="2016–2026; saknas 2010–2015 och 2027 (pågår). 30 juni bara för 2023, 2025, 2026; övriga år källrapportens uppladdningsdatum. Vårens siffra revideras."),
         Spec("kpi_rent_index", "inflation", "KPIF-post hyror för hyresgäster (COICOP 04.1.1), index", "2020=100",
              "M", "SCB TAB6598", kpi_rent_index, LAG_KPI, revised=True,
              link="Hyresposten i KPIF; tar upp förhandlingsutfallet med fördröjning.",

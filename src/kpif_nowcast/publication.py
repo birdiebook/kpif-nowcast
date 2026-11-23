@@ -18,6 +18,8 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
+from kpif_nowcast.catalog_rents import RELEASES as RENT_NEGOTIATED_RELEASES
+
 EA_FLASH_KEYS = ("ea_flash_total", "ea_flash_energy", "ea_flash_food", "ea_flash_goods", "ea_flash_services")
 
 # Euro area HICP flash released after day 4 of the following month (Eurostat euro-indicator release codes,
@@ -44,6 +46,8 @@ BLS_PPI_LATE = {
 LATE_RELEASES: dict[str, dict[str, str]] = {
     **{k: EA_FLASH_LATE for k in EA_FLASH_KEYS},
     "freight_ppi_deepsea": BLS_PPI_LATE,
+    # L3: years without a verified spring publication -> upload date of the source report (catalog_rents)
+    "rent_negotiated": RENT_NEGOTIATED_RELEASES,
 }
 
 

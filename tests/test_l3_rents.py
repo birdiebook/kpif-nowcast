@@ -23,12 +23,17 @@ def test_negotiation_table_is_clean():
 
 
 def test_documented_dates_are_before_known_from():
-    """known_from (30 June of the rent year) must not be earlier than any documented public date."""
+    """30 June only for years with a verified spring publication; other years wait for their source report."""
+    assert set(cr.RELEASES) == {f"{o.year}-12" for o in cr.NEGOTIATIONS if not o.public_by}
     for o in cr.NEGOTIATIONS:
+        assert bool(o.public_by) != bool(o.released), o.year  # exactly one kind of date per year
         kf = known_from("rent_negotiated", pd.PeriodIndex([f"{o.year}-12"], freq="M"), cr.LAG_NEGOTIATED)[0]
-        assert kf == pd.Timestamp(f"{o.year}-06-30")
         if o.public_by:
+            assert kf == pd.Timestamp(f"{o.year}-06-30")
             assert pd.Timestamp(o.public_by) <= kf - pd.Timedelta(days=60), o.year  # at least two months margin
+        else:
+            assert kf == pd.Timestamp(o.released) > pd.Timestamp(f"{o.year}-06-30"), o.year
+    assert sorted(o.year for o in cr.NEGOTIATIONS if o.public_by) == [2023, 2025, 2026]
 
 
 def test_specs():
@@ -97,7 +102,10 @@ def test_series_in_observation_table():
         x = t[t["series"] == key]
         assert not x.duplicated(["period", "known_from"]).any()
     neg = t[t["series"] == "rent_negotiated"]
-    assert (pd.to_datetime(neg["known_from"]).dt.strftime("%m-%d") == "06-30").all()
+    expect = known_from("rent_negotiated", pd.PeriodIndex(neg["period"], freq="M"), cr.LAG_NEGOTIATED)
+    assert (pd.DatetimeIndex(pd.to_datetime(neg["known_from"])) == expect).all()  # enforce() applies RELEASES
+    v2023 = neg.loc[neg["period"] == "2023-12"].sort_values("known_from")["value"].iloc[-1]
+    assert v2023 == pytest.approx(4.16)
     kpi = t[t["series"] == "kpi_rent_index"]
     per = pd.PeriodIndex(kpi["period"], freq="M")
     assert len(per.unique()) == (per.max() - per.min()).n + 1  # no holes

@@ -130,5 +130,18 @@ Granskning, metod och dom: [auto2/k11/granskning.md](auto2/k11/granskning.md). L
 
 | Nyckel | Fördröjning | Rev. | Belagd fördröjning (d) | Belägg | Dom |
 |---|---|---|---|---|---|
-| `rent_negotiated` | -184 | ja | −304 till −255: preliminärt riksgenomsnitt offentligt i mars–april (2020 → mitten av mars, 60 % klart; 2022 → 2022-04-20, 83 % klart; 2025 → TT 2025-03-21; 2026 → TT 2026-03-02). Slutligt vägt snitt först i verksamhetsberättelsen året efter | Hyresgästföreningens verksamhetsberättelser 2018–2019 och 2022, hyresforhandling_2027-sidan; TT-datum ur sökträffar (tv4.se ej nåbar härifrån) | Konservativt (≥ 2 mån marginal) för belagda år; 2016–2019, 2021, 2023–2024 saknar eget datum men samma förhandlingsprocess. Rev. ja: vårens siffra ≠ slutligt snitt (2020: 1,93 → 1,92) |
-| `kpi_rent_index` | 15 | ja | 12 (okt 2026 → 2026-11-12) | SCB PxWeb v2 `updated` TAB6598 (samma release som TAB6590) | OK; rev. ja eftersom värden före 2026 är SCB:s omräkning till COICOP 2018 |
+| `rent_negotiated` | -184 | ja | −262 (2023 → lägesrapport 2023-04-13), −285 (2025 → TT 2025-03-21), −304 (2026 → TT 2026-03-02); övriga år se releasedatum nedan | Hyresgästernas lägesrapport våren 2023 (PDF CreationDate och Last-Modified 2023-04-13); TT-datum ur URL:er i sökträffar (tv4.se ej nåbar härifrån) | 30 juni gäller bara de tre belagda åren (≥ 2 mån marginal). 2020 och 2022 hade tidigare "mitten av mars" och "20 april" som belägg, men det är statusdatum i rapporter som publicerades senare, inte publiceringsdatum (granskning av L3). Rev. ja: vårens siffra ≠ slutligt snitt (2020: 1,93 → 1,92; 2024: TT 5,2 → 5,15) |
+| `kpi_rent_index` | 15 | ja | 12 (okt 2026 → 2026-11-12) | SCB PxWeb v2 `updated` TAB6598 (samma release som TAB6590) | OK; rev. ja eftersom värden före 2026 är SCB:s omräkning till COICOP 2018. Backtest före 2026 använder alltså rekonstruerade värden som inte fanns i realtid (realtidsserien var COICOP 1999) |
+
+**Releasedatum för `rent_negotiated` utan belagd vårpublicering.** För dessa år finns ingen daterad publicering av riksgenomsnittet före 30 juni. Värdet blir därför känt först när rapporten som det hämtas från laddades upp, enligt HTTP `Last-Modified` på hyresgastforeningen.se (hämtat 2026-11-23). PDF:ens ModDate är ibland tidigare, men `Last-Modified` är det säkra datumet. Datumen ligger i `catalog_rents.RELEASES` och går in via `publication.LATE_RELEASES`. Det är konservativt: troligen fanns en vårsiffra via pressmeddelanden (via.tt.se, inte nåbar härifrån).
+
+| Serie | Period | Releasedatum | Källa |
+|---|---|---|---|
+| `rent_negotiated` | 2016-12 | 2019-01-21 | Verksamhetsberättelse 2017, Last-Modified (ModDate 2018-12-10) |
+| `rent_negotiated` | 2017-12 | 2019-01-21 | Verksamhetsberättelse 2017, Last-Modified |
+| `rent_negotiated` | 2018-12 | 2020-12-17 | Verksamhetsberättelse 2018–2019, Last-Modified (ModDate 2020-12-16) |
+| `rent_negotiated` | 2019-12 | 2020-12-17 | Verksamhetsberättelse 2018–2019, Last-Modified |
+| `rent_negotiated` | 2020-12 | 2021-09-08 | Verksamhetsberättelse 2020, Last-Modified |
+| `rent_negotiated` | 2021-12 | 2022-06-21 | Verksamhetsberättelse 2021, Last-Modified (ModDate 2022-06-10) |
+| `rent_negotiated` | 2022-12 | 2024-02-19 | Verksamhetsberättelse 2022, Last-Modified (ModDate 2023-05-11; filen laddades om) |
+| `rent_negotiated` | 2024-12 | 2025-06-24 | Verksamhetsberättelse 2024, Last-Modified |
