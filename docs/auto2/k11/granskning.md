@@ -86,7 +86,36 @@ Flaggändringen påverkar inte de frysta varianterna (L använder alla serier), 
 
 ## Omkörning av K2:s frysta varianter
 
-<!--K2-->
+**Reproduktion först.** Med lagrad data och K2:s feature-mängd (43 katalogserier) återskapas K2 exakt
+(ridge_l 0,1989, ens_s 0,2009, ridge_s 0,2064; Holm 0,014 / 0,055 / 0,083). Men `k2_ml` på main @ 51fa62f
+ger inte K2:s variant: `catalog_keys()` tog *alla* månadsserier i katalogen, så L växte från 43 till 72 när K0:s
+prisledsserier mergades. Då blir `k2_avg_ridge_l` 0,2025 (Holm 0,095) redan utan rättning. **Rättat:** L är nu
+fryst till K2:s 43 serier (`k2_ml.L_KEYS`, test i `test_publication_calendar.py`).
+
+**Ändrade feature-celler** (målmånader 2015-02..2026-10, `python -m kpif_nowcast.k11_audit diff`):
+`cat_gdp_ind_yy` 81 månader, `cat_hh_consumption_yy` 80, `cat_ea_flash_*` 6–8 (decembrar), `ea_news` 7
+(decembrar, påverkar även S-varianterna), `cat_freight_ppi_deepsea` 3 (2025-10..12). Inga andra.
+
+**Resultat 2015-02..2026-10, n = 141** (DM ensidigt mot 50/50-snittet, Holm över K2:s 8 varianter, samma
+protokoll som K2; `k2_rerun_k2set_raw.md` / `k2_rerun_k2set_corrected.md`):
+
+| Variant | MAE före | MAE efter | p rå före → efter | Holm före → efter | Skärmen (Holm < 0,10 och 2024–26 ≤ 50/50) |
+|---|---|---|---|---|---|
+| `k2_avg_ridge_l` | 0,1989 | **0,2000** | 0,002 → 0,002 | 0,014 → **0,018** | klarar fortfarande |
+| `k2_avg_ens_s` | 0,2009 | **0,2020** | 0,008 → 0,012 | 0,055 → **0,082** | klarar fortfarande |
+| `k2_avg_ridge_s` | 0,2064 | **0,2073** | 0,014 → 0,022 | 0,083 → **0,132** | **klarar inte längre** |
+| 50/50 (referens) | 0,2165 | 0,2165 | | | |
+
+Mot `rb_updated`: Holm 0,039 / 0,040 / 0,045 efter rättning (alla tre < 0,05). 2018-02..2026-10 (ML aktiv,
+n = 105): 0,213 / 0,216 / 0,223 mot 50/50 0,235 (Holm 0,011 / 0,068 / 0,118). 2024–26 (använd, n = 34): 0,230 /
+0,218 / 0,227 mot 0,246, inget signifikant (Holm ≥ 0,35); alla tre fortfarande lägre än 50/50.
+
+Med L = 72 serier (main före frysningen) blir `k2_avg_ridge_l` 0,2050 efter rättning (Holm 0,154), alltså
+under skärmen; den varianten är dock inte K2:s förregistrerade (`k2_rerun_main_*.md`).
+
+**Varning:** vinsterna krymper med ca 0,001 pe MAE och p-värdena stiger. `k2_avg_ridge_s` faller under
+urvalsskärmen. `k2_avg_ridge_l` och `k2_avg_ens_s` klarar den fortfarande, men `k2_avg_ens_s` (K2:s huvudkandidat)
+har nu Holm 0,082 i stället för 0,055. De här är fortfarande urvalsevidens, inte bekräftelse.
 
 ## Rättningar i grenen
 
