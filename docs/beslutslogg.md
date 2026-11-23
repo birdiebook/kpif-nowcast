@@ -404,3 +404,8 @@ kandidatlistorna i J3/K2 och den nationella dashboarden. `by_key`, `refresh` och
 241 serier, 11 mått (AF-andel och antal, varsel, BAS, AKU, småhuspris, FPI, konkurser, folkmängd), bara deskriptivt.
 Inga modellvarianter. Länskarta BLOCKED (inget öppet länslager utan konto eller nytt GIS-paket), rutnätskarta i stället.
 Detaljer: [docs/auto2/k4/resultat.md](auto2/k4/resultat.md), [kvalitet](auto2/k4/kvalitet.md), [läget](auto2/k4/lage.md).
+
+## 2026-11-23 – K8 Livsmedelskomponenten (förregistrering)
+Livsmedelsbidraget (TAB6628) prognostiseras från PPI livsmedel, IMF-råvaror i SEK, KIX och KI:s prisplaner med
+laggar 1–6 mån; fyra varianter (fasta laggar, ridge med nästlad CV, ridge utan reviderade serier, K2-ensemblen +
+livsmedel): [docs/auto2/k8/hypotes.md](auto2/k8/hypotes.md).
