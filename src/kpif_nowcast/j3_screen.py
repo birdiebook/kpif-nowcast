@@ -21,7 +21,31 @@ PRIMARY = ("2017-02", "2026-10")
 NO_LOG_UNITS = ("%", "nettotal", "std", "100 = normalt")
 
 
-def screen_keys() -> list[str]:
+# Monthly catalog series as screen_keys() returned them before run 3 (main 129bbb0, 77 series). Run 3 wave 1
+# added 35 series to catalog.CATALOG; they are screened by v2_screen with its own hard-coded list, and this
+# list must not grow with the catalog (docs/auto3/v2/hypotes.md, section 6 point 8).
+SCREEN_KEYS_PRE_RUN3 = (
+    "brent_sek", "aku_unemp_nsa", "aku_unemp_sa", "gdp_ind_yy", "kix", "policy_rate", "ki_services",
+    "wage_private_nonmanual", "wage_private_manual_hourly", "wage_municipal_yy", "labour_cost_salaried_yy",
+    "labour_cost_workers_yy", "aku_employed", "hh_consumption_yy", "retail_volume_yy", "hh_infl_exp_median",
+    "hh_infl_perceived_median", "hh_price_exp_net", "ea_flash_total", "ea_flash_energy", "ea_flash_food",
+    "ea_flash_goods", "ea_flash_services", "ea_hicp_total", "fao_food_idx", "fao_cereals", "fao_dairy",
+    "gas_eu_usd", "wheat_usd", "gscpi", "freight_ppi_deepsea", "jobads_total", "jobads_ml", "jobads_ai",
+    "mortgage_rate_new", "hh_lending_growth", "nfc_lending_growth", "nier_barometer", "nier_conf_services",
+    "nier_conf_trade", "nier_conf_households", "bankruptcies", "ipi_yy", "service_prod_idx", "industry_orders_yy",
+    "af_varsel", "af_inskrivna_arbetslosa", "af_oppet_arbetslosa", "ppi_hmpi_consumer", "ppi_impi_consumer",
+    "ppi_itpi_consumer", "ppi_itpi_consumer_xfood", "ppi_hmpi_food", "ppi_impi_food", "kpif_xe_index",
+    "kpif_goods_index", "kpif_services_index", "ki_prices_grocery", "ki_prices_durables", "ki_prices_retail",
+    "ki_purchase_prices_grocery", "ki_prices_food_industry", "ki_prices_consumer_industry", "coffee_usd",
+    "cocoa_usd", "sugar_usd", "beef_usd", "pork_usd", "poultry_usd", "palm_oil_usd", "soy_oil_usd",
+    "rapeseed_oil_usd", "sunflower_oil_usd", "gvb_2y", "gvb_5y", "gvb_10y", "swestr",
+)
+
+
+def screen_keys(frozen: bool = True) -> list[str]:
+    """Series J3's screen runs on. frozen=False: every current monthly catalog series (grows with the catalog)."""
+    if frozen:
+        return list(SCREEN_KEYS_PRE_RUN3)
     from kpif_nowcast.catalog import CATALOG
 
     # lag_days < 0: deterministic calendars (L2 Easter), not indicators to screen

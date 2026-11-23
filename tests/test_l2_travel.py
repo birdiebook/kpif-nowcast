@@ -75,7 +75,7 @@ def test_easter_refresh_after_year_change_keeps_checks_green(monkeypatch, tmp_pa
 def test_calendar_series_kept_out_of_screen():
     from kpif_nowcast.j3_screen import screen_keys
 
-    keys = screen_keys()
+    keys = screen_keys(frozen=False)  # the unfrozen, catalog-driven list (J3's own list is frozen before run 3)
     assert "easter_window_days" not in keys and "easter_sunday_in_month" not in keys
     assert "guest_nights_total" in keys
 
