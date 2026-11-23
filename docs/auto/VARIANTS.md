@@ -25,4 +25,6 @@ J3:s screening räknas inte.
 | 32 | K2 | k2_avg_ridge_lnr (diagnostik, tillagd efter resultat, utanför Holm) | 4ef395e | 0,199 |
 | 33–34 | K0 | K0-C1 (på rb_updated), K0-C2 (på 50/50) | afa36e7 | 0,281 vs 0,281; 0,226 vs 0,232 (Holm 0,097) |
 
-**Löpande total: 34 (körning 2: 11/30)**
+| 35–36 | K6 | N1 k6_fi_el_dev, N2 k6_dk_el_dev (förreg. d69af51) | 4653ca9 | −0,011 (Holm 0,58); +0,002 (0,86) mot säsongsbaslinje |
+
+**Löpande total: 36 (körning 2: 13/30)**
