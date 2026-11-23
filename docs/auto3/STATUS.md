@@ -1,8 +1,8 @@
 # Status: autonom körning 3 (svensk data där överraskningarna sitter)
 
-**Lås:** orkestrerare (molnsession) 2026-11-23T11:42Z · heartbeat 2026-11-23T13:20Z
+**Lås:** orkestrerare (molnsession) 2026-11-23T11:42Z · heartbeat 2026-11-23T15:15Z
 **Start:** 2026-11-23 · **Bas:** main @ 129bbb0 · körning 2: STOP (bf11c0a)
-**Varianter i körningen:** 0/6 (projektet totalt 51 + 0 = 51) · **Screening:** räknas inte mot taket
+**Varianter i körningen:** 2/6 (projektet totalt 51 + 2 = 53) · **Screening:** räknas inte mot taket
 **Merge:** klara spår mergas till main av orkestreraren när pytest är grönt · **Brief:** [BRIEF.md](BRIEF.md) · regler: `docs/autonom-korning-2.md` på main, med ändringarna i briefen
 
 **Miljö (avvikelse från briefen):** körningen går i en molncontainer (Linux), inte på `C:\dev`. Worktrees ligger under
@@ -23,12 +23,12 @@ Hyresgästföreningen, Fastighetsägarna, FRED, NY Fed, FAO, Energinet, elpriset
 | L5 El (rörliga avtal, nät) | auto3/l5 | **KLAR**, granskad (8 fynd varav 1 **läcka**, rättade), mergas | – | 4ac1580 | 12 serier: avtalsandelar (TAB3571; rättelse 2024-09-27 och 2022-04 i LATE_RELEASES = läckan), nätpris per typkund (SCB TAB3950), Ei nättariffer och andel nätområden som höjde. BLOCKED: nätbolagens aviserade januarihöjningar (ingen samlad källa), TAB4310 (halvår stöds inte). | 12 min bygg / 106 / 618k |
 | L6 Kronan | auto3/l6 | **KLAR**, granskad (5 fynd, rättade), mergas | – | 8d7f970 | `sek_eur`, `sek_usd` (SWEA, månadsmedel 1993–, lag 1 d; ECU före 1999). | 6 min bygg / 54 / 421k |
 | L7 Snabb-KPI mot utfall | auto3/l7 | **KLAR**, granskad (5 fynd, rättade), mergas | – | cd5a536 | 7 serier: snabb-KPIF/KPIF-XE årstakt och m/m från 2024-09, fel snabb − först publicerat utfall (1987=100-tabellerna före 2026-01). | 7 min bygg / 79 / 534k |
-| L8 Snabbare testsvit | auto3/l8 | bygger (våg 1b) | – | – | – | – |
+| L8 Snabbare testsvit | auto3/l8 | **KLAR**, mergad i merge1 | – | a11ab45 | Orsaken till > 40 min: OpenMP-trådar i HGB som slogs om 4 kärnor (en nästlad anpassning > 12 min → 2,1 s med OMP_NUM_THREADS=1 i conftest). Memoiserad champion-historik. Samma 205 tester. | – |
 | L9 Månadsrutinen (kalender, snabb-KPI) | auto3/l9 | bygger (våg 1b) | – | – | – | – |
 | L10 Dashboards (förberedelse) | auto3/l10 | bygger (våg 1b) | – | – | – | – |
 | L2b Tillväxtverkets portal | auto3/l2b | bygger (våg 1b) | – | – | – | – |
 | L1b Källkontroll av kalendern | auto3/l1b | bygger (våg 1b) | – | – | – | – |
-| V2 Gemensam utvärdering | auto3/v2 | **pågår**: förregistrering → genomförande → 2 granskare → slutförande | 0/6 | – | – | – |
+| V2 Gemensam utvärdering | auto3/v2 | genomförd (d8f9ab5), granskning pågår | 2/6 | – | – | – |
 | V3 Avslut | – | väntar (våg 2) | – | – | – | – |
 
 ## Källås
@@ -36,6 +36,7 @@ Hyresgästföreningen, Fastighetsägarna, FRED, NY Fed, FAO, Energinet, elpriset
 - SCB: L5, L7 (turas om)
 
 ## Logg
+- 2026-11-23T15:15Z: V2 genomförd: 0 BH-överlevare, ingen variant klarade urvalsskärmen (v2_a_corr Holm 0,064, globalt 0,48; v2_r_corr Holm 0,143; projektet totalt 53 varianter); granskning pågår. L8 mergad i merge1 + rättat L6-ordningstest (mergen satte andra moduler mellan K0 och FX). Full pytest på merge1 körs.
 - 2026-11-23T13:20Z: Johannes: drygt 50 % av 5-timmarsfönstret använt, en timme kvar → ambitionen höjd. Våg 1b startad parallellt med våg 2: L8 testsvit (sviten > 40 min seriellt, merge-flaskhals), L9 månadsrutinen, L10 dashboards, L2b Tillväxtverkets portal, L1b primärkällkontroll. Miljön fick 6 värdar till (tillvaxtdata.tillvaxtverket.se, regeringen, riksdagen ×2, skatteverket, sverigesallmannytta). Pytest på merge1 avbröts av 40-minutersgränsen (inget fel), körs om med -n 4.
 - 2026-11-23T13:08Z: våg 2 startad från `auto3/merge1` (93f3d91), parallellt med pytest på merge1. Förregistrering pushas före resultat.
 - 2026-11-23T13:05Z: våg 1 klar (arbetsflöde 66 min väggtid, 20 agenter, 676 verktygsanrop). Alla sju spår granskade oberoende; granskarna fann 1 läcka (L5 TAB3571-rättelsen) och 13 wrong-fynd, alla rättade. 35 nya serier. Merge av alla sju i en omgång (`auto3/merge1`, union-lösning i catalog.py, publication.py, publiceringskalendern; datakatalogen omgenererad), pytest på sammanslaget resultat pågår.
