@@ -1,0 +1,28 @@
+utc,git_sha,variant,period,n,MAE,dm_p_vs_rb_updated
+2026-11-23T09:34:01Z,b8ed849+dirty,rb_updated,2015-02..2026-10 (primary),141,0.2555,nan
+2026-11-23T09:34:01Z,b8ed849+dirty,j2,2015-02..2026-10 (primary),141,0.2429,nan
+2026-11-23T09:34:01Z,b8ed849+dirty,avg_5050,2015-02..2026-10 (primary),141,0.2165,nan
+2026-11-23T09:34:01Z,b8ed849+dirty,k2_avg_ens_s,2015-02..2026-10 (primary),141,0.2009,nan
+2026-11-23T09:34:01Z,b8ed849+dirty,k7_med_half,2015-02..2026-10 (primary),141,0.2156,0.0127
+2026-11-23T09:34:01Z,b8ed849+dirty,k7_med_full,2015-02..2026-10 (primary),141,0.2176,0.0182
+2026-11-23T09:34:01Z,b8ed849+dirty,k7_cal_half,2015-02..2026-10 (primary),141,0.2156,0.011
+2026-11-23T09:34:01Z,b8ed849+dirty,k7_cal_full,2015-02..2026-10 (primary),141,0.2191,0.0181
+2026-11-23T09:34:01Z,b8ed849+dirty,k7_k2_cal_full,2015-02..2026-10 (primary),141,0.2104,0.0157
+2026-11-23T09:34:01Z,b8ed849+dirty,rb_updated,2018-02..2026-10 (K2 active),105,0.2932,nan
+2026-11-23T09:34:01Z,b8ed849+dirty,j2,2018-02..2026-10 (K2 active),105,0.2604,nan
+2026-11-23T09:34:01Z,b8ed849+dirty,avg_5050,2018-02..2026-10 (K2 active),105,0.2352,nan
+2026-11-23T09:34:01Z,b8ed849+dirty,k2_avg_ens_s,2018-02..2026-10 (K2 active),105,0.2142,nan
+2026-11-23T09:34:01Z,b8ed849+dirty,k7_med_half,2018-02..2026-10 (K2 active),105,0.2341,0.0037
+2026-11-23T09:34:01Z,b8ed849+dirty,k7_med_full,2018-02..2026-10 (K2 active),105,0.2365,0.0058
+2026-11-23T09:34:01Z,b8ed849+dirty,k7_cal_half,2018-02..2026-10 (K2 active),105,0.2347,0.0034
+2026-11-23T09:34:01Z,b8ed849+dirty,k7_cal_full,2018-02..2026-10 (K2 active),105,0.2399,0.0071
+2026-11-23T09:34:01Z,b8ed849+dirty,k7_k2_cal_full,2018-02..2026-10 (K2 active),105,0.2282,0.007
+2026-11-23T09:34:01Z,b8ed849+dirty,rb_updated,"2024-01..2026-10 (used, report only)",34,0.2668,nan
+2026-11-23T09:34:01Z,b8ed849+dirty,j2,"2024-01..2026-10 (used, report only)",34,0.2522,nan
+2026-11-23T09:34:01Z,b8ed849+dirty,avg_5050,"2024-01..2026-10 (used, report only)",34,0.2461,nan
+2026-11-23T09:34:01Z,b8ed849+dirty,k2_avg_ens_s,"2024-01..2026-10 (used, report only)",34,0.2168,nan
+2026-11-23T09:34:01Z,b8ed849+dirty,k7_med_half,"2024-01..2026-10 (used, report only)",34,0.2456,0.2137
+2026-11-23T09:34:01Z,b8ed849+dirty,k7_med_full,"2024-01..2026-10 (used, report only)",34,0.2522,0.3119
+2026-11-23T09:34:01Z,b8ed849+dirty,k7_cal_half,"2024-01..2026-10 (used, report only)",34,0.2439,0.193
+2026-11-23T09:34:01Z,b8ed849+dirty,k7_cal_full,"2024-01..2026-10 (used, report only)",34,0.2534,0.3235
+2026-11-23T09:34:01Z,b8ed849+dirty,k7_k2_cal_full,"2024-01..2026-10 (used, report only)",34,0.2374,0.237

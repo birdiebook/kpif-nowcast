@@ -407,3 +407,8 @@ Detaljer: [docs/auto2/k4/resultat.md](auto2/k4/resultat.md), [kvalitet](auto2/k4
 
 ## 2026-11-23 – K7 Tjänstekomponenten (förregistrering)
 Robust säsong (median) och påsk-/januariregressorer för tjänstedelen, 5 varianter (T1–T5): [docs/auto2/k7/hypotes.md](auto2/k7/hypotes.md).
+**Resultat (5 varianter, ingen klarade urvalsskärmen):** median-säsong och påsk-/januariregressorer gör tjänstedelen
+sämre, inte bättre (m/m-MAE 0,157 → 0,160–0,162 2015–2026; 0,067 → 0,068–0,069 på den rena perioden 2000–2009).
+Totalt T1–T4 −0,001 till +0,003 mot 50/50 (Holm 1), T5 +0,010 mot `k2_avg_ens_s`. Påskeffekten finns (≈ 0,01 pe per dag)
+men är liten. Tjänstefelet är resor och går inte att förutse med data vi har vid deadline. Ingen frysning.
+Detaljer: [docs/auto2/k7/resultat.md](auto2/k7/resultat.md).
