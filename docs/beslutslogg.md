@@ -370,3 +370,11 @@ som bygger om allt från `data/raw/`, DuckDB-datatester och en champion/challeng
 **Val:** data i Actions-cachen (inget konto), låsta paketversioner, FINAL-skuggor skrivs aldrig över.
 Inga nya varianter. Reproducerbarhet från ren klon + råcache är verifierad, men en helt nätbaserad hämtning
 från noll är inte testad. Detaljer: [docs/auto2/k1/resultat.md](auto2/k1/resultat.md).
+
+## 2026-11-23 – K0 Prisleden (förregistrering)
+Nya serier i `catalog_prices.py`, screening enligt J3:s protokoll och varianterna K0-C1, K0-C2: [docs/auto2/k0/hypotes.md](auto2/k0/hypotes.md).
+**Resultat (urvalsevidens, K0 förbrukar 2 varianter):** ingen av 29 prisledsserier överlever BH på h=1, 3 eller 12
+(bäst h=1: PPI livsmedel −0,004, p = 0,32). K0-C1 (ppi_hmpi_food, rapsolja, SWESTR på rb_updated) ger +0,000.
+K0-C2 (samma på 50/50-snittet) MAE 0,226 mot 0,232, Holm p = 0,097: klarade urvalsskärmen formellt men
+obekräftad (revisionsläckage möjligt), bara aktiv 25 månader, alla i använda 2024–26. Inget håller; ingen
+frysning. Serierna behålls i katalogen. Detaljer: [docs/auto2/k0/resultat.md](auto2/k0/resultat.md).
