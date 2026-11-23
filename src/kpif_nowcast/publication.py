@@ -24,6 +24,13 @@ EA_FLASH_KEYS = ("ea_flash_total", "ea_flash_energy", "ea_flash_food", "ea_flash
 # 2-DDMMYYYY-ap). Every other month 2017-08..2026-10 was released on or before day 4.
 EA_FLASH_LATE = {
     "2017-12": "2018-01-05",
+    "2019-12": "2020-01-07",
+    "2020-12": "2021-01-07",
+    "2021-12": "2022-01-07",
+    "2022-12": "2023-01-06",
+    "2023-12": "2024-01-05",
+    "2024-12": "2025-01-07",
+    "2025-12": "2026-01-07",
 }
 
 # BLS PPI releases delayed by the 2025 lapse in appropriations (BLS, historical release dates, notes 8-11).

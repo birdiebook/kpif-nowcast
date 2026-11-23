@@ -3,8 +3,8 @@
 `python -m kpif_nowcast.k11_audit diff`  - which K2 feature cells change when known_from follows the calendar
 `python -m kpif_nowcast.k11_audit rerun` - all 8 K2 variants on corrected data (Holm over the same 8 as K2)
 `python -m kpif_nowcast.k11_audit rerun raw` - the same on the stored (uncorrected) table, as a reproduction check
-Add `k2set` to use K2's frozen feature set L (43 catalog series: the catalog before K0's price-chain series
-were merged). Without it, L is whatever `k2_ml.catalog_keys()` returns today (72 series on main @ 51fa62f).
+Default feature set L = K2's 43 series (`k2_ml.L_KEYS`, frozen by K11; written `k2set`). Add `main` to use every
+monthly catalog series instead, as `k2_ml` did on main @ 51fa62f (72 series after K0's price-chain series).
 
 Results: docs/auto2/k11/k2_rerun_<set>_<raw|corrected>.md.
 """
@@ -25,13 +25,12 @@ PERIODS = [("2015-02..2026-10 (primary)", "2015-02"), ("2018-02..2026-10 (ML act
            ("2024-01..2026-10 (used, report only)", "2024-01")]
 
 
-def use_k2_frozen_set() -> None:
-    """Restrict feature set L to K2's 43 catalog series (drop catalog_prices, added by K0 after K2 ran)."""
-    from kpif_nowcast import catalog_prices, k2_ml
+def use_all_monthly_series() -> None:
+    """Feature set L as on main @ 51fa62f: every monthly catalog series (72), not K2's frozen 43."""
+    from kpif_nowcast import k2_ml
 
-    k0 = set(catalog_prices.keys())
     original = k2_ml.catalog_keys
-    k2_ml.catalog_keys = lambda: [t for t in original() if t[0] not in k0]
+    k2_ml.catalog_keys = lambda frozen=True: original(frozen=False)
 
 
 def design(raw: bool) -> pd.DataFrame:
@@ -61,7 +60,7 @@ def diff() -> pd.DataFrame:
     return out
 
 
-def rerun(raw: bool = False, setname: str = "main") -> None:
+def rerun(raw: bool = False, setname: str = "k2set") -> None:
     from kpif_nowcast.evaluation import log_run
     from kpif_nowcast.j1_hybrid import dm_one_sided
     from kpif_nowcast.j2_el import holm
@@ -113,10 +112,10 @@ def rerun(raw: bool = False, setname: str = "main") -> None:
 
 if __name__ == "__main__":
     args = sys.argv[1:]
-    k2set = "k2set" in args
-    if k2set:
-        use_k2_frozen_set()
+    main_set = "main" in args
+    if main_set:
+        use_all_monthly_series()
     if args[:1] == ["diff"]:
         diff()
     else:
-        rerun(raw="raw" in args, setname="k2set" if k2set else "main")
+        rerun(raw="raw" in args, setname="main" if main_set else "k2set")

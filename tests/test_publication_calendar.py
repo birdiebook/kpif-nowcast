@@ -71,3 +71,10 @@ def test_enforce_only_moves_known_from_later():
 def test_known_from_uses_later_of_lag_and_release():
     kf = known_from("freight_ppi_deepsea", pd.PeriodIndex(["2025-08", "2025-09"], freq="M"), 21)
     assert list(kf) == [pd.Timestamp("2025-09-21"), pd.Timestamp("2025-11-25")]
+
+
+def test_k2_feature_set_l_is_frozen():
+    """K2's L must not grow with the catalog (it did: 43 -> 72 series when K0 was merged)."""
+    from kpif_nowcast.k2_ml import L_KEYS, catalog_keys
+
+    assert len(L_KEYS) == 43 and [k for k, _, _ in catalog_keys()] == [k for k in L_KEYS]

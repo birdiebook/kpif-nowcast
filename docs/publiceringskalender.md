@@ -112,6 +112,13 @@ Granskning, metod och dom: [auto2/k11/granskning.md](auto2/k11/granskning.md). L
 | Serie | Period | Releasedatum | Källa |
 |---|---|---|---|
 | `ea_flash_*` | 2017-12 | 2018-01-05 | Eurostat 2-05012018-ap |
+| `ea_flash_*` | 2019-12 | 2020-01-07 | Eurostat 2-07012020-ap |
+| `ea_flash_*` | 2020-12 | 2021-01-07 | Eurostat 2-07012021-ap |
+| `ea_flash_*` | 2021-12 | 2022-01-07 | Eurostat 2-07012022-ap |
+| `ea_flash_*` | 2022-12 | 2023-01-06 | Eurostat 2-06012023-ap |
+| `ea_flash_*` | 2023-12 | 2024-01-05 | Eurostat 2-05012024-ap |
+| `ea_flash_*` | 2024-12 | 2025-01-07 | Eurostat 2-07012025-ap |
+| `ea_flash_*` | 2025-12 | 2026-01-07 | Eurostat 2-07012026-ap |
 | `freight_ppi_deepsea` | 2025-09 | 2025-11-25 | BLS, historical release dates for the PPI |
 | `freight_ppi_deepsea` | 2025-10 | 2026-01-14 | BLS, historical release dates for the PPI |
 | `freight_ppi_deepsea` | 2025-11 | 2026-01-14 | BLS, historical release dates for the PPI |

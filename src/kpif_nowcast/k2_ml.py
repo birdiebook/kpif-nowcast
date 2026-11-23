@@ -62,12 +62,27 @@ POSTHOC = {"k2_avg_ridge_lnr": Variant("avg", "ridge", "LNR")}
 ALL_VARIANTS = {**VARIANTS, **POSTHOC}
 
 
-def catalog_keys() -> list[tuple[str, str, bool]]:
-    """(key, unit, revised) for the monthly catalog series in feature set L."""
+# Feature set L as preregistered and run by K2 (43 monthly catalog series). Frozen by K11: before, L was every
+# monthly catalog series, so it grew to 72 when K0's price-chain series were merged and k2_avg_ridge_l changed.
+L_KEYS = (
+    "brent_sek", "aku_unemp_nsa", "aku_unemp_sa", "gdp_ind_yy", "kix", "policy_rate", "ki_services",
+    "wage_private_nonmanual", "wage_private_manual_hourly", "wage_municipal_yy", "labour_cost_salaried_yy",
+    "labour_cost_workers_yy", "aku_employed", "hh_consumption_yy", "retail_volume_yy", "hh_infl_exp_median",
+    "hh_infl_perceived_median", "hh_price_exp_net", "ea_flash_total", "ea_flash_energy", "ea_flash_food",
+    "ea_flash_goods", "ea_flash_services", "ea_hicp_total", "fao_food_idx", "fao_cereals", "fao_dairy",
+    "gas_eu_usd", "wheat_usd", "gscpi", "freight_ppi_deepsea", "jobads_total", "mortgage_rate_new",
+    "hh_lending_growth", "nfc_lending_growth", "nier_barometer", "nier_conf_services", "nier_conf_trade",
+    "nier_conf_households", "bankruptcies", "ipi_yy", "service_prod_idx", "industry_orders_yy",
+)
+
+
+def catalog_keys(frozen: bool = True) -> list[tuple[str, str, bool]]:
+    """(key, unit, revised) for the monthly catalog series in feature set L (frozen=False: all monthly series)."""
     from kpif_nowcast.catalog import CATALOG
 
     return [(s.key, s.unit, s.revised) for s in CATALOG
-            if s.freq == "M" and s.key not in EXCLUDE_CATALOG and not s.key.startswith("af_")]
+            if s.freq == "M" and s.key not in EXCLUDE_CATALOG and not s.key.startswith("af_")
+            and (not frozen or s.key in L_KEYS)]
 
 
 def build_design(kpif, comps, feats, contracts, se3, rb_fc, obs, with_catalog: bool = True) -> pd.DataFrame:
