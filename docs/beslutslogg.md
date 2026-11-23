@@ -492,4 +492,5 @@ Pages blir aktuell av sig själv. Bara aggregerad öppen data som redan finns i 
 Ett nytt, fristående projekt planeras för att följa AI-utrullningen i världen med samma metod (katalog,
 `known_from`/`as_of()`, förregistrering, scorecard). **Val:** eget publikt repo, neutral spårning av takt och
 förändring i takt i stället för larmnivåer, och ingen koppling till placeringar i det publika repot.
-Ramverket kopieras, det paketeras inte. Plan: [docs/ai-tracker/plan.md](ai-tracker/plan.md).
+Ramverket kopieras, det paketeras inte. Planen ligger i repot
+[birdiebook/ai-rollout-tracker](https://github.com/birdiebook/ai-rollout-tracker) (`docs/plan.md`).
