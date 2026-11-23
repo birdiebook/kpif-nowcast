@@ -63,3 +63,29 @@ urval per region och hur biljetter som köpts före bytet räknas är okänt, s�
   lägre januarieffekt än vanligt 2027, inte en engångshändelse. Inget beslutat i K13:s källor.
 - Budgetpropositionen för 2027 (läggs senast 12 nov, riksdagen röstar ~9 dec 2026) kan innehålla nya skatteändringar
   från 2027-01. Kontrollera före januariprognosen.
+
+## Not: primärkällkontroll (L1b, 2026-11-23)
+`k13_tax.EVENTS` och tabellerna ovan är oförändrade så att K13:s varianter går att reproducera. Kontrollen mot
+primärkällor (riksdagens `dokumentstatus`, propositioner, Skatteverkets skattesatser) gav:
+- **2026-04 matmomsen: beslutsdatumet är fel.** BP 2026 aviserade bara sänkningen. Lagen kom i prop. 2025/26:55
+  (25 nov 2025) och riksdagen beslutade 25 feb 2026 (bet. 2025/26:SkU9), inte "senast 2025-11-30". Beslutet låg
+  före deadline för 2026-04 (2026-05-04), så rensningen och K13:s varianter påverkas inte. `admin_calendar` använder
+  det verifierade datumet.
+- **2022-10:** källan (Företagarna) är sekundär. Primärkälla: solnedgången 30 sep 2022 i prop. 2021/22:221, beslut
+  bet. 2021/22:FiU39 27 apr 2022 (före K13:s "senast"-datum 2022-04-30, alltså korrekt).
+- **2026-01 elskatten:** länken om att låsa elskatten på 36,0 öre/kWh 2027 gäller en remiss (maj 2026) som inte
+  kom med i övergångsregeringens prop. 2026/27:1. Den ordinarie indexeringen gäller 2027. Själva händelsen
+  (36,0 öre/kWh 2026, prop. 2025/26:1 avsnitt 13.12.2, beslut bet. 2025/26:FiU1 26 nov 2025) stämmer.
+- **2022-05, 2026-05, 2026-07:** riksdagens beslut 27 apr 2022 (FiU39), 22 apr 2026 (FiU48) och 17 jun 2026
+  (FiU47), alla före K13:s "senast"-datum. Storlekarna stämmer med Skatteverket (bensin: energiskatt 1,52 → 0,70
+  kr/l maj–sep 2026, koldioxidskatt −2,40 kr/l jul–nov 2026).
+- **2026-12:** bekräftat. Skatteverkets skattesatser för 1–31 dec 2026 är 4,79 kr/l på bensin (miljöklass 1) mot
+  2,39 kr/l i okt–nov. Ingen förlängning i prop. 2026/27:1 eller prop. 2026/27:2, och inget förslag i riksdagens
+  dokumentlista 2026/27.
+- **Framåt (2027):** prop. 2026/27:1 är lämnad (12 nov 2026). Den innehåller bara ett inkomstskatteförslag, och den
+  aviserade tobaksskattehöjningen (+3,5 %) genomförs inte (tabell 1.5). Drivmedelsindexeringen från 1 jan 2027:
+  bensin +10 öre/l, diesel +8,5 öre/l (Skatteverket).
+- **Saknas i kalendern, men utan nettoeffekt:** 1 jul 2025 sänktes energiskatten på bensin och diesel 32 öre/l
+  samtidigt som reduktionsplikten höjdes (prop. 2024/25:131). KS-energidelen −0,05 i juli 2025 är alltså inte en
+  pumpprisändring. Står som rad med effekt 0 i `admin_calendar`.
+
