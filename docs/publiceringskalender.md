@@ -126,7 +126,7 @@ Granskning, metod och dom: [auto2/k11/granskning.md](auto2/k11/granskning.md). L
 
 ## Körning 3: L7
 
-Snabb-KPI (SCB TAB6445) och snabb minus utfall (TAB6445 minus TAB6590/TAB6593). Releasedatum per månad: `catalog_flash.RELEASES` (låst av `tests/test_l7_flash.py`) och [auto3/l7/resultat.md](auto3/l7/resultat.md). Snabb-KPI publiceras fem arbetsdagar före ordinarie KPI. Det är aldrig känt vid deadline dag 4 för samma målmånad (dag-4-releaserna kommer kl. 08.00 samma dag som månadsrutinen ska vara klar, och rutinen körs före snabb-KPI).
+Snabb-KPI (SCB TAB6445) och snabb minus utfall. Utfallet är det först publicerade: t.o.m. 2025-12 från 1987=100-tabellerna TAB5919/TAB5918 (frysta efter 2025-12), från 2026-01 från TAB6590/TAB6593 (2020=100). De omräknade 2020=100-tabellerna skiljer 0,1 från förstapubliceringen i 4 celler 2024-09..2025-12 (se [auto3/l7/resultat.md](auto3/l7/resultat.md), Granskning). Releasedatum per månad: `catalog_flash.RELEASES` (låst av `tests/test_l7_flash.py`). Snabb-KPI publiceras fem arbetsdagar före ordinarie KPI. I backfill är det aldrig känt vid deadline dag 4 för samma målmånad (dag-4-releaserna kommer kl. 08.00 samma dag, och rutinen körs före snabb-KPI). Undantag: en skarp hämtning samma dag som en dag-4-release, efter kl. 08.00, får `known_from` = hämtdagen kl. 00.00 och syns då vid deadline (projektets generella regel i `observations.upsert`).
 
 | Nyckel | Fördröjning | Rev. | Belagd fördröjning (d) | Belägg | Dom |
 |---|---|---|---|---|---|
@@ -134,6 +134,6 @@ Snabb-KPI (SCB TAB6445) och snabb minus utfall (TAB6445 minus TAB6590/TAB6593). 
 | `kpif_flash_mm` | 8 | nej | 4–8 (som `kpif_flash_yy`) | Som `kpif_flash_yy` | OK |
 | `kpif_xe_flash_yy` | 8 | nej | 4–8 (som `kpif_flash_yy`) | Som `kpif_flash_yy` | OK |
 | `kpif_xe_flash_mm` | 8 | nej | 4–8 (som `kpif_flash_yy`) | Som `kpif_flash_yy` | OK |
-| `kpif_flash_err_yy` | 20 | nej | 11–20 (ordinarie KPI: sep 2024 → 2024-10-15, jan 2025 → 2025-02-18, jan 2026 → 2026-02-20, okt 2026 → 2026-11-12) | SCB statistiknyheter KPI och "Nästa publiceringstillfälle" i Snabb-KPI-nyheterna, 26 releaser | OK; januari kommer senast (dag 18–20). Gräns för läckage ≥ 32 d |
+| `kpif_flash_err_yy` | 20 | nej | 11–20 (ordinarie KPI: sep 2024 → 2024-10-15, jan 2025 → 2025-02-18, jan 2026 → 2026-02-20, okt 2026 → 2026-11-12) | SCB statistiknyheter KPI och "Nästa publiceringstillfälle" i Snabb-KPI-nyheterna, 26 releaser | OK; januari kommer senast (dag 18–20). Gräns för läckage ≥ 32 d. Rev.: nej, utfallet tas som först publicerat (1987=100 före 2026-01) |
 | `kpif_flash_err_mm` | 20 | nej | 11–20 (som `kpif_flash_err_yy`) | Som `kpif_flash_err_yy` | OK |
 | `kpif_xe_flash_err_yy` | 20 | nej | 11–20 (som `kpif_flash_err_yy`) | Som `kpif_flash_err_yy` | OK |

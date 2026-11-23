@@ -15,9 +15,9 @@
 | `kpif_flash_mm` | Snabb-KPI: KPIF, månadsförändring | M | 2024-09–2026-10 | 8 d | nej | SCB TAB6445 (Snabb-KPI) | SCB:s snabbestimat, en vecka före utfallet: referens för nowcasten. |
 | `kpif_xe_flash_yy` | Snabb-KPI: KPIF-XE, årstakt | M | 2024-09–2026-10 | 8 d | nej | SCB TAB6445 (Snabb-KPI) | SCB:s snabbestimat, en vecka före utfallet: referens för nowcasten. |
 | `kpif_xe_flash_mm` | Snabb-KPI: KPIF-XE, månadsförändring | M | 2024-09–2026-10 | 8 d | nej | SCB TAB6445 (Snabb-KPI) | SCB:s snabbestimat, en vecka före utfallet: referens för nowcasten. |
-| `kpif_flash_err_yy` | Snabb-KPI minus utfall: KPIF, årstakt | M | 2024-09–2026-10 | 20 d | nej | SCB TAB6445 minus TAB6590 | Hur mycket snabbestimatet missar det slutliga utfallet. |
-| `kpif_flash_err_mm` | Snabb-KPI minus utfall: KPIF, månadsförändring | M | 2024-09–2026-10 | 20 d | nej | SCB TAB6445 minus TAB6590 | Hur mycket snabbestimatet missar det slutliga utfallet. |
-| `kpif_xe_flash_err_yy` | Snabb-KPI minus utfall: KPIF-XE, årstakt | M | 2024-09–2026-10 | 20 d | nej | SCB TAB6445 minus TAB6593 | Hur mycket snabbestimatet missar det slutliga utfallet. |
+| `kpif_flash_err_yy` | Snabb-KPI minus utfall: KPIF, årstakt | M | 2024-09–2026-10 | 20 d | nej | SCB TAB6445 minus TAB5919/TAB6590 | Hur mycket snabbestimatet missar det slutliga utfallet. |
+| `kpif_flash_err_mm` | Snabb-KPI minus utfall: KPIF, månadsförändring | M | 2024-09–2026-10 | 20 d | nej | SCB TAB6445 minus TAB5919/TAB6590 | Hur mycket snabbestimatet missar det slutliga utfallet. |
+| `kpif_xe_flash_err_yy` | Snabb-KPI minus utfall: KPIF-XE, årstakt | M | 2024-09–2026-10 | 20 d | nej | SCB TAB6445 minus TAB5918/TAB6593 | Hur mycket snabbestimatet missar det slutliga utfallet. |
 
 ## Prisleden: producent-, import- och planerade priser
 

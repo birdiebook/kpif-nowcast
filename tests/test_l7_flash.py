@@ -33,9 +33,35 @@ def test_specs_registered():
         assert s.lag_days == (cf.LAG_ERR if "_err_" in s.key else cf.LAG_FLASH)
 
 
-def test_flash_never_known_at_day4_deadline():
-    """Flash for t has known_from after day 4 of t+1, so the day-4 nowcast of t never sees it."""
-    assert cf.LAG_FLASH > 4
+def _deadline(t: pd.Period) -> pd.Timestamp:
+    """Day-4 deadline for target month t (00:00), as in forecast.py / horizon.origin_date."""
+    return (t + 1).to_timestamp() + pd.Timedelta(days=3)
+
+
+def test_flash_never_known_at_day4_deadline(tmp_path, monkeypatch):
+    """Backfilled flash for t is not in as_of(day-4 deadline of t), also when SCB released on day 4.
+
+    A live fetch made on a day-4 release day is stored with known_from = fetch date (00:00) and is
+    therefore visible at that deadline: documented caveat (module docstring, resultat.md).
+    """
+    from kpif_nowcast import observations as obs
+    from kpif_nowcast import publication
+
+    monkeypatch.setattr(obs, "PATH", tmp_path / "obs.parquet")
+    day4 = [p for p, (f, _) in cf.RELEASES.items() if pd.Timestamp(f).day == 4]
+    assert day4  # the case that matters: release on the deadline day
+    per = pd.PeriodIndex(sorted(cf.RELEASES), freq="M")
+    obs.upsert("kpif_flash_yy", pd.Series(1.0, index=per), fetched_at=date(2026, 11, 23))
+    for p in per:
+        assert p not in obs.as_of("kpif_flash_yy", _deadline(p)).index, p
+        assert p in obs.as_of("kpif_flash_yy", (p + 1).to_timestamp() + pd.Timedelta(days=8)).index  # day 9
+    kf = publication.known_from("kpif_flash_yy", per, cf.LAG_FLASH)
+    assert (kf > pd.DatetimeIndex([_deadline(p) for p in per])).all()
+
+    # live fetch on a day-4 release day: known_from = that day 00:00 = the deadline (caveat)
+    t = pd.Period("2027-02", "M")
+    obs.upsert("kpif_flash_yy", pd.Series([2.0], index=pd.PeriodIndex([t])), fetched_at=date(2027, 3, 4))
+    assert t in obs.as_of("kpif_flash_yy", _deadline(t)).index
 
 
 def test_lags_cover_every_documented_release():
@@ -65,6 +91,21 @@ def test_error_from_aligns_and_rounds():
     final = pd.Series([1.0, 1.5], index=idx[:2])
     e = cf.error_from(flash, final)
     assert list(e.index.astype(str)) == ["2024-09", "2024-10"] and list(e) == [0.1, 0.0]
+
+
+def test_final_from_splices_at_rebase():
+    idx = pd.period_range("2025-11", "2026-02", freq="M")
+    old = pd.Series([1.8, 1.5, 9.9, 9.9], index=idx)
+    new = pd.Series([1.9, 1.6, 2.0, 1.7], index=idx)
+    f = cf.final_from(old, new)
+    assert list(f.index.astype(str)) == ["2025-11", "2025-12", "2026-01", "2026-02"]
+    assert list(f) == [1.8, 1.5, 2.0, 1.7]
+
+
+def test_specs_name_both_final_tables():
+    for s in cf.specs():
+        if "_err_" in s.key:
+            assert "TAB591" in s.source and "TAB659" in s.source and "1987=100" in s.note
 
 
 def test_cache_age_and_offline(tmp_path, monkeypatch):
@@ -110,3 +151,20 @@ def test_values_plausible(table):
     w = table.sort_values("known_from").pivot_table(index="period", columns="series", values="value", aggfunc="last")
     assert w[["kpif_flash_yy", "kpif_xe_flash_yy"]].abs().max().max() < 15
     assert w[["kpif_flash_err_yy", "kpif_flash_err_mm", "kpif_xe_flash_err_yy"]].abs().max().max() <= 0.5
+
+
+# First-published finals from SCB's news releases "Konsumentprisindex (KPI), <month> <year>" where the
+# rebased 2020=100 tables differ by 0.1 (granskning, docs/auto3/l7/resultat.md).
+FIRST_PUBLISHED = {
+    ("kpif_flash_err_yy", "2024-11"): (1.9, 1.8),  # (flash, first-published final), release 2024-12-12
+    ("kpif_flash_err_mm", "2024-12"): (0.3, 0.3),  # release 2025-01-15 (TAB6590: 0.2)
+    ("kpif_xe_flash_err_yy", "2024-12"): (2.1, 2.0),  # release 2025-01-15 (TAB6593: 2.1)
+    ("kpif_flash_err_yy", "2025-08"): (3.3, 3.2),  # release 2025-09-11 (TAB6590: 3.3)
+}
+
+
+def test_errors_use_first_published_final(table):
+    w = table.sort_values("known_from").pivot_table(index="period", columns="series", values="value", aggfunc="last")
+    for (key, per), (fl, fin) in FIRST_PUBLISHED.items():
+        assert w.loc[per, key] == pytest.approx(round(fl - fin, 1)), (key, per)
+    assert (table["source"] != "revision").all()

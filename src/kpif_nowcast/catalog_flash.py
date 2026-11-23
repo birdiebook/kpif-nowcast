@@ -4,7 +4,12 @@ Source: SCB PxWebApi v2 (CC0, no key).
 - TAB6445 "Snabb-KPI: preliminära förändringstal för KPI, KPIF och KPIF-XE (en decimal)": the headline
   numbers as published in the flash release (one decimal). First real-time release: September 2024,
   published 2024-10-08.
-- Final outcomes: TAB6590 (KPIF) and TAB6593 (KPIF-XE), official monthly and 12-month changes (one decimal).
+- Final outcomes as first published (one decimal): up to 2025M12 the 1987=100 tables TAB5919 (KPIF) and
+  TAB5918 (KPIF-XE), frozen after 2025M12; from 2026M01 the 2020=100 tables TAB6590 (KPIF) and TAB6593
+  (KPIF-XE). SCB rebased to 2020=100 with the January 2026 release, and the rebased tables recompute the
+  rounded rates for earlier months: 4 of the 48 flash-comparable cells 2024-09..2025-12 differ by 0.1 from the
+  first-published figure (KPIF y/y 2024-11 and 2025-08, KPIF m/m 2024-12, KPIF-XE y/y 2024-12; checked
+  against SCB's KPI news releases). Using the rebased table would date today's vintage back in the backfill.
 
 TAB6394 (two decimals) also starts in 2024M08, a month before the first real-time release, so at least
 that month was back-calculated; we use the one-decimal table, whose 26 values 2024-09..2026-10 equal the
@@ -12,11 +17,16 @@ numbers in SCB's flash news releases (checked, see docs/auto3/l7/resultat.md).
 
 Publication lags (days after period end, rounded towards later publication):
 - Flash: five working days before the ordinary KPI release, observed day 4-8 of t+1 (26 releases
-  2024-10-08..2026-11-05) -> 8 days. Day 4 releases are at 08:00 on the deadline day; with 8 days the flash
-  for t is never treated as known at the day-4 deadline for t, which matches the monthly routine (run before
-  the flash). Not revised: the flash is replaced by the final figure, the table keeps the first release.
+  2024-10-08..2026-11-05) -> 8 days. Day 4 releases are at 08:00 on the deadline day; with 8 days the
+  backfilled flash for t is never known at the day-4 deadline for t, which matches the monthly routine (run
+  before the flash). Caveat: a live fetch stores known_from = min(period end + lag, fetch date at 00:00), so a
+  fetch on a day-4 release day after 08:00 makes the flash visible at that day's deadline (observations.upsert,
+  publication.enforce; project-wide convention). Not revised: the flash is replaced by the final figure, the
+  table keeps the first release.
 - Flash minus final: known when the final figure is out, observed day 11-20 of t+1 (January releases come
-  latest: 2025-02-18, 2026-02-20) -> 20 days. KPIF is not revised, so revised=False.
+  latest: 2025-02-18, 2026-02-20) -> 20 days. With the final taken as first published (above), the values
+  are the ones that were known at the time, so revised=False. (The ordinary KPIF series kpif_yy/kpif_index
+  come from the rebased TAB6590 and do carry the rebase differences before 2026.)
 
 Raw responses are cached under data/raw/l7/scb_<table>_<fetch date>.json; a file at most MAX_AGE_DAYS old is
 reused instead of downloading again. In offline mode (KPIF_OFFLINE=1) the newest cached file is used.
@@ -42,10 +52,15 @@ FLASH_KPIF, FLASH_XE = "SKPI02", "SKPI03"
 FLASH_MM, FLASH_YY = "000007PK", "000007PM"
 FIRST_RELEASE = pd.Period("2024-09", "M")  # first real-time Snabb-KPI, published 2024-10-08
 
-FINAL = {  # aggregate -> (table, m/m code, y/y code)
+FINAL = {  # aggregate -> (table, m/m code, y/y code), 2020=100, used from REBASE
     FLASH_KPIF: ("TAB6590", "000007ZO", "000007ZM"),
     FLASH_XE: ("TAB6593", "000007ZX", "000007ZV"),
 }
+FINAL_1987 = {  # aggregate -> (table, m/m code, y/y code), 1987=100, first-published finals before REBASE
+    FLASH_KPIF: ("TAB5919", "000005HS", "PR0101F1"),
+    FLASH_XE: ("TAB5918", "000005HO", "000005HQ"),
+}
+REBASE = pd.Period("2026-01", "M")  # first month published on 2020=100 (release 2026-02-20)
 
 LAG_FLASH, LAG_ERR = 8, 20
 
@@ -143,9 +158,17 @@ def flash(aggr: str, content: str):
     return f
 
 
+def final_from(old: pd.Series, new: pd.Series) -> pd.Series:
+    """First-published finals: 1987=100 rates before REBASE, 2020=100 rates from REBASE."""
+    return pd.concat([old[old.index < REBASE], new[new.index >= REBASE]]).sort_index()
+
+
 def final(aggr: str, which: str) -> pd.Series:
-    table, mm, yy = FINAL[aggr]
-    return _series(_payload(table), ContentsCode=mm if which == "mm" else yy)
+    def one(spec: tuple[str, str, str]) -> pd.Series:
+        table, mm, yy = spec
+        return _series(_payload(table), ContentsCode=mm if which == "mm" else yy)
+
+    return final_from(one(FINAL_1987[aggr]), one(FINAL[aggr]))
 
 
 def error(aggr: str, which: str):
@@ -184,11 +207,14 @@ def specs() -> list:
                         note="Från 2024-09 (första publiceringen 2024-10-08). Publiceras dag 4–8 i t+1, "
                              "alltså efter vår deadline för t. Ersätts av utfallet, revideras inte."))
     for key, aggr, which, label in ERROR_SERIES:
-        table = FINAL[aggr][0]
-        out.append(Spec(key, "inflation", label, "procentenheter", "M", f"SCB {FLASH_TABLE} minus {table}",
+        new, old = FINAL[aggr][0], FINAL_1987[aggr][0]
+        out.append(Spec(key, "inflation", label, "procentenheter", "M",
+                        f"SCB {FLASH_TABLE} minus {old}/{new}",
                         error(aggr, which), LAG_ERR,
                         link="Hur mycket snabbestimatet missar det slutliga utfallet.",
-                        note="Båda med en decimal, som publicerade. Känd när utfallet publiceras (dag 11–20)."))
+                        note="Båda med en decimal, som först publicerade: utfallet t.o.m. 2025-12 från "
+                             f"1987=100-tabellen {old}, därefter {new} (2020=100). Känd när utfallet "
+                             "publiceras (dag 11–20)."))
     return out
 
 
