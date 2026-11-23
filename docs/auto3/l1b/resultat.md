@@ -69,3 +69,7 @@ gällde testkörningen.
 Också rättat: dokumentets januari-eko stod som −0,155 (inaktuellt från L1). Det är nu −0,193.
 
 Förslagen är oförändrade: 2026-12 `--adjust 0.52`, 2027-01 `--adjust -0.03`.
+
+**Tester:** hela sviten på auto3/l1b med origin/main 856ced2 inmergad (f604920): `python -m pytest -q -n 2` gav
+207 passed, 11 skipped på 9 min 47 s. Riktade tester (test_l1_admin_calendar, test_publication_calendar,
+test_k13_tax): 22 passed, 1 skipped.
