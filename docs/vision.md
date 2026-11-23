@@ -2,8 +2,10 @@
 
 > **Förstå svensk ekonomi genom inflationen, och visa det varje månad, öppet och ärligt.**
 
-Projektet började som en fråga om att lära sig prediktiv modellering. Det har blivit tre saker
-som hänger ihop: en prognos, en bild av Sverige och ett sätt att arbeta.
+Projektet står på egna meriter. Målet är **bästa möjliga lösning**: en så träffsäker
+inflationsprognos som möjligt och den bästa bilden av läget i Sverige, sedd genom KPIF.
+Varje val ska ge snabb och effektiv progress med kvalitet. Det är tre saker som hänger ihop:
+en prognos, en bild av Sverige och ett sätt att arbeta.
 
 ## 1. Kärnan: en ärlig inflationsprognos varje månad
 

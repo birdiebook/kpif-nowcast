@@ -333,3 +333,11 @@ svensk IT och kommunikation +28 % 2023→2025 (EU +5 %), utan orsaksslutsats. De
 **Beslut (Johannes):** även J3 (katalogtest, negativt), J4 (detaljnivå, obekräftad), J5 (EWMA-band,
 förslag, ej aktiverat i `forecast.py`), J6 (Arbetsförmedlingen) och J7 (AI-indikator) mergas, så att
 körning 2 ([autonom-korning-2.md](autonom-korning-2.md)) kan bygga på dem. Huvudmodellen är oförändrad.
+
+## 2026-11-23 – Nytt syfte: bästa möjliga lösning
+**Beslut (Johannes):** projektet är inte längre ett lärprojekt. Det står på egna meriter, och målet är
+bästa möjliga lösning: en så träffsäker KPIF-prognos som möjligt och den bästa bilden av läget i Sverige
+sedd genom KPIF. Alla val ska ge snabb och effektiv progress med kvalitet. Kvalitetsreglerna gäller oförändrat:
+inget läckage, jämförelse mot baslinje och Riksbanken, förregistrering och ärlighet om osäkerhet.
+Pedagogiska hänsyn är inget mål i sig. `CLAUDE.md` och `docs/vision.md` är uppdaterade. Körning 2 pågår och fortsätter
+med det nya syftet.

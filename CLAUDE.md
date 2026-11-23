@@ -2,23 +2,26 @@
 
 ## Vad projektet är
 
-Ett **lärprojekt** där Johannes lär sig prediktiv modellering genom att bygga en
-nowcast av svensk KPIF-inflation (nästa månads siffra innan SCB publicerar den).
+Ett projekt som står på egna meriter. Det bygger **bästa möjliga nowcast och prognos av
+svensk KPIF-inflation** (nästa månads siffra innan SCB publicerar den, och längre horisonter),
+och genom KPIF-linsen **bästa möjliga bild av läget i Sverige**.
+
+**Målet är bästa möjliga lösning.** Varje val ska ge snabb och effektiv progress med kvalitet:
+högre träffsäkerhet, bättre data vid rätt tidpunkt, stabil drift och en tydligare bild av Sverige.
+Det är inte ett lärprojekt. Pedagogik är inget mål i sig.
 
 Arbetssättet är agentiskt: agenten skriver koden och gör räknejobbet, Johannes
-styr, granskar och fattar besluten. **Målet är lika mycket Johannes förståelse
-som modellens träffsäkerhet.** En snabb lösning som han inte förstår är ett
-misslyckande för projektet.
+styr, granskar och fattar besluten.
 
 Johannes bakgrund: BI och data engineering. Han kan SQL, pipelines och datakvalitet
-väl – förklara inte det. Förklara istället ML-, statistik- och prognoskoncept.
+väl – förklara inte det.
 
 ## Arbetsregler
 
-Håll det enkelt och fokusera på det som gör skillnad för resultatet. Inga
-quizfrågor eller pedagogiska övningar om Johannes inte ber om det.
+Håll det enkelt och fokusera på det som gör skillnad för resultatet. Välj den lösning som
+ger bäst resultat och snabbast progress, inte den som är lättast att lära sig av.
 
-1. **Förklara kort** de modelleringsval som spelar roll: vad och varför, i klartext.
+1. **Förklara kort** de modelleringsval som spelar roll: vad och varför, så att de går att granska.
 2. **Stanna bara vid verkliga beslutspunkter** (uppdelning i tränings-/testdata,
    utvärderingsmått, prognoshorisont). Ge en rekommendation, inte en meny.
 3. **Flagga läckagerisk direkt.** All data måste vara sådan som fanns tillgänglig vid

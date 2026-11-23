@@ -64,7 +64,7 @@ aldrig sett. Det ska ske utan Johannes dator.
 skuggprognosen för 2026-11 är reproducerbar från ren checkout.
 
 ### K2. ML-spåret: kan en riktig ML-modell slå 50/50-snittet?
-**Varför:** lärandet. Johannes vill förstå modern prediktiv modellering, och det ärliga svaret
+**Varför:** om ML ger en bättre prognos ska den användas. Det ärliga svaret
 på "hjälper ML här?" är värt mycket även om det är nej.
 - Kandidater: ridge/lasso på komponentmodellens features plus katalogserierna, och gradient
   boosting (scikit-learn `HistGradientBoostingRegressor`) på samma features.
