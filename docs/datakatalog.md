@@ -1,6 +1,6 @@
 # Datakatalog
 
-67 serier. Genererad av `python -m kpif_nowcast.catalog`.
+96 serier. Genererad av `python -m kpif_nowcast.catalog`.
 
 ## Inflation
 
@@ -8,6 +8,26 @@
 |---|---|---|---|---|---|---|---|
 | `kpif_index` | KPIF, index | M | 1987-01–2026-10 | 15 d | nej | SCB TAB6590 | Målvariabeln. |
 | `kpif_yy` | KPIF, årstakt | M | 1988-01–2026-10 | 15 d | nej | SCB TAB6590 | Målvariabeln. |
+| `kpif_xe_index` | KPIF exkl. energi (KPIF-XE), index | M | 1987-01–2026-10 | 15 d | nej | SCB TAB6593 | Underliggande inflation utan energipriser. |
+| `kpif_goods_index` | KPIF varor, index | M | 1987-01–2026-10 | 15 d | ja | SCB TAB6627 | Varudelen av KPIF, påverkas av import- och producentpriser. |
+| `kpif_services_index` | KPIF tjänster, index | M | 1987-01–2026-10 | 15 d | ja | SCB TAB6627 | Tjänstedelen av KPIF, driven av löner och hyror. |
+
+## Prisleden: producent-, import- och planerade priser
+
+| Nyckel | Serie | Frekv. | Från–till | Fördröjning | Rev. | Källa | Koppling |
+|---|---|---|---|---|---|---|---|
+| `ppi_hmpi_consumer` | Hemmamarknadspriser, konsumtionsvaror | M | 1990-01–2026-09 | 30 d | ja | SCB TAB3184 | Producent- och importpriser föregår konsumentpriserna på varor med några månader. |
+| `ppi_impi_consumer` | Importpriser, konsumtionsvaror | M | 1990-01–2026-09 | 30 d | ja | SCB TAB3184 | Producent- och importpriser föregår konsumentpriserna på varor med några månader. |
+| `ppi_itpi_consumer` | Priser inhemsk tillgång, konsumtionsvaror | M | 1990-01–2026-09 | 30 d | ja | SCB TAB3184 | Producent- och importpriser föregår konsumentpriserna på varor med några månader. |
+| `ppi_itpi_consumer_xfood` | Priser inhemsk tillgång, konsumtionsvaror exkl. livsmedel | M | 1990-01–2026-09 | 30 d | ja | SCB TAB3184 | Producent- och importpriser föregår konsumentpriserna på varor med några månader. |
+| `ppi_hmpi_food` | Hemmamarknadspriser, livsmedel (SPIN 10) | M | 1990-01–2026-09 | 30 d | ja | SCB TAB3184 | Producent- och importpriser föregår konsumentpriserna på varor med några månader. |
+| `ppi_impi_food` | Importpriser, livsmedel (SPIN 10) | M | 1990-01–2026-09 | 30 d | ja | SCB TAB3184 | Producent- och importpriser föregår konsumentpriserna på varor med några månader. |
+| `ki_prices_grocery` | Prisplaner dagligvaruhandeln (nettotal) | M | 2003-05–2026-10 | 3 d | nej | KI Konjunkturbarometern Barhanm.px | Företagens planerade prisändringar kommande 3 månader. |
+| `ki_prices_durables` | Prisplaner sällanköpshandeln (nettotal) | M | 2000-02–2026-10 | 3 d | nej | KI Konjunkturbarometern Barhanm.px | Företagens planerade prisändringar kommande 3 månader. |
+| `ki_prices_retail` | Prisplaner detaljhandeln (nettotal) | M | 2003-05–2026-10 | 3 d | nej | KI Konjunkturbarometern Barhanm.px | Företagens planerade prisändringar kommande 3 månader. |
+| `ki_purchase_prices_grocery` | Inköpspriser dagligvaruhandeln, kommande 3 mån (nettotal) | M | 2015-10–2026-10 | 3 d | nej | KI Konjunkturbarometern Barhanm.px | Företagens planerade prisändringar kommande 3 månader. |
+| `ki_prices_food_industry` | Prisplaner livsmedelsindustrin, hemma (nettotal) | M | 2000-01–2026-10 | 3 d | nej | KI Konjunkturbarometern Barindm.px | Företagens planerade prisändringar kommande 3 månader. |
+| `ki_prices_consumer_industry` | Prisplaner konsumtionsvaruindustrin, hemma (nettotal) | M | 2000-01–2026-10 | 3 d | nej | KI Konjunkturbarometern Barindm.px | Företagens planerade prisändringar kommande 3 månader. |
 
 ## Energi och råvaror
 
@@ -90,6 +110,16 @@
 | `wheat_usd` | Vete, världsmarknadspris | M | 1992-01–2026-09 | 60 d | ja | IMF via FRED | Livsmedelskedjan. |
 | `gscpi` | Global Supply Chain Pressure Index | M | 1998-01–2026-10 | 22 d | ja | NY Fed | Flaskhalsar i globala leveranskedjor → varupriser (2021–22). |
 | `freight_ppi_deepsea` | Fraktpriser sjöfart (US PPI) | M | 1988-06–2026-10 | 15 d | ja | BLS via FRED | Fraktkostnader → importpriser. |
+| `coffee_usd` | Kaffe (arabica, other mild), världsmarknadspris | M | 1992-01–2026-09 | 60 d | ja | IMF via FRED PCOFFOTMUSDM | Råvarupriser → svenska livsmedelspriser med fördröjning. |
+| `cocoa_usd` | Kakao, världsmarknadspris | M | 1992-01–2026-09 | 60 d | ja | IMF via FRED PCOCOUSDM | Råvarupriser → svenska livsmedelspriser med fördröjning. |
+| `sugar_usd` | Socker, världsmarknad, världsmarknadspris | M | 1992-01–2026-09 | 60 d | ja | IMF via FRED PSUGAISAUSDM | Råvarupriser → svenska livsmedelspriser med fördröjning. |
+| `beef_usd` | Nötkött, världsmarknadspris | M | 2010-05–2026-09 | 60 d | ja | IMF via FRED PBEEFUSDM | Råvarupriser → svenska livsmedelspriser med fördröjning. |
+| `pork_usd` | Griskött, världsmarknadspris | M | 1992-01–2026-09 | 60 d | ja | IMF via FRED PPORKUSDM | Råvarupriser → svenska livsmedelspriser med fördröjning. |
+| `poultry_usd` | Fågel, världsmarknadspris | M | 2003-01–2026-09 | 60 d | ja | IMF via FRED PPOULTUSDM | Råvarupriser → svenska livsmedelspriser med fördröjning. |
+| `palm_oil_usd` | Palmolja, världsmarknadspris | M | 1992-01–2026-09 | 60 d | ja | IMF via FRED PPOILUSDM | Råvarupriser → svenska livsmedelspriser med fördröjning. |
+| `soy_oil_usd` | Sojaolja, världsmarknadspris | M | 1992-01–2026-09 | 60 d | ja | IMF via FRED PSOILUSDM | Råvarupriser → svenska livsmedelspriser med fördröjning. |
+| `rapeseed_oil_usd` | Rapsolja, världsmarknadspris | M | 1992-01–2026-09 | 60 d | ja | IMF via FRED PROILUSDM | Råvarupriser → svenska livsmedelspriser med fördröjning. |
+| `sunflower_oil_usd` | Solrosolja, världsmarknadspris | M | 1992-01–2026-09 | 60 d | ja | IMF via FRED PSUNOUSDM | Råvarupriser → svenska livsmedelspriser med fördröjning. |
 
 ## AI och produktivitet
 
@@ -113,4 +143,8 @@
 |---|---|---|---|---|---|---|---|
 | `kix` | Kronindex KIX (högre = svagare krona) | M | 1992-11–2026-10 | 1 d | nej | Riksbanken SWEA | Svagare krona → dyrare import med fördröjning. |
 | `policy_rate` | Styrränta | M | 1994-06–2026-10 | 1 d | nej | Riksbanken SWEA | Stramare penningpolitik dämpar efterfrågan. |
+| `gvb_2y` | Statsobligationsränta 2 år | M | 1987-01–2026-10 | 1 d | nej | Riksbanken SWEA SEGVB2YC | Marknadens ränteförväntningar och finansiella villkor. |
+| `gvb_5y` | Statsobligationsränta 5 år | M | 1987-01–2026-10 | 1 d | nej | Riksbanken SWEA SEGVB5YC | Marknadens ränteförväntningar och finansiella villkor. |
+| `gvb_10y` | Statsobligationsränta 10 år | M | 1987-01–2026-10 | 1 d | nej | Riksbanken SWEA SEGVB10YC | Marknadens ränteförväntningar och finansiella villkor. |
+| `swestr` | SWESTR (dagslåneränta) | M | 2021-09–2026-10 | 1 d | nej | Riksbanken SWESTR API | Kortränta som styrräntan styr; från 2021-09. |
 

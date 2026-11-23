@@ -107,8 +107,7 @@ def main() -> None:
                      f"{t.astype({'MAE': float, 'diff': float, 'p1': float}).round(3).to_markdown()}\n")
         for k, row in t.iterrows():
             log_rows.append({"variant": f"k0s_{k}", "period": label, "n": int(row["n"]),
-                             "MAE": round(float(row["MAE"]), 4), "dm_p_one_sided": round(float(row["p1"]), 4),
-                             "bh_q": round(float(row["bh_q"]), 4)})
+                             "MAE": round(float(row["MAE"]), 4), "dm_p_vs_rb_updated": round(float(row["p1"]), 4)})
         print(label, t.head(6)[["MAE", "diff", "p1", "bh_q", "revised"]], sep="\n")
 
     chosen, tag = choose(tabs["h=1 primary 2017-02..2026-10"])
@@ -123,7 +122,7 @@ def main() -> None:
             rows.append({"variant": v, "base": "rb_updated" if v == "k0_c1" else "50/50 rb_updated+J2 V2",
                          "period": lab, **r, "holm_p": holm_p[v] if lab.startswith("primary") else np.nan})
             log_rows.append({"variant": v, "period": lab, "n": r["n"], "MAE": round(r["MAE"], 4),
-                             "dm_p_one_sided": round(r["p1"], 4)})
+                             "dm_p_vs_rb_updated": round(r["p1"], 4)})  # one-sided, vs the variant's own base
     vt = pd.DataFrame(rows)
     lines.append(vt.round(4).to_markdown(index=False) + "\n")
     print(vt.round(4).to_string())
