@@ -57,8 +57,24 @@ Fynd:
 **Champion/challenger** (`forecasts/SCORECARD.md`): k2_avg_ens_s 0,202 / 0,220, k2_avg_ridge_l 0,200 / 0,230
 (MAE 2015–26 urval / 2024–26 använd), live 0 månader.
 
-## 3. Nätbaserad reproducerbarhet
-Se avsnittet längst ned (skrivs när körningen i `C:\dev\kpif-auto2\k2b-clean` är klar).
+## 3. Nätbaserad reproducerbarhet (ren klon, ingen data/, riktig hämtning)
+- `git clone` av `auto2/k2b` till `C:\dev\kpif-auto2\k2b-clean` (bara `data/README.md` från git), egen
+  PYTHONPATH (`kpif_nowcast.__file__` under klonen), samma venv.
+- `python scripts/run_workflow_locally.py weekly-fetch --online` (vid 555c758): **GRÖN**, 3 023 s. Det mesta av tiden
+  är Energinets historik (7 delar med cirka 5 minuters spärr emellan) och 1 848 elprisdagar × 2 zoner. Data: KPIF och
+  komponenter till 2026-10, 60 Riksbanksårgångar, el till 2026-11-22, observationstabellen 96 serier / 27 819 rader
+  (alla backfill), 0 misslyckade. Datatesterna 12/12 gröna. Loggar: `k2b-clean/weekly-online.log`, `monthly-online.log`.
+- Klonen uppdaterad till 1673a83, sedan `run_workflow_locally.py monthly-shadow --online --as-of 2026-11-23`: **GRÖN**,
+  456 s (prognosdata, K2:s 43 observationsserier, alla 5 skuggor, scorecard).
+- **Jämförelse med worktreens skuggprognoser 2026-11 (alla fält utom `run`): identiska för alla fem modeller**
+  (2,05 / 1,86 / 1,52 / 1,66 / 1,63). `forecasts/SCORECARD.md` är identisk byte för byte, inklusive champion/challenger-
+  tabellen med K2:s historik 2015–26.
+- Skillnader i data: av K2:s 43 serier skiljer sig bara `jobads_total`, i 5 värden 2026-05..2026-10 (t.ex. 2026-10:
+  38 758 i går, 39 074 i dag). JobTech räknar alltså om de senaste månaderna, så serien är i praktiken reviderad trots
+  `revised=False`. Det ändrar inte ridge_l:s prognos på andra decimalen. Worktreens tabell har 93 serier, klonens 96
+  (tre serier som lagts till i katalogen efter worktreens hämtning, inga K2-serier).
+- Begränsning: körningen visar att allt går att bygga från nätet och ger samma tal i dag. Den visar inte att
+  källorna ger samma historik om ett år. Därför finns råsvaren och observationstabellens årgångar.
 
 ## BLOCKED
 Inget.

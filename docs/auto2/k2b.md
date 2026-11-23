@@ -1,5 +1,5 @@
-`kpif_nowcast.__file__` = `C:\dev\kpif-auto2\k2b\src\kpif_nowcast\__init__.py`, SHA: se slutcommit på `auto2/k2b`
-(senaste innehållscommit 866e1af + leveranscommit).
+`kpif_nowcast.__file__` = `C:\dev\kpif-auto2\k2b\src\kpif_nowcast\__init__.py`, SHA: slutcommit på `auto2/k2b` är commiten som lägger till den här raden (innehåll t.o.m. 866e1af).
+pytest: 83 passerade, 4 överhoppade.
 
 # PR: K2b – oberoende granskning av K2, K2-skuggor i driften, nätbaserad reproducerbarhet
 
@@ -17,7 +17,9 @@ beror på: main@25a6a6e
   Skuggprognoser för 2026-11 (PRELIMINARY): 1,66 och 1,63. Champion/challenger-tabellen är uppdaterad.
 - **Granskningskod:** `src/kpif_nowcast/k2b_review.py` (scenarierna base, decfix, fwd, back, plant och no2223).
   Tester i `tests/test_k2b_review.py` och utökade `tests/test_shadow.py`.
-- **Nätbaserad reproducerbarhet:** ren klon utan data/ i `C:\dev\kpif-auto2\k2b-clean`, online. Se resultat.md, avsnitt 3.
+- **Nätbaserad reproducerbarhet:** ren klon utan data/ i `C:\dev\kpif-auto2\k2b-clean`, weekly + monthly online GRÖNA.
+  Skuggprognoserna för 2026-11 och SCORECARD.md är identiska med worktreens. Enda dataskillnaden i K2:s serier är `jobads_total`
+  (JobTech räknar om senaste månaderna). Se resultat.md, avsnitt 3.
 - Inga nya varianter. `forecast.py`/`MODEL_NAME` och `forecasts/<månad>.json` är orörda. pytest grönt.
 
 Rekommendation (inte gjord, delad kod): `observations.upsert` bör sätta `known_from` = hämtdatum (inte

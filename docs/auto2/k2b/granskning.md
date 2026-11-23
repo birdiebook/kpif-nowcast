@@ -55,7 +55,8 @@ men det kan finnas fler sena releaser (påsk, maj). Scenariot "back" nedan sätt
 - `gdp_ind_yy` (lag 35): för 30-dagarsmånader blir `known_from` exakt deadline 00:00, och `as_of` tar med `<=`.
   Det strider mot regeln `known_from < deadline` (83 rader). Serien är dessutom `revised=True`.
 - `hh_consumption_yy` (lag 15) och `jobads_total` (lag 3, JobTechs historiska annonsfil) har jag inte kunnat
-  verifiera i realtid.
+  verifiera i realtid. `jobads_total` är dessutom i praktiken reviderad: en ny hämtning dagen efter gav andra
+  värden för 2026-05..10 (se resultat.md, avsnitt 3), trots `revised=False`.
 - Alla tre är reviderade eller osäkra. K2:s diagnostik `k2_avg_ridge_lnr` (L utan de 24 reviderade serierna) gav
   samma MAE (0,199), så L:s vinst kommer inte från dem. Revisionsläckage i övrigt: samma slutsats.
 
