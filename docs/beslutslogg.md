@@ -328,3 +328,8 @@ använder AI (Eurostat). Produktivitet per bransch (Eurostat nama_10_lp_a21) vis
 mätbrott 2025 i JobTech:s matchning (×10 på ett år). Därför används "maskininlärning". **Resultat:** spridningen
 är 2025 den högsta i perioden; Sverige före EU i företagens AI-användning (35 mot 20 %); produktiviteten i
 svensk IT och kommunikation +28 % 2023→2025 (EU +5 %), utan orsaksslutsats. Detaljer: [docs/ai-indikator.md](ai-indikator.md).
+
+## 2026-11-23 – J3–J7 mergade till main
+**Beslut (Johannes):** även J3 (katalogtest, negativt), J4 (detaljnivå, obekräftad), J5 (EWMA-band,
+förslag, ej aktiverat i `forecast.py`), J6 (Arbetsförmedlingen) och J7 (AI-indikator) mergas, så att
+körning 2 ([autonom-korning-2.md](autonom-korning-2.md)) kan bygga på dem. Huvudmodellen är oförändrad.
