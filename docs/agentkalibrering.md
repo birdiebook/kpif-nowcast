@@ -1,0 +1,22 @@
+# Agentkalibrering: vad ett spår kostar
+
+Mätdata för storleksbedömning (se CLAUDE.md, "Storleksbedömning"). En rad per spår, fylls på
+efter varje körning. Tumreglerna överst justeras när siffrorna ändras.
+
+## Tumregler (senast justerade 2026-11-23, körning 2)
+
+- Ett väl avgränsat spår med tester: **ca 13–18 min, 40–60 verktygsanrop och 180–200k tokens**.
+- Det gäller oavsett typ (data, drift, ML, förklaring). Typen verkar spela mindre roll än avgränsningen.
+- Med 3 spår parallellt ger det cirka 10–12 spår per timme. Orkestrerarens merge och pytest på main
+  tar 2–4 min per spår.
+- Körning 1 var dimensionerad i människotempo (7 jobb) och tog slut efter 30 minuter.
+
+## Mätningar
+
+| Datum | Körning | Spår | Typ | Tid (min) | Verktygsanrop | Tokens (k) | Leverans |
+|---|---|---|---|---|---|---|---|
+| 2026-11-22 | 1 | J1–J7 (7 jobb, 2 parallellt) | blandat | ~30 totalt | – | – | 23 varianter, 7 grenar |
+| 2026-11-23 | 2 | K2 ML | modell | 14,8 | 45 | 178 | 9 varianter, nästlad CV, 41 tester |
+| 2026-11-23 | 2 | K1 Drift | drift | 17,2 | 52 | 203 | pipeline, 2 workflows, 12 datatester, repro |
+| 2026-11-23 | 2 | K0 Prisleden | data + screening | 17,7 | 61 | 193 | 29 serier, screening, 2 varianter |
+| 2026-11-23 | 2 | K3 Förklaring | analys | 13,1 | 42 | 180 | explain.py, 13 tester, 24 mån historik |

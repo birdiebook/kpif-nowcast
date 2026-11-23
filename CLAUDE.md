@@ -38,7 +38,26 @@ Projektet ska tänja gränserna för vad AI-agenter kan leverera själva.
 - **Bedöm arbete i agentlinsen, inte människolinsen.** Omfattning, tidsåtgång, ambitionsnivå och
   vad som är "för stort" bedöms utifrån vad agenter klarar: parallella spår, dygnet runt, minuter
   per uppgift. Uppskatta inte i människotimmar, och skala inte ned planer för att de skulle vara
-  mycket för en människa. Flaskhalsen är kvalitetskontroll och tillgång till data, inte arbetstid. Agenten levererar hela vägen
+  mycket för en människa. Flaskhalsen är kvalitetskontroll och tillgång till data, inte arbetstid.
+
+### Storleksbedömning
+
+- **Enheten är ett agentspår:** en avgränsad leverans med tester, av en agent i egen worktree.
+  Den aktuella kostnaden per spår (tid, verktygsanrop, tokens) står i
+  [`docs/agentkalibrering.md`](docs/agentkalibrering.md). Läs den innan en körning planeras.
+- **Kapacitet = parallella spår × tid.** Dimensionera backloggen så att den fyller körningen
+  (till exempel en natt), med reserv. Ett jobb bedöms som "1 spår", "3 spår parallellt",
+  "1 spår + granskning", aldrig i timmar eller dagar.
+- **Taket sätts av de verkliga flaskhalsarna:**
+  - Statistisk budget: varianttak och använd period. Det är den knappaste resursen.
+  - Datatillgång: konto, PDF eller 403 ger BLOCKED.
+  - Verifiering: ett oberoende granskningsspår per positivt resultat som ska användas.
+  - Johannes beslut: byte av huvudmodell.
+  - Kalendertid: live-utfall kommer en gång i månaden.
+- **"För stort"** betyder att något inte går att verifiera eller avgränsa. Det delas upp i spår,
+  utan att ambitionen sänks.
+- **Kalibrera efter varje körning:** logga tid, anrop och tokens per spår i
+  `docs/agentkalibrering.md`, och justera tumreglerna när siffrorna ändras. Agenten levererar hela vägen
 till main. Den väntar inte på godkännande för det som går att verifiera med tester och regler.
 - **Agenten får committa, merga och pusha till `main`** när pytest är grönt på det sammanslagna
   resultatet och reglerna ovan är uppfyllda. Parallella spår kör på egna grenar och worktrees
