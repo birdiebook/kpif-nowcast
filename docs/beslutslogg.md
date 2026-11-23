@@ -416,3 +416,13 @@ sämre, inte bättre (m/m-MAE 0,157 → 0,160–0,162 2015–2026; 0,067 → 0,0
 Totalt T1–T4 −0,001 till +0,003 mot 50/50 (Holm 1), T5 +0,010 mot `k2_avg_ens_s`. Påskeffekten finns (≈ 0,01 pe per dag)
 men är liten. Tjänstefelet är resor och går inte att förutse med data vi har vid deadline. Ingen frysning.
 Detaljer: [docs/auto2/k7/resultat.md](auto2/k7/resultat.md).
+
+## 2026-11-23 – K8 Livsmedelskomponenten (förregistrering)
+Livsmedelsbidraget (TAB6628) prognostiseras från PPI livsmedel, IMF-råvaror i SEK, KIX och KI:s prisplaner med
+laggar 1–6 mån; fyra varianter (fasta laggar, ridge med nästlad CV, ridge utan reviderade serier, K2-ensemblen +
+livsmedel): [docs/auto2/k8/hypotes.md](auto2/k8/hypotes.md).
+**Resultat (urvalsevidens, 4 av K8:s 4 varianter):** ingen klarade urvalsskärmen. Mot 50/50 (0,217): fasta laggar
+0,214 (Holm p = 0,41), ridge 0,216 (0,41), ridge utan reviderade serier 0,215 (0,30); K2-ensemblen + livsmedel 0,201
+mot 0,201 (0,55). Livsmedelsbidragets eget fel sjunker 10 % med fasta laggar (0,076 → 0,069 pe), 35 % 2022–23, men
+i totalen blir det ≤ 0,002 pe. Ingen frysning. Nästa kandidat: skatterensad livsmedelsbas (momssänkningen 2026-04).
+Detaljer: [docs/auto2/k8/resultat.md](auto2/k8/resultat.md).
