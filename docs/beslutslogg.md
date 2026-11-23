@@ -333,3 +333,11 @@ svensk IT och kommunikation +28 % 2023→2025 (EU +5 %), utan orsaksslutsats. De
 **Beslut (Johannes):** även J3 (katalogtest, negativt), J4 (detaljnivå, obekräftad), J5 (EWMA-band,
 förslag, ej aktiverat i `forecast.py`), J6 (Arbetsförmedlingen) och J7 (AI-indikator) mergas, så att
 körning 2 ([autonom-korning-2.md](autonom-korning-2.md)) kan bygga på dem. Huvudmodellen är oförändrad.
+
+## 2026-11-23 – K1 Drift: skuggprognoser i GitHub Actions (förslag, aktiveras vid merge)
+**Vad:** `pipeline.py` (veckohämtning och prognoskörning som kommandon), skuggprognoser i
+`forecasts/shadow/<modell>/<månad>.json` för den skarpa modellen (`comp_fuel_el`), J2 V2 och 50/50, offlineläge
+som bygger om allt från `data/raw/`, DuckDB-datatester och en champion/challenger-tabell i SCORECARD.md.
+**Val:** data i Actions-cachen (inget konto), låsta paketversioner, FINAL-skuggor skrivs aldrig över.
+Inga nya varianter. Reproducerbarhet från ren klon + råcache är verifierad, men en helt nätbaserad hämtning
+från noll är inte testad. Detaljer: [docs/auto2/k1/resultat.md](auto2/k1/resultat.md).
