@@ -390,3 +390,8 @@ Detaljer: [docs/auto2/k3/resultat.md](auto2/k3/resultat.md).
 
 ## 2026-11-23 – K6 Bara om det är lätt (förregistrering)
 Vintagekontroll för TAB6613 (0 varianter) och J2:s elmetod på dansk och finsk HIKP (N1, N2): [docs/auto2/k6/hypotes.md](auto2/k6/hypotes.md).
+**Resultat (2 varianter, N1 och N2, ingen klarade urvalsskärmen):** vintages av TAB6613 finns inte (BLOCKED). Gammal och
+omräknad svensk HIKP är praktiskt taget identiska för 04.5 och 07.2 (korrelation 1,000, medelskillnad 0,01 pe), så J4 D2:s
+energivinst är ingen revisionseffekt. Elmetoden på Finland (SE3 som ombud) ger −0,011 (Holm p = 0,58), på Danmark (SE4)
++0,002 (0,86). Där slår spotpriset igenom i el-HIKP först månaden efter, medan svensk el-KPI följer samma månad (korrelation 0,9).
+Detaljer: [docs/auto2/k6/resultat.md](auto2/k6/resultat.md).
